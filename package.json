@@ -1,0 +1,32 @@
+{
+  "name": "teste",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "dev": "node --env-file=.env --watch ./dist/app.js",
+    "build": "tsc",
+    "start": "node ./dist/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@openai/agents": "^0.1.11",
+    "@whiskeysockets/baileys": "^7.0.0-rc.9",
+    "dotenv": "^17.2.2",
+    "pino": "^9.11.0",
+    "qrcode": "^1.5.4",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
+    "yarn": "^1.22.22",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.5.2",
+    "@types/qrcode": "^1.5.5",
+    "typescript": "^5.9.2"
+  }
+}
