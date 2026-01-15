@@ -56,10 +56,7 @@ export async function sendMessage(){
         }
         for (const msg of messages) {
         const jid = msg.key.remoteJid!
-        const body =
-            msg.message?.conversation ||
-            msg.message?.extendedTextMessage?.text ||
-            ''
+        const body = msg.message?.conversation || msg.message?.extendedTextMessage?.text || ''
         if (!body) continue
 
         console.log('Mensagem de', jid, ':', body)
@@ -75,7 +72,7 @@ export async function sendMessage(){
                 await updateUsuario(jid,verificarStatus)
             }
             else if(verificarStatus === 'EM_ATENDIMENTO'){
-
+                
             }
         }
     }

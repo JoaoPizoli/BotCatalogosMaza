@@ -12,6 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@azure/identity": "^4.13.0",
+    "@microsoft/microsoft-graph-client": "^3.0.7",
     "@openai/agents": "^0.1.11",
     "@whiskeysockets/baileys": "^7.0.0-rc.9",
     "dotenv": "^17.2.2",
