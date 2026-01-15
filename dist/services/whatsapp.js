@@ -40,19 +40,40 @@ exports.startBot = startBot;
 const baileys_1 = __importStar(require("@whiskeysockets/baileys"));
 const pino_1 = __importDefault(require("pino"));
 const qrcode_1 = __importDefault(require("qrcode"));
+const node_path_1 = __importDefault(require("node:path"));
+const node_fs_1 = __importDefault(require("node:fs"));
+const agenteCatalogo_1 = require("../agents/agenteCatalogo");
+const agenteEmbalagem_1 = require("../agents/agenteEmbalagem");
+const agenteVideos_1 = require("../agents/agenteVideos");
+const sessionManager_1 = require("./sessionManager");
 const listTemplates_1 = require("../utils/listTemplates");
+let sock;
+const NUMBER_TO_AGENT = {
+    '1': 'embalagem',
+    '2': 'catalogo',
+    '3': 'videos',
+};
+const WELCOME_MESSAGES = {
+    embalagem: '📦 *Assistente de Embalagens*\n\nO que você procura? Pode me dizer o nome do produto ou tipo de embalagem.',
+    catalogo: '📑 *Assistente de Catálogos Digitais*\n\nQual catálogo você precisa? Me diga o tipo de produto.',
+    videos: '🎬 *Assistente de Vídeos de Treinamento*\n\nQual conteúdo você busca? Me diga o tema do treinamento.',
+};
 async function startBot() {
     console.log("Iniciando bot com nova configuração...");
     const { state, saveCreds } = await (0, baileys_1.useMultiFileAuthState)('./auth');
-    const sock = (0, baileys_1.default)({
+    const socket = (0, baileys_1.default)({
         auth: state,
         printQRInTerminal: false,
-        logger: (0, pino_1.default)({ level: 'info' }),
+        logger: (0, pino_1.default)({ level: 'warn' }),
         browser: baileys_1.Browsers.macOS('Desktop'),
-        syncFullHistory: false
+        syncFullHistory: false,
     });
-    sock.ev.on('creds.update', saveCreds);
-    sock.ev.on('connection.update', async (update) => {
+    sock = socket;
+    socket.ev.on('creds.update', saveCreds);
+    (0, sessionManager_1.setOnSessionExpired)(async (jid) => {
+        await sendTextMessage(jid, '⏱️ Sessão encerrada por inatividade. Envie uma mensagem para recomeçar.');
+    });
+    socket.ev.on('connection.update', async (update) => {
         const { connection, lastDisconnect, qr } = update;
         if (qr) {
             const qrTerm = await qrcode_1.default.toString(qr, { type: 'terminal', small: true });
@@ -71,236 +92,174 @@ async function startBot() {
             }
         }
         else if (connection === 'open') {
-            console.log('Conectado!');
+            console.log('✅ Conectado ao WhatsApp!');
+            setupMessageHandler(socket);
         }
     });
-    sock.ev.on('messages.upsert', async ({ type, messages }) => {
-        if (type !== 'notify') {
+}
+function setupMessageHandler(socket) {
+    socket.ev.on('messages.upsert', async ({ type, messages }) => {
+        if (type !== 'notify')
+            return;
+        for (const msg of messages) {
+            if (msg.key.fromMe)
+                continue;
+            const jid = msg.key.remoteJid;
+            try {
+                await handleMessage(socket, jid, msg);
+            }
+            catch (error) {
+                console.error(`[Handler] Erro ao processar mensagem de ${jid}:`, error);
+                await sendTextMessage(jid, '❌ Ocorreu um erro. Por favor, tente novamente.');
+            }
+        }
+    });
+    console.log('[Handler] Message handler configurado');
+}
+async function handleMessage(socket, jid, msg) {
+    const body = (msg.message?.conversation ||
+        msg.message?.extendedTextMessage?.text ||
+        '').trim();
+    if (!body)
+        return;
+    console.log(`[Mensagem] ${jid}: ${body}`);
+    const session = (0, sessionManager_1.getOrCreateSession)(jid);
+    (0, sessionManager_1.refreshTimeout)(jid);
+    if (!session.agentType) {
+        const agentType = NUMBER_TO_AGENT[body] || detectAgentFromText(body);
+        if (agentType) {
+            await selectAgent(socket, jid, agentType);
+        }
+        else {
+            await sendTextMessage(jid, listTemplates_1.mensagemBoasVindas);
+            await sendTextMessage(jid, listTemplates_1.menuPrincipal);
+            console.log(`[Menu] Enviado para ${jid}`);
+        }
+        return;
+    }
+    await processWithAgent(socket, jid, body);
+}
+function detectAgentFromText(text) {
+    const lower = text.toLowerCase();
+    if (lower.includes('embalagem') || lower.includes('embalagens')) {
+        return 'embalagem';
+    }
+    if (lower.includes('catálogo') || lower.includes('catalogos') || lower.includes('catalogo')) {
+        return 'catalogo';
+    }
+    if (lower.includes('vídeo') || lower.includes('video') || lower.includes('treinamento')) {
+        return 'videos';
+    }
+    return null;
+}
+async function selectAgent(socket, jid, agentType) {
+    (0, sessionManager_1.setAgentType)(jid, agentType);
+    const welcomeMessage = WELCOME_MESSAGES[agentType];
+    await sendTextMessage(jid, welcomeMessage);
+    console.log(`[Agente] ${jid} -> ${agentType}`);
+}
+async function processWithAgent(socket, jid, message) {
+    const session = (0, sessionManager_1.getSession)(jid);
+    if (!session?.agentType)
+        return;
+    if (message.toLowerCase() === 'menu' || message.toLowerCase() === 'sair') {
+        (0, sessionManager_1.clearSession)(jid);
+        await sendTextMessage(jid, listTemplates_1.menuPrincipal);
+        return;
+    }
+    const agent = getAgentByType(session.agentType);
+    if (!agent)
+        return;
+    console.log(`[Agent] Processando com ${session.agentType}: "${message}"`);
+    const response = await (0, sessionManager_1.runAgentWithContext)(jid, agent, message);
+    const fileMatch = response.match(/__FILE_READY__:(.+?):(.+?)(?:$|\n)/);
+    if (fileMatch) {
+        const [, localPath, fileName] = fileMatch;
+        const textResponse = response.replace(/__FILE_READY__.+?(?:$|\n)/, '').trim();
+        if (textResponse) {
+            await sendTextMessage(jid, textResponse);
+        }
+        await sendFile(socket, jid, localPath.trim(), fileName.trim());
+    }
+    else {
+        await sendTextMessage(jid, response);
+    }
+}
+function getAgentByType(type) {
+    switch (type) {
+        case 'catalogo':
+            return agenteCatalogo_1.agenteCatalogo;
+        case 'embalagem':
+            return agenteEmbalagem_1.agenteEmbalagens;
+        case 'videos':
+            return agenteVideos_1.agenteVideos;
+        default:
+            return null;
+    }
+}
+async function sendTextMessage(jid, text) {
+    if (!sock)
+        return;
+    await sock.sendMessage(jid, { text });
+}
+async function sendFile(socket, jid, localPath, fileName) {
+    try {
+        if (!node_fs_1.default.existsSync(localPath)) {
+            await sendTextMessage(jid, `❌ Arquivo não encontrado: ${fileName}`);
             return;
         }
-        for (const msg of messages) {
-            const jid = msg.key.remoteJid;
-            const body = msg.message?.conversation ||
-                msg.message?.extendedTextMessage?.text ||
-                '';
-            if (!body)
-                continue;
-            console.log('Mensagem de', jid, ':', body);
-            console.log('Body length:', body.length);
-            console.log('Body charCodes:', body.split('').map(c => c.charCodeAt(0)));
-            const bodyTrimmed = body.trim().toLowerCase();
-            if (bodyTrimmed === '!botoes1') {
-                console.log('Teste 1: Native Flow direto...');
-                const msg = (0, baileys_1.generateWAMessageFromContent)(jid, {
-                    interactiveMessage: baileys_1.proto.Message.InteractiveMessage.create({
-                        body: baileys_1.proto.Message.InteractiveMessage.Body.create({
-                            text: "Teste 1: Native Flow direto (sem viewOnce)"
-                        }),
-                        footer: baileys_1.proto.Message.InteractiveMessage.Footer.create({
-                            text: "Rodapé"
-                        }),
-                        header: baileys_1.proto.Message.InteractiveMessage.Header.create({
-                            title: "TESTE 1",
-                            hasMediaAttachment: false
-                        }),
-                        nativeFlowMessage: baileys_1.proto.Message.InteractiveMessage.NativeFlowMessage.create({
-                            buttons: [
-                                {
-                                    "name": "quick_reply",
-                                    "buttonParamsJson": JSON.stringify({
-                                        display_text: "Clique Aqui",
-                                        id: "btn_1"
-                                    })
-                                }
-                            ]
-                        })
-                    })
-                }, { userJid: (0, baileys_1.jidNormalizedUser)(sock.user?.id) });
-                try {
-                    await sock.relayMessage(jid, msg.message, { messageId: msg.key.id });
-                    console.log('Teste 1 enviado!');
-                }
-                catch (err) {
-                    console.error('Erro teste 1:', err);
-                }
-            }
-            else if (bodyTrimmed === '!botoes2') {
-                console.log('Teste 2: buttonsMessage antigo...');
-                try {
-                    await sock.sendMessage(jid, {
-                        text: "Teste 2: Botões antigos",
-                        footer: "Escolha uma opção",
-                        buttons: [
-                            { buttonId: 'id1', buttonText: { displayText: 'Opção 1' }, type: 1 },
-                            { buttonId: 'id2', buttonText: { displayText: 'Opção 2' }, type: 1 },
-                            { buttonId: 'id3', buttonText: { displayText: 'Opção 3' }, type: 1 }
-                        ],
-                        headerType: 1
-                    });
-                    console.log('Teste 2 enviado!');
-                }
-                catch (err) {
-                    console.error('Erro teste 2:', err);
-                }
-            }
-            else if (bodyTrimmed === '!botoes3') {
-                console.log('Teste 3: listMessage...');
-                try {
-                    await sock.sendMessage(jid, {
-                        text: "Teste 3: Lista de opções",
-                        footer: "Selecione abaixo",
-                        title: "MENU",
-                        buttonText: "Ver Opções",
-                        sections: [
-                            {
-                                title: "Seção 1",
-                                rows: [
-                                    { title: "Item 1", rowId: "item1", description: "Descrição 1" },
-                                    { title: "Item 2", rowId: "item2", description: "Descrição 2" },
-                                    { title: "Item 3", rowId: "item3", description: "Descrição 3" }
-                                ]
-                            }
-                        ]
-                    });
-                    console.log('Teste 3 enviado!');
-                }
-                catch (err) {
-                    console.error('Erro teste 3:', err);
-                }
-            }
-            else if (bodyTrimmed === '!botoes4') {
-                console.log('Teste 4: templateMessage...');
-                try {
-                    await sock.sendMessage(jid, {
-                        templateButtons: [
-                            { index: 1, urlButton: { displayText: 'Abrir Site', url: 'https://google.com' } },
-                            { index: 2, callButton: { displayText: 'Ligar', phoneNumber: '+5511999999999' } },
-                            { index: 3, quickReplyButton: { displayText: 'Resposta Rápida', id: 'id-quick' } }
-                        ],
-                        text: "Teste 4: Template Buttons",
-                        footer: "Rodapé template"
-                    });
-                    console.log('Teste 4 enviado!');
-                }
-                catch (err) {
-                    console.error('Erro teste 4:', err);
-                }
-            }
-            else if (bodyTrimmed === '!poll') {
-                console.log('Enviando enquete (funciona sempre)...');
-                try {
-                    await sock.sendMessage(jid, {
-                        poll: {
-                            name: "🎯 Escolha uma opção:",
-                            values: ["📊 Relatórios", "📈 Dashboard", "⚙️ Configurações", "❓ Ajuda"],
-                            selectableCount: 1
-                        }
-                    });
-                    console.log('Enquete enviada!');
-                }
-                catch (err) {
-                    console.error('Erro enquete:', err);
-                }
-            }
-            else if (bodyTrimmed.includes('!botoes')) {
-                console.log('Comando !botoes recebido, gerando mensagem...');
-                const msg = (0, baileys_1.generateWAMessageFromContent)(jid, {
-                    viewOnceMessage: {
-                        message: {
-                            interactiveMessage: baileys_1.proto.Message.InteractiveMessage.create({
-                                body: baileys_1.proto.Message.InteractiveMessage.Body.create({
-                                    text: "👋 Olá! Este é um exemplo de botões *Native Flow*."
-                                }),
-                                footer: baileys_1.proto.Message.InteractiveMessage.Footer.create({
-                                    text: "Funciona melhor em Android/iOS"
-                                }),
-                                header: baileys_1.proto.Message.InteractiveMessage.Header.create({
-                                    title: "MENU INTERATIVO",
-                                    subtitle: "Exemplo",
-                                    hasMediaAttachment: false
-                                }),
-                                nativeFlowMessage: baileys_1.proto.Message.InteractiveMessage.NativeFlowMessage.create({
-                                    buttons: [
-                                        {
-                                            "name": "quick_reply",
-                                            "buttonParamsJson": JSON.stringify({
-                                                display_text: "🔹 Opção 1",
-                                                id: "id_botao_1"
-                                            })
-                                        },
-                                        {
-                                            "name": "cta_url",
-                                            "buttonParamsJson": JSON.stringify({
-                                                display_text: "🌐 Abrir Google",
-                                                url: "https://www.google.com",
-                                                merchant_url: "https://www.google.com"
-                                            })
-                                        },
-                                        {
-                                            "name": "cta_copy",
-                                            "buttonParamsJson": JSON.stringify({
-                                                display_text: "📋 Copiar Chave",
-                                                copy_code: "CHAVE-PIX-1234"
-                                            })
-                                        }
-                                    ],
-                                })
-                            })
-                        }
-                    }
-                }, { userJid: (0, baileys_1.jidNormalizedUser)(sock.user?.id) });
-                try {
-                    await sock.relayMessage(jid, msg.message, { messageId: msg.key.id });
-                    console.log('Mensagem de botões enviada com sucesso!');
-                }
-                catch (err) {
-                    console.error('Erro ao enviar botões:', err);
-                }
-            }
-            else if (body) {
-                const msg = (0, baileys_1.generateWAMessageFromContent)(jid, {
-                    viewOnceMessage: {
-                        message: {
-                            interactiveMessage: baileys_1.proto.Message.InteractiveMessage.create({
-                                body: baileys_1.proto.Message.InteractiveMessage.Body.create({
-                                    text: "Selecione uma opção no menu abaixo:"
-                                }),
-                                footer: baileys_1.proto.Message.InteractiveMessage.Footer.create({
-                                    text: "Bot WhatsApp"
-                                }),
-                                header: baileys_1.proto.Message.InteractiveMessage.Header.create({
-                                    title: "MENU PRINCIPAL",
-                                    subtitle: "Bem-vindo",
-                                    hasMediaAttachment: false
-                                }),
-                                nativeFlowMessage: baileys_1.proto.Message.InteractiveMessage.NativeFlowMessage.create({
-                                    buttons: [
-                                        {
-                                            "name": "single_select",
-                                            "buttonParamsJson": JSON.stringify({
-                                                title: "VER OPÇÕES",
-                                                sections: [
-                                                    {
-                                                        title: "Menu",
-                                                        rows: listTemplates_1.menuCompleto.poll.values.map((item, id) => ({
-                                                            header: "",
-                                                            title: item,
-                                                            description: "",
-                                                            id: `menu_id_${id}`
-                                                        }))
-                                                    }
-                                                ]
-                                            })
-                                        }
-                                    ]
-                                })
-                            })
-                        }
-                    }
-                }, { userJid: sock.user?.id || '' });
-                await sock.relayMessage(jid, msg.message, { messageId: msg.key.id });
-            }
+        const ext = node_path_1.default.extname(localPath).toLowerCase();
+        const buffer = node_fs_1.default.readFileSync(localPath);
+        const isVideo = ['.mp4', '.mov', '.avi', '.mkv', '.webm'].includes(ext);
+        const isImage = ['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext);
+        const isAudio = ['.mp3', '.ogg', '.m4a', '.wav'].includes(ext);
+        if (isVideo) {
+            await socket.sendMessage(jid, {
+                video: buffer,
+                caption: `🎬 ${fileName}`,
+                mimetype: 'video/mp4',
+            });
         }
-    });
+        else if (isImage) {
+            await socket.sendMessage(jid, {
+                image: buffer,
+                caption: `🖼️ ${fileName}`,
+            });
+        }
+        else if (isAudio) {
+            await socket.sendMessage(jid, {
+                audio: buffer,
+                mimetype: 'audio/mp4',
+                ptt: false,
+            });
+        }
+        else {
+            await socket.sendMessage(jid, {
+                document: buffer,
+                mimetype: getMimeType(ext),
+                fileName: fileName,
+            });
+        }
+        console.log(`[Arquivo] Enviado para ${jid}: ${fileName}`);
+    }
+    catch (error) {
+        console.error('[Arquivo] Erro ao enviar:', error);
+        await sendTextMessage(jid, `❌ Erro ao enviar arquivo: ${fileName}`);
+    }
+}
+function getMimeType(ext) {
+    const mimeTypes = {
+        '.pdf': 'application/pdf',
+        '.doc': 'application/msword',
+        '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        '.xls': 'application/vnd.ms-excel',
+        '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        '.ppt': 'application/vnd.ms-powerpoint',
+        '.pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        '.zip': 'application/zip',
+        '.rar': 'application/x-rar-compressed',
+        '.txt': 'text/plain',
+    };
+    return mimeTypes[ext] || 'application/octet-stream';
 }
 //# sourceMappingURL=whatsapp.js.map

@@ -1,36 +1,13 @@
-export const listaOpcDados: PollContent = {
-    poll: {
-        name: "Escolha uma opção:",
-        values: [
-            "Pedidos do Dia",
-            "Comparativo do Dia", 
-            "Geral"
-        ],
-        selectableCount: 1
-    }
-}
+export const mensagemBoasVindas = `👋 Olá, representante!
 
-export const menuCompleto: PollContent = {
-    poll: {
-        name: "Menu Principal - Selecione uma opção:",
-        values: [
-            "🎨-Embalagens",
-            "📑-Catálogos Digitais", 
-            "🎬-Videos"
-        ],
-        selectableCount: 1
-    }
-}
+Bem-vindo ao *Assistente Maza*. Estou aqui para ajudá-lo a encontrar catálogos, embalagens e vídeos de treinamento.`;
 
-export const preferenciasUsuario: PollContent = {
-    poll: {
-        name: "Quais relatórios você quer receber?",
-        values: [
-            "Vendas Diárias",
-            "Estoque Baixo",
-            "Novos Clientes",
-            "Performance"
-        ],
-        selectableCount: 3 
-    }
-}
+export const menuPrincipal = `📋 *Menu Principal*
+
+Envie o *número* da opção desejada:
+
+1️⃣ Embalagens
+2️⃣ Catálogos Digitais
+3️⃣ Vídeos de Treinamento
+
+_Digite "menu" a qualquer momento para voltar aqui._`;

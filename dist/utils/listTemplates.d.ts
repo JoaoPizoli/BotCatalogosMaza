@@ -1,4 +1,3 @@
-export declare const listaOpcDados: PollContent;
-export declare const menuCompleto: PollContent;
-export declare const preferenciasUsuario: PollContent;
+export declare const mensagemBoasVindas = "\uD83D\uDC4B Ol\u00E1, representante!\n\nBem-vindo ao *Assistente Maza*. Estou aqui para ajud\u00E1-lo a encontrar cat\u00E1logos, embalagens e v\u00EDdeos de treinamento.";
+export declare const menuPrincipal = "\uD83D\uDCCB *Menu Principal*\n\nEnvie o *n\u00FAmero* da op\u00E7\u00E3o desejada:\n\n1\uFE0F\u20E3 Embalagens\n2\uFE0F\u20E3 Cat\u00E1logos Digitais\n3\uFE0F\u20E3 V\u00EDdeos de Treinamento\n\n_Digite \"menu\" a qualquer momento para voltar aqui._";
 //# sourceMappingURL=listTemplates.d.ts.map
