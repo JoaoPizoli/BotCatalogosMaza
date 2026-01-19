@@ -97,9 +97,15 @@ export async function startBot() {
 
     const socket = makeWASocket({
         auth: state,
-        logger: P({ level: 'warn' }),
-        browser: Browsers.macOS('Desktop'),
+        logger: P({ level: 'silent' }),
+        browser: Browsers.ubuntu('Chrome'),
         syncFullHistory: false,
+        defaultQueryTimeoutMs: 60000,
+        connectTimeoutMs: 60000,
+        keepAliveIntervalMs: 30000,
+        markOnlineOnConnect: true,
+        retryRequestDelayMs: 500,
+        maxMsgRetryCount: 5,
     });
 
     sock = socket;
@@ -112,33 +118,66 @@ export async function startBot() {
     });
 
     // Evento de conexão
+    let retryCount = 0;
+    const MAX_RETRIES = 5;
+
     socket.ev.on('connection.update', async (update) => {
         const { connection, lastDisconnect, qr } = update;
 
+        console.log(`[Conexão] Status: ${connection || 'unknown'}`);
+
         if (qr) {
+            console.log('\n='.repeat(50));
+            console.log('🔐 QR CODE GERADO! Escaneie com WhatsApp:');
+            console.log('='.repeat(50));
             const qrTerm = await QRCode.toString(qr, { type: 'terminal', small: true });
-            console.clear();
-            console.log('Escaneie este QR no WhatsApp > Aparelhos conectados:');
             console.log(qrTerm);
+            console.log('='.repeat(50));
+            console.log('📱 Abra WhatsApp > Aparelhos Conectados > Escanear QR');
+            console.log('='.repeat(50) + '\n');
+            retryCount = 0; // Reset contador quando gerar QR
         }
 
         if (connection === 'close') {
             const statusCode = (lastDisconnect?.error as Boom | undefined)?.output?.statusCode;
+            const errorMsg = lastDisconnect?.error?.message;
 
-            console.log(`[Conexão] Fechada com código: ${statusCode}`);
+            console.log(`[Conexão] Fechada - Código: ${statusCode} | Mensagem: ${errorMsg}`);
 
-            // Reconecta automaticamente, exceto se for logout
-            if (statusCode !== DisconnectReason.loggedOut) {
+            if (statusCode === DisconnectReason.loggedOut) {
+                console.error('\n❌ Deslogado do WhatsApp!');
+                console.error('Execute: rm -rf auth/ && npm start\n');
+                process.exit(1);
+            }
+            
+            // Erro 408 = timeout
+            if (statusCode === 408) {
+                retryCount++;
+                
+                if (retryCount >= MAX_RETRIES) {
+                    console.error('\n❌ ERRO 408: Timeout persistente após múltiplas tentativas!');
+                    console.error('\nPossíveis causas:');
+                    console.error('1. Sessão antiga corrompida → Execute: rm -rf auth/');
+                    console.error('2. Firewall bloqueando → Verifique portas 443/80');
+                    console.error('3. Problema de rede → Teste: ping web.whatsapp.com');
+                    console.error('4. QR não escaneado → Aguarde o QR aparecer e escaneie\n');
+                    process.exit(1);
+                }
+                
+                console.log(`[Conexão] Tentativa ${retryCount}/${MAX_RETRIES} - Reconectando em 5 segundos...`);
+                setTimeout(() => startBot(), 5000);
+            }
+            // Outros erros
+            else if (statusCode !== DisconnectReason.loggedOut) {
                 console.log('[Conexão] Reconectando em 3 segundos...');
-                setTimeout(() => {
-                    startBot();
-                }, 3000);
-            } else {
-                console.error('[Conexão] Deslogado do WhatsApp. Delete a pasta /auth e reinicie para escanear novo QR.');
+                setTimeout(() => startBot(), 3000);
             }
         } else if (connection === 'open') {
-            console.log('✅ Conectado ao WhatsApp!');
+            console.log('\n✅ CONECTADO AO WHATSAPP COM SUCESSO!\n');
+            retryCount = 0;
             setupMessageHandler(socket);
+        } else if (connection === 'connecting') {
+            console.log('[Conexão] Conectando ao WhatsApp...');
         }
     });
 }
