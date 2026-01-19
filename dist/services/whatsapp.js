@@ -42,6 +42,8 @@ const pino_1 = __importDefault(require("pino"));
 const qrcode_1 = __importDefault(require("qrcode"));
 const node_path_1 = __importDefault(require("node:path"));
 const node_fs_1 = __importDefault(require("node:fs"));
+const socks_proxy_agent_1 = require("socks-proxy-agent");
+const https_proxy_agent_1 = require("https-proxy-agent");
 const agenteCatalogo_1 = require("../agents/agenteCatalogo");
 const agenteEmbalagem_1 = require("../agents/agenteEmbalagem");
 const agenteVideos_1 = require("../agents/agenteVideos");
@@ -88,44 +90,87 @@ function isTranscriptionUnclear(text) {
     return false;
 }
 async function startBot() {
-    console.log("Iniciando bot com nova configuração...");
-    const { state, saveCreds } = await (0, baileys_1.useMultiFileAuthState)('./auth');
+    console.log("Iniciando bot...");
+    const fs = await Promise.resolve().then(() => __importStar(require('node:fs')));
+    const authPath = './auth';
+    const hasAuth = fs.existsSync(authPath) && fs.readdirSync(authPath).length > 0;
+    console.log(`[Auth] Sessão existente: ${hasAuth ? 'SIM' : 'NÃO (vai gerar QR)'}`);
+    const { state, saveCreds } = await (0, baileys_1.useMultiFileAuthState)(authPath);
+    console.log('[Socket] Criando conexão...');
+    let agent;
+    const proxyUrl = process.env.WHATSAPP_PROXY;
+    if (proxyUrl) {
+        console.log(`[Proxy] Usando proxy: ${proxyUrl.replace(/:[^:@]+@/, ':****@')}`);
+        if (proxyUrl.startsWith('socks')) {
+            agent = new socks_proxy_agent_1.SocksProxyAgent(proxyUrl);
+        }
+        else {
+            agent = new https_proxy_agent_1.HttpsProxyAgent(proxyUrl);
+        }
+    }
     const socket = (0, baileys_1.default)({
         auth: state,
-        printQRInTerminal: false,
         logger: (0, pino_1.default)({ level: 'warn' }),
-        browser: baileys_1.Browsers.macOS('Desktop'),
+        browser: ['Bot Maza', 'Chrome', '120.0.0'],
         syncFullHistory: false,
+        defaultQueryTimeoutMs: 60000,
+        connectTimeoutMs: 60000,
+        keepAliveIntervalMs: 10000,
+        markOnlineOnConnect: false,
+        agent,
     });
+    console.log('[Socket] Conexão criada, aguardando eventos...');
     sock = socket;
     socket.ev.on('creds.update', saveCreds);
     (0, sessionManager_1.setOnSessionExpired)(async (jid) => {
         await sendTextMessage(jid, '⏱️ Sessão encerrada por inatividade. Envie uma mensagem para recomeçar.');
     });
+    let retryCount = 0;
+    const MAX_RETRIES = 10;
     socket.ev.on('connection.update', async (update) => {
         const { connection, lastDisconnect, qr } = update;
         if (qr) {
+            retryCount = 0;
+            console.log('\n' + '='.repeat(50));
+            console.log('📱 QR CODE - Escaneie com WhatsApp:');
+            console.log('='.repeat(50));
             const qrTerm = await qrcode_1.default.toString(qr, { type: 'terminal', small: true });
-            console.clear();
-            console.log('Escaneie este QR no WhatsApp > Aparelhos conectados:');
             console.log(qrTerm);
+            console.log('='.repeat(50));
+            console.log('Abra WhatsApp > Aparelhos Conectados > Conectar');
+            console.log('='.repeat(50) + '\n');
         }
         if (connection === 'close') {
             const statusCode = lastDisconnect?.error?.output?.statusCode;
-            console.log(`[Conexão] Fechada com código: ${statusCode}`);
-            if (statusCode !== baileys_1.DisconnectReason.loggedOut) {
-                console.log('[Conexão] Reconectando em 3 segundos...');
-                setTimeout(() => {
-                    startBot();
-                }, 3000);
+            console.log(`[Conexão] Fechada - Código: ${statusCode}`);
+            if (statusCode === baileys_1.DisconnectReason.loggedOut) {
+                console.error('\n❌ Sessão encerrada. Delete a pasta auth/ e reinicie.\n');
+                process.exit(1);
             }
-            else {
-                console.error('[Conexão] Deslogado do WhatsApp. Delete a pasta /auth e reinicie para escanear novo QR.');
+            if (statusCode === 408 || statusCode === 503 || statusCode === 515) {
+                retryCount++;
+                if (retryCount > MAX_RETRIES) {
+                    console.error('\n❌ Muitas tentativas falhas. Verifique:');
+                    console.error('1. Conexão de internet');
+                    console.error('2. Delete a pasta auth/ e tente novamente');
+                    console.error('3. Firewall pode estar bloqueando\n');
+                    process.exit(1);
+                }
+                const delay = Math.min(retryCount * 2000, 10000);
+                console.log(`[Conexão] Tentativa ${retryCount}/${MAX_RETRIES} - Aguardando ${delay / 1000}s...`);
+                setTimeout(() => startBot(), delay);
+                return;
             }
+            console.log('[Conexão] Reconectando em 3s...');
+            setTimeout(() => startBot(), 3000);
         }
         else if (connection === 'open') {
-            console.log('✅ Conectado ao WhatsApp!');
+            console.log('\n✅ CONECTADO AO WHATSAPP!\n');
+            retryCount = 0;
             setupMessageHandler(socket);
+        }
+        else if (connection === 'connecting') {
+            console.log('[Conexão] Conectando...');
         }
     });
 }

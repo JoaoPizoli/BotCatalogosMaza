@@ -4,6 +4,8 @@ import QRCode from 'qrcode';
 import { Boom } from '@hapi/boom';
 import path from 'node:path';
 import fs from 'node:fs';
+import { SocksProxyAgent } from 'socks-proxy-agent';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 
 // Agentes
 import { agenteCatalogo } from '../agents/agenteCatalogo';
@@ -32,6 +34,24 @@ import { checkMessage } from '../agents/guardrails';
 import { isAudioMessage, processAudioMessage } from './audioTranscription';
 
 let sock: ReturnType<typeof makeWASocket> | undefined;
+
+// Helper para mostrar nome do código de desconexão
+function getDisconnectReasonName(code: number | undefined): string {
+    if (!code) return 'unknown';
+    const reasons: Record<number, string> = {
+        [DisconnectReason.badSession]: 'badSession',
+        [DisconnectReason.connectionClosed]: 'connectionClosed',
+        [DisconnectReason.connectionLost]: 'connectionLost',
+        [DisconnectReason.connectionReplaced]: 'connectionReplaced',
+        [DisconnectReason.loggedOut]: 'loggedOut',
+        [DisconnectReason.restartRequired]: 'restartRequired',
+        [DisconnectReason.timedOut]: 'timedOut',
+        408: 'timeout (408)',
+        503: 'serviceUnavailable (503)',
+        515: 'streamError (515)',
+    };
+    return reasons[code] || `code_${code}`;
+}
 
 // Mapeamento de números para tipo de agente
 const NUMBER_TO_AGENT: Record<string, AgentType> = {
@@ -104,17 +124,37 @@ export async function startBot() {
 
     console.log('[Socket] Criando conexão...');
     
+    // Configuração de proxy (para contornar bloqueio de IPs de datacenter)
+    // Suporta SOCKS5: socks5://user:pass@host:port
+    // Suporta HTTPS:  http://user:pass@host:port
+    let agent: SocksProxyAgent | HttpsProxyAgent<string> | undefined;
+    const proxyUrl = process.env.WHATSAPP_PROXY;
+    
+    if (proxyUrl) {
+        console.log(`[Proxy] Usando proxy: ${proxyUrl.replace(/:[^:@]+@/, ':****@')}`);
+        if (proxyUrl.startsWith('socks')) {
+            agent = new SocksProxyAgent(proxyUrl);
+        } else {
+            agent = new HttpsProxyAgent(proxyUrl);
+        }
+    }
+
+    // Número de telefone para Pairing Code (alternativa ao QR)
+    // Formato: apenas números, sem +, ex: 5519999999999
+    const pairingPhoneNumber = process.env.WHATSAPP_PAIRING_PHONE;
+    
     const socket = makeWASocket({
         auth: state,
-        logger: P({ level: 'debug' }),  // Debug para ver o que está acontecendo
-        browser: ['Ubuntu', 'Chrome', '122.0.0'],
+        logger: P({ level: 'warn' }),
+        browser: pairingPhoneNumber 
+            ? ['Chrome (Linux)', 'Chrome', '120.0.0']  // Para pairing code, precisa parecer navegador real
+            : ['Bot Maza', 'Chrome', '120.0.0'],
         syncFullHistory: false,
-        defaultQueryTimeoutMs: 120000,
-        connectTimeoutMs: 120000,
-        keepAliveIntervalMs: 30000,
+        defaultQueryTimeoutMs: 60000,
+        connectTimeoutMs: 60000,
+        keepAliveIntervalMs: 10000,
         markOnlineOnConnect: false,
-        retryRequestDelayMs: 500,
-        qrTimeout: 60000,  // 60 segundos para escanear QR
+        agent,  // Proxy agent (undefined se não configurado)
     });
 
     console.log('[Socket] Conexão criada, aguardando eventos...');
@@ -152,23 +192,46 @@ export async function startBot() {
         if (connection === 'close') {
             const statusCode = (lastDisconnect?.error as Boom | undefined)?.output?.statusCode;
 
-            console.log(`[Conexão] Fechada - Código: ${statusCode}`);
+            console.log(`[Conexão] Fechada - Código: ${statusCode} (${getDisconnectReasonName(statusCode)})`);
 
             // Logout - precisa reautenticar
             if (statusCode === DisconnectReason.loggedOut) {
                 console.error('\n❌ Sessão encerrada. Delete a pasta auth/ e reinicie.\n');
                 process.exit(1);
             }
+
+            // Restart Required - comportamento NORMAL após escanear QR
+            // O WhatsApp força desconexão para reconectar com credenciais
+            if (statusCode === DisconnectReason.restartRequired) {
+                console.log('[Conexão] Restart necessário (normal após QR scan), reconectando...');
+                startBot();
+                return;
+            }
+
+            // Connection Closed - pode ser temporário, reconecta imediatamente
+            if (statusCode === DisconnectReason.connectionClosed) {
+                console.log('[Conexão] Conexão fechada, reconectando...');
+                startBot();
+                return;
+            }
+
+            // Connection Lost - perda de conexão, reconecta
+            if (statusCode === DisconnectReason.connectionLost) {
+                console.log('[Conexão] Conexão perdida, reconectando...');
+                startBot();
+                return;
+            }
             
-            // Timeout (408) ou outros erros de conexão
+            // Timeout (408) ou outros erros de conexão - pode ser bloqueio de IP
             if (statusCode === 408 || statusCode === 503 || statusCode === 515) {
                 retryCount++;
                 
                 if (retryCount > MAX_RETRIES) {
-                    console.error('\n❌ Muitas tentativas falhas. Verifique:');
-                    console.error('1. Conexão de internet');
-                    console.error('2. Delete a pasta auth/ e tente novamente');
-                    console.error('3. Firewall pode estar bloqueando\n');
+                    console.error('\n❌ Muitas tentativas falhas. Possíveis causas:');
+                    console.error('1. IP do servidor pode estar bloqueado pelo WhatsApp');
+                    console.error('2. Conexão de internet instável');
+                    console.error('3. Configure WHATSAPP_PROXY no .env para usar um proxy');
+                    console.error('4. Delete a pasta auth/ e tente novamente\n');
                     process.exit(1);
                 }
                 
