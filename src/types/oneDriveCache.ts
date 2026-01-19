@@ -1,4 +1,3 @@
-/** Entrada de arquivo no cache */
 export interface CacheEntry {
     itemId: string;
     driveId: string;
@@ -7,11 +6,11 @@ export interface CacheEntry {
     size?: number;
     eTag?: string;
     cachedAt: string;
-    folderId?: string;   // ID da pasta pai
-    folderName?: string; // Nome da pasta pai
+    folderId?: string;   
+    folderName?: string; 
 }
 
-/** Informação de uma pasta */
+
 export interface FolderInfo {
     id: string;
     name: string;
@@ -19,7 +18,7 @@ export interface FolderInfo {
     eTag?: string;
 }
 
-/** Informação de um arquivo */
+
 export interface FileInfo {
     id: string;
     name: string;

@@ -1,10 +1,9 @@
-import { DriveItem } from "../../types/oneDrive";
 import { listChildrenByItemId, getSiteIdFromPersonalPath, getDriveIdFromSite, getItemByPath } from "./oneDriveService";
-import { updateFolders, updateFilesIndex, listFolders, listFilesInFolder, findFolder, getFile, clearCache } from "../../cache/fileCache";
+import { getFile, clearCache } from "../../cache/fileCache";
 import { FolderInfo, FileInfo } from "../../types/oneDriveCache";
 import { oneDriveConfig, RootFolder } from "../../config/config";
 
-// Re-exporta tipos para uso externo
+
 export type { FolderInfo, FileInfo };
 
 let initialized = false;
@@ -18,7 +17,6 @@ export async function init(): Promise<void> {
 
     console.log("[OneDrive] Inicializando...");
 
-    // Obtém siteId e driveId
     const siteId = await getSiteIdFromPersonalPath(
         oneDriveConfig.siteHostname,
         oneDriveConfig.personalPath
@@ -64,21 +62,6 @@ export async function getSubfolders(rootFolderName: string): Promise<string[]> {
     }
 
     const items = await listChildrenByItemId(oneDriveConfig.driveId, root.id);
-    const folders = items.filter((i) => i.folder);
-
-    return folders.map((f) => f.name);
-}
-
-/**
- * Lista subpastas dentro de uma subpasta (navegação profunda).
- */
-export async function getNestedSubfolders(
-    rootFolderName: string,
-    subfolderPath: string
-): Promise<string[]> {
-    const folderId = await resolveFolderPath(rootFolderName, subfolderPath);
-
-    const items = await listChildrenByItemId(oneDriveConfig.driveId, folderId);
     const folders = items.filter((i) => i.folder);
 
     return folders.map((f) => f.name);
@@ -153,9 +136,7 @@ export async function listContents(
     };
 }
 
-// ============================================================================
-// FUNÇÕES AUXILIARES
-// ============================================================================
+
 
 function findRootFolder(name: string): RootFolder | undefined {
     const term = name.toLowerCase();
@@ -174,7 +155,6 @@ async function resolveFolderPath(rootFolderName: string, subfolderPath: string):
         throw new Error(`Pasta mãe não encontrada: ${rootFolderName}`);
     }
 
-    // Navega pelo caminho
     const parts = subfolderPath.split("/").filter(Boolean);
     let currentId = root.id;
 
@@ -192,13 +172,4 @@ async function resolveFolderPath(rootFolderName: string, subfolderPath: string):
     }
 
     return currentId;
-}
-
-/**
- * Sincroniza cache (limpa e recarrega IDs das pastas raiz).
- */
-export async function sync(): Promise<void> {
-    initialized = false;
-    await clearCache();
-    await init();
 }

@@ -118,7 +118,8 @@ export const downloadFileTool = tool({
             const localPath = await downloadFile(rootFolder, subfolderPath, fileName);
 
             // Retorna o caminho local marcado para o handler processar
-            return `__FILE_READY__:${localPath}:${fileName}`;
+            // Usa ||| como delimitador para evitar conflito com C: do Windows
+            return `__FILE_READY__|||${localPath}|||${fileName}`;
         } catch (error: any) {
             return `Erro ao baixar arquivo: ${error.message}`;
         }

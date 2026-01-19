@@ -8,8 +8,10 @@ exports.addMessage = addMessage;
 exports.refreshTimeout = refreshTimeout;
 exports.clearSession = clearSession;
 exports.runAgentWithContext = runAgentWithContext;
-exports.getSessionStats = getSessionStats;
 const agents_1 = require("@openai/agents");
+const concurrency_1 = require("../utils/concurrency");
+const retry_1 = require("../utils/retry");
+const structureCache_1 = require("../cache/structureCache");
 const SESSION_TIMEOUT_MS = 5 * 60 * 1000;
 const sessions = new Map();
 let onSessionExpiredCallback = null;
@@ -81,35 +83,33 @@ async function runAgentWithContext(jid, agent, userMessage) {
     addMessage(jid, 'user', userMessage);
     const recentHistory = session.messages.slice(-10);
     const contextParts = recentHistory.slice(0, -1).map(m => `${m.role === 'user' ? 'Usuário' : 'Assistente'}: ${m.content}`);
-    const input = contextParts.length > 0
-        ? `[Histórico recente]\n${contextParts.join('\n')}\n\n[Mensagem atual]\nUsuário: ${userMessage}`
-        : userMessage;
-    const result = await (0, agents_1.run)(agent, input);
+    let structureContext = '';
+    if (session.agentType && (0, structureCache_1.isStructureCacheReady)()) {
+        const structure = (0, structureCache_1.getStructureForAgent)(session.agentType);
+        if (structure) {
+            structureContext = `\n[ESTRUTURA DE PASTAS DISPONÍVEIS]\n${structure}\n`;
+        }
+    }
+    let input = '';
+    if (structureContext) {
+        input += structureContext + '\n';
+    }
+    if (contextParts.length > 0) {
+        input += `[Histórico recente]\n${contextParts.join('\n')}\n\n`;
+    }
+    input += `[Mensagem atual]\nUsuário: ${userMessage}`;
+    const result = await concurrency_1.openAISemaphore.run(() => (0, retry_1.withRetry)(() => (0, agents_1.run)(agent, input, { maxTurns: 25 }), {
+        maxRetries: 2,
+        baseDelayMs: 2000,
+        onRetry: (err, attempt) => {
+            console.log(`[Agent] Retry ${attempt} para ${jid}: ${err.message}`);
+        }
+    }));
     const response = typeof result.finalOutput === 'string'
         ? result.finalOutput
         : JSON.stringify(result.finalOutput);
     addMessage(jid, 'assistant', response);
     refreshTimeout(jid);
     return response;
-}
-function getSessionStats() {
-    const byAgent = {
-        catalogo: 0,
-        embalagem: 0,
-        videos: 0,
-        none: 0,
-    };
-    for (const session of sessions.values()) {
-        if (session.agentType) {
-            byAgent[session.agentType]++;
-        }
-        else {
-            byAgent['none']++;
-        }
-    }
-    return {
-        total: sessions.size,
-        byAgent,
-    };
 }
 //# sourceMappingURL=sessionManager.js.map

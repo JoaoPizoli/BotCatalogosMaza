@@ -82,7 +82,7 @@ exports.downloadFileTool = (0, agents_1.tool)({
         await ensureInitialized();
         try {
             const localPath = await (0, oneDriveIndexer_1.downloadFile)(rootFolder, subfolderPath, fileName);
-            return `__FILE_READY__:${localPath}:${fileName}`;
+            return `__FILE_READY__|||${localPath}|||${fileName}`;
         }
         catch (error) {
             return `Erro ao baixar arquivo: ${error.message}`;

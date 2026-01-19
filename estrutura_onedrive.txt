@@ -1,0 +1,1465 @@
+================================================================================
+ESTRUTURA COMPLETA DO ONEDRIVE - MAZA
+================================================================================
+
+
+============================================================
+PASTA RAIZ: EMBALAGENS
+============================================================
+[PASTA] CORANTES LÍQUIDOS MAZA
+  [ARQUIVO] corante frasco 50ml amarelo.png
+  [ARQUIVO] corante frasco 50ml azul.png
+  [ARQUIVO] corante frasco 50ml branco.png
+  [ARQUIVO] corante frasco 50ml laranja.png
+  [ARQUIVO] corante frasco 50ml marrom.png
+  [ARQUIVO] corante frasco 50ml ocre.png
+  [ARQUIVO] corante frasco 50ml preto.png
+  [ARQUIVO] corante frasco 50ml verde.png
+  [ARQUIVO] corante frasco 50ml vermelho.png
+  [ARQUIVO] corante frasco 50ml violeta.png
+[PASTA] da MAZA - PRODUTOS LIMPEZA
+  [PASTA] ACENDEDOR EM GEL CHURRASCO
+    [ARQUIVO] álcool gel acendedor 500g.png
+  [PASTA] ÁGUA SANITÁRIA
+    [ARQUIVO] água sanitária 1 litro.png
+    [ARQUIVO] água sanitária 2 litros.png
+    [ARQUIVO] água sanitária 5 litros.png
+  [PASTA] ÁLCOOL 46,2 INPM (GEL)
+    [ARQUIVO] álcool gel 46,2 citronela 500g.png
+    [ARQUIVO] álcool gel 46,2 eucalipto 500g.png
+    [ARQUIVO] álcool gel 46,2 floral 500g.png
+    [ARQUIVO] álcool gel 46,2 lavanda 500g.png
+    [ARQUIVO] álcool gel 46,2 tradicional 500g.png
+  [PASTA] ÁLCOOL 46,2° INPM (LÍQUIDO)
+    [ARQUIVO] álcool líquido 46,2 500ml.png
+    [ARQUIVO] álcool líquido 46,2 citronelal 1L.png
+    [ARQUIVO] álcool líquido 46,2 eucalipto 1L.png
+    [ARQUIVO] álcool líquido 46,2 floral 1L.png
+    [ARQUIVO] álcool líquido 46,2 lavanda 1L.png
+    [ARQUIVO] álcool líquido 46,2 tradicional 1L.png
+  [PASTA] ÁLCOOL 70 INPM (LÍQUIDO)
+    [ARQUIVO] álcool gel 70 4,35Kg.png
+    [ARQUIVO] álcool gel 70 500g.png
+    [ARQUIVO] álcool líquido 70 1L.png
+  [PASTA] ÁLCOOL 92,8 INPM
+    [ARQUIVO] álcool líquido 92,8 1L.png
+    [ARQUIVO] álcool líquido 92,8 500ml.png
+    [ARQUIVO] álcool líquido 92,8 5L.png
+  [PASTA] ALVEJANTE SEM CLORO
+    [ARQUIVO] alvejante sem cloro 1 litro.png
+    [ARQUIVO] alvejante sem cloro 2 litros.png
+    [ARQUIVO] alvejante sem cloro 5 litros.png
+  [PASTA] AMACIANTE
+    [PASTA] 1 LITRO
+      [ARQUIVO] Amaciante 1L - Toque de Aconchego.png
+      [ARQUIVO] Amaciante 1L - Toque de Primavera.png
+      [ARQUIVO] Amaciante 1L - Toque de Ternura.png
+      [ARQUIVO] Amaciante 1L - Toque Delicado.png
+    [PASTA] 2 LITROS
+      [ARQUIVO] Amaciante  2litros Aconchego 2.png
+      [ARQUIVO] Amaciante  2litros Delicado 2.png
+      [ARQUIVO] Amaciante  2litros Primavera 2.png
+      [ARQUIVO] Amaciante  2litros Ternura 2.png
+    [PASTA] 5 LITROS
+      [ARQUIVO] Amaciante 5L - Toque de Aconchego.png
+      [ARQUIVO] Amaciante 5L - Toque de Primavera.png
+      [ARQUIVO] Amaciante 5L - Toque de Ternura.png
+      [ARQUIVO] Amaciante 5L - Toque Delicado.png
+  [PASTA] CLORO GEL
+    [ARQUIVO] Cloro_Gel_2 litros .png
+  [PASTA] DESINFETANTE
+    [PASTA] 1 LITRO
+      [ARQUIVO] Desinfetante 1L _ BRISA.png
+      [ARQUIVO] Desinfetante 1L _ EUCALIPTO.png
+      [ARQUIVO] Desinfetante 1L _ FLOR DE JASMIM.png
+      [ARQUIVO] Desinfetante 1L _ FLORAL.png
+      [ARQUIVO] Desinfetante 1L _ LAVANDA.png
+      [ARQUIVO] Desinfetante 1L _ PINHO.png
+    [PASTA] 2 LITROS
+      [ARQUIVO] Desinfetante 2L _ BRISA.png
+      [ARQUIVO] Desinfetante 2L _ EUCALIPTO.png
+      [ARQUIVO] Desinfetante 2L _ FLOR DE JASMIM.png
+      [ARQUIVO] Desinfetante 2L _ FLORAL.png
+      [ARQUIVO] Desinfetante 2L _ LAVANDA.png
+      [ARQUIVO] Desinfetante 2L _ PINHO.png
+    [PASTA] 5 LITROS
+      [ARQUIVO] Desinfetante 5L _ BRISA.png
+      [ARQUIVO] Desinfetante 5L _ EUCALIPTO.png
+      [ARQUIVO] Desinfetante 5L _ FLOR DE JASMIM.png
+      [ARQUIVO] Desinfetante 5L _ FLORAL.png
+      [ARQUIVO] Desinfetante 5L _ LAVANDA.png
+      [ARQUIVO] Desinfetante 5L _ PINHO.png
+  [PASTA] LAVA LOUÇAS - DETERGENTE
+    [ARQUIVO] Lava-Louças 500ml _ CLEAR.png
+    [ARQUIVO] Lava-Louças 500ml _ COCO.png
+    [ARQUIVO] Lava-Louças 500ml _ LIMÃO.png
+    [ARQUIVO] Lava-Louças 500ml _ MAÇÃ.png
+    [ARQUIVO] Lava-Louças 500ml _ NEUTRO.png
+    [ARQUIVO] Lava-Louças 5L  _ CLEAR.png
+    [ARQUIVO] Lava-Louças 5L  _ COCO.png
+    [ARQUIVO] Lava-Louças 5L  _ LIMÃO.png
+    [ARQUIVO] Lava-Louças 5L  _ MAÇÃ.png
+    [ARQUIVO] Lava-Louças 5L  _ NEUTRO.png
+  [PASTA] LIMPA ALUMÍNIO
+    [ARQUIVO] Limpa Alumínio 500ml.png
+  [PASTA] LIMPA PEDRAS
+    [ARQUIVO] 1 LITRO.png
+    [ARQUIVO] 2 LITROS.png
+    [ARQUIVO] 5 LITROS.png
+  [PASTA] LIMPA VIDROS
+    [ARQUIVO] Limpa Vidro 500ml.png
+  [PASTA] QUEROSENE
+    [PASTA] 1 LITRO
+      [ARQUIVO] Querosene 1L _ EUCALIPTO.png
+      [ARQUIVO] Querosene 1L _ FLORAL.png
+      [ARQUIVO] Querosene 1L _ JASMIM.png
+      [ARQUIVO] Querosene 1L _ LAVANDA.png
+      [ARQUIVO] Querosene 1L _ PINHO.png
+      [ARQUIVO] Querosene 1L _ TRADICIONAL.png
+    [PASTA] 500ml
+      [ARQUIVO] Querosene 500ml _ EUCALIPTO.png
+      [ARQUIVO] Querosene 500ml _ FLORAL.png
+      [ARQUIVO] Querosene 500ml _ JASMIM.png
+      [ARQUIVO] Querosene 500ml _ LAVANDA.png
+      [ARQUIVO] Querosene 500ml _ PINHO.png
+      [ARQUIVO] Querosene 500ml _ TRADICIONAL.png
+  [PASTA] REMOVEDOR
+    [PASTA] 1 LITRO
+      [ARQUIVO] Removedor 1L _ EUCALIPTO.png
+      [ARQUIVO] Removedor 1L _ FLORAL.png
+      [ARQUIVO] Removedor 1L _ JASMIM.png
+      [ARQUIVO] Removedor 1L _ LAVANDA.png
+      [ARQUIVO] Removedor 1L _ PINHO.png
+      [ARQUIVO] Removedor 1L _ TRADICIONAL.png
+    [PASTA] 500ml
+      [ARQUIVO] Removedor 500ml _ EUCALIPTO.png
+      [ARQUIVO] Removedor 500ml _ FLORAL.png
+      [ARQUIVO] Removedor 500ml _ JASMIM.png
+      [ARQUIVO] Removedor 500ml _ LAVANDA.png
+      [ARQUIVO] Removedor 500ml _ PINHO.png
+      [ARQUIVO] Removedor 500ml _ TRADICIONAL.png
+[PASTA] LINHA AUTOMOTIVA MAZA
+  [ARQUIVO] Adesivo Light Marmita_200g 3.png
+  [ARQUIVO] adesivo MazaFX 1Kg.png
+  [ARQUIVO] adesivo poliéster 750g 3.png
+  [ARQUIVO] adesivo poliéster 750g 4 (1).png
+  [ARQUIVO] adesivo poliéster 750g 4.png
+  [ARQUIVO] caixa reparador plástico.png
+  [ARQUIVO] cera tradicional 200g 3.png
+  [ARQUIVO] cera tradicional 200g 4.png
+  [ARQUIVO] massa pequenos reparos 180g.png
+  [ARQUIVO] mazadur poliéster 3,6L 3.png
+  [ARQUIVO] Mazadur Poliéster 900ml 3.png
+  [ARQUIVO] MAzadur PU 900ml 4.png
+  [ARQUIVO] mazadur PU 900ml óleo 4.png
+  [ARQUIVO] Mazadur PU galão 3,6L 4.png
+  [ARQUIVO] Mazadur PU lata 150ml 4.png
+  [ARQUIVO] Mazadur PU lata 5l 4.png
+  [ARQUIVO] Mazadur PU Turbo 900ml.png
+  [ARQUIVO] mazadur PU turbo lata 150ml (1).png
+  [ARQUIVO] mazadur PU turbo lata 150ml.png
+  [ARQUIVO] Mazalac 900ml.png
+  [ARQUIVO] Mazalac galão 3,6L 3.png
+  [ARQUIVO] Mazalux galão 3,6L 3.png
+  [ARQUIVO] Mazalux galão 900ml.png
+  [ARQUIVO] Mazamax 900ml.png
+  [ARQUIVO] Mazamax galão 3,6L 3.png
+  [ARQUIVO] Mazamix galão 3,6L 3.png
+  [ARQUIVO] Mazamix galão 900ml 3.png
+  [ARQUIVO] Mazamix galão 900ml.png
+  [ARQUIVO] reparador plásticos A 180g.png
+  [ARQUIVO] reparador plásticos B 180g.png
+[PASTA] LINHA IMOBILIÁRIA MAZA
+  [ARQUIVO] Acrílico Extra 3,6L.png
+  [ARQUIVO] acrílico extra lata 18 litros.png
+  [ARQUIVO] acrílico litoral e campo 18 litros quadrada 1.png
+  [ARQUIVO] acrílico litoral e campo galão 3,6L 3.png
+  [ARQUIVO] Acrílico Plus 18 litros.png
+  [ARQUIVO] acrílico plus semi brilho balde 18 litros.png
+  [ARQUIVO] Acrílico Premium 900ml.png
+  [ARQUIVO] acrílico profissional balde 3,6L.png
+  [ARQUIVO] acrílico ultra 18 litros quadrada.png
+  [ARQUIVO] Acrílico Ultra 3,6L.png
+  [ARQUIVO] Acrilico_Premium_18L.png
+  [ARQUIVO] adesivo de contato 900ml.png
+  [ARQUIVO] adesivo de contato galão 3,6L.png
+  [ARQUIVO] cimento perolizado 2,2  litros.png
+  [ARQUIVO] Cimento Queimado 3,6 litros.png
+  [ARQUIVO] Cimento Queimado 3x1 3,6 litros.png
+  [ARQUIVO] complementos e texturas 3,6L (1).png
+  [ARQUIVO] complementos saco 15Kg.png
+  [ARQUIVO] Direto Ferrugem 3,6L 4.png
+  [ARQUIVO] Direto Ferrugem 900ml 4.png
+  [ARQUIVO] esmalte sintético 3,6L 2.png
+  [ARQUIVO] esmalte sintético 900ml 1.png
+  [ARQUIVO] Esmaltes Primers 3,6L.png
+  [ARQUIVO] Esmaltes Primers 900ml.png
+  [ARQUIVO] ferromack 3,6L.png
+  [ARQUIVO] Gesso&Drywall 18 litros quadrada.png
+  [ARQUIVO] kit piscina 01.png
+  [ARQUIVO] kit piscina 02.png
+  [ARQUIVO] Kit Piscina caixa 2.png
+  [ARQUIVO] Massa Corrida 16 litros quadrada.png
+  [ARQUIVO] Massa Tapa Fácil pote 1L.png
+  [ARQUIVO] Maza Complementos 18 litros quadrada 1.png
+  [ARQUIVO] Maza Texturas e Complementos balde 1 litro.png
+  [ARQUIVO] mazacorten 900ml.png
+  [ARQUIVO] mazapiso 18 litros quadrada.png
+  [ARQUIVO] mazapiso 3,6L 01.png
+  [ARQUIVO] mazapiso 3,6L.png
+  [ARQUIVO] MAzathermic 16 litros.png
+  [ARQUIVO] Piscinas Esmalte PU 900ml óleo.png
+  [ARQUIVO] Piscinas Esmalte PU galão 3,6L.png
+  [ARQUIVO] resina acrílica lata 5l.png
+  [ARQUIVO] Resina Acrílica Silicone 18 litros.png
+  [ARQUIVO] Selador Acrílico lata 18 litros quadrada.png
+  [ARQUIVO] seladora concentrada 900ml.png
+  [ARQUIVO] seladora concentrada galão 3,6L.png
+  [ARQUIVO] Tinta Graphite lata 18 litros.png
+  [ARQUIVO] Tintas e Complementos 900ml 6.png
+  [ARQUIVO] tintas especiais Bio 3,6.png
+  [ARQUIVO] tintas especiais Bio 900ml.png
+  [ARQUIVO] verniz deck 3,6L 001.png
+  [ARQUIVO] verniz marítimo 3,6L 1.png
+  [ARQUIVO] verniz stain 3,6L.png
+[PASTA] LINHA IMPERMEABILIZANTES MAZA
+  [ARQUIVO] acqua block 3,6 litros 5.png
+  [ARQUIVO] Fosfatol 900ml 1.png
+  [ARQUIVO] mazachapisco 18L 1.png
+  [ARQUIVO] mazachapisco 3,6L.png
+  [ARQUIVO] mazachapisco pote 900ml 2.png
+  [ARQUIVO] mazacit 18L 1.png
+  [ARQUIVO] mazacit 3,6L.png
+  [ARQUIVO] mazacit 900ml.png
+  [ARQUIVO] Mazafix 38x10cm 2.png
+  [ARQUIVO] Mazafix 38x10cm.png
+  [ARQUIVO] mazalin 18L 1.png
+  [ARQUIVO] mazalin 3,6L.png
+  [ARQUIVO] mazalin pote 900ml.png
+  [ARQUIVO] mazalit  3,6L.png
+  [ARQUIVO] mazalit 18L 1.png
+  [ARQUIVO] mazalit pote 900ml.png
+  [ARQUIVO] mazamol 18L 1.png
+  [ARQUIVO] mazamol pote 900ml.png
+  [ARQUIVO] mazapoxi comp A 900ml 2.png
+  [ARQUIVO] mazapoxi comp B 450ml 2.png
+  [ARQUIVO] mazapren laje 15L.png
+  [ARQUIVO] mazapren laje 18L 1.png
+  [ARQUIVO] mazapren laje 3,6L.png
+  [ARQUIVO] mazapren parede 18L 1.png
+  [ARQUIVO] mazapren parede 3,6L.png
+  [ARQUIVO] mazatop 18L.png
+  [ARQUIVO] mazatop 3,6L.png
+  [ARQUIVO] mazatop pote 900ml.png
+  [ARQUIVO] mazatrol 18L 3.png
+  [ARQUIVO] mazatrol 3,6L 2.png
+  [ARQUIVO] mazatrol 900ml 2.png
+  [ARQUIVO] superflex galão 3,6L.png
+  [ARQUIVO] Superflex lata 18 litros quadrada (2).png
+[PASTA] LINHA INDUSTRIAL MAZA
+  [ARQUIVO] Demarcação Viária 18L.png
+  [ARQUIVO] Demarcação Viária 3,6L.png
+  [ARQUIVO] Demarcação Viária 900ml.png
+  [ARQUIVO] esmalte sintético automotivo 18 litros quadrada.png
+  [ARQUIVO] esmalte sintético automotivo 3,6L.png
+  [ARQUIVO] esmalte sitético automotivo 900ml.png
+  [ARQUIVO] Esmalte_Industrial_18L.png
+  [ARQUIVO] Esmalte_Industrial_3,6L.png
+  [ARQUIVO] Esmalte_Industrial_900ml.png
+  [ARQUIVO] Kit Industrial 1.png
+  [ARQUIVO] Kit Industrial.png
+  [ARQUIVO] linha industrial 3,6L.png
+  [ARQUIVO] linha industrial 900ml óleo.png
+  [ARQUIVO] Tintas Especiais Alta Performance 18 litros.png
+[PASTA] SOLVENTES MAZA
+  [ARQUIVO] Aguarráz 18 litros.png
+  [ARQUIVO] Aguarráz 450ml(1).png
+  [ARQUIVO] Aguarráz-Querosene  5 litros.png
+  [ARQUIVO] Aguarráz-Querosene 900ml óleo.png
+  [ARQUIVO] Thinner  5 litros.png
+  [ARQUIVO] Thinner 18 litros.png
+  [ARQUIVO] Thinner 450ml(1).png
+  [ARQUIVO] Thinner 900ml óleo.png
+[PASTA] TINTA SPRAY MAZA
+  [ARQUIVO] aluminio alta temp.png
+  [ARQUIVO] alumínio para rodas.png
+  [ARQUIVO] amarelo lumi.png
+  [ARQUIVO] amarelo.png
+  [ARQUIVO] azul claro.png
+  [ARQUIVO] azul del rey.png
+  [ARQUIVO] azul lumi.png
+  [ARQUIVO] azul.png
+  [ARQUIVO] bege brastemp.png
+  [ARQUIVO] branco alta temp.png
+  [ARQUIVO] cinza médio.png
+  [ARQUIVO] cobre.png
+  [ARQUIVO] cromado.png
+  [ARQUIVO] dourado.png
+  [ARQUIVO] fundo branco.png
+  [ARQUIVO] grafite para rodas.png
+  [ARQUIVO] grafite.png
+  [ARQUIVO] laranja Lumi.png
+  [ARQUIVO] laranja.png
+  [ARQUIVO] maravilha lumi.png
+  [ARQUIVO] marrom.png
+  [ARQUIVO] ouro.png
+  [ARQUIVO] prata.png
+  [ARQUIVO] preto fosco alta temp.png
+  [ARQUIVO] rosa star.png
+  [ARQUIVO] rose gold.png
+  [ARQUIVO] roxo premium.png
+  [ARQUIVO] tinta spray 400ml novo 01.png
+  [ARQUIVO] verde colonial.png
+  [ARQUIVO] verde lumi.png
+  [ARQUIVO] verde.png
+  [ARQUIVO] vermelho alta temp.png
+  [ARQUIVO] vermelho II.png
+  [ARQUIVO] vermelho.png
+  [ARQUIVO] verniz acrílico, seladora e primer rápido.png
+  [ARQUIVO] verniz spray 400ml.png
+[PASTA] TINTAS MOCOCA
+  [ARQUIVO] acelerador secagem Mococa 100ml.png
+  [ARQUIVO] barrica Mococa 18 litros 1.png
+  [ARQUIVO] barrica Mococa 18 litros.png
+  [ARQUIVO] betume da judéia Mococa 100ml.png
+  [ARQUIVO] cera de carnaúba Mococa 3,6L 1.png
+  [ARQUIVO] cera de carnaúba Mococa 900ml 1.png
+  [ARQUIVO] cera de carnaúba Mococa 900ml 2.png
+  [ARQUIVO] desengripante Mococa spray 300ml 1.png
+  [ARQUIVO] ELIMINADOR 900ml óleo.png
+  [ARQUIVO] eliminador cupins 18 litros 1.png
+  [ARQUIVO] eliminador cupins 300ml spray 1.png
+  [ARQUIVO] eliminador cupins 5 litros 2.png
+  [ARQUIVO] eliminador cupins 900ml óleo 1.png
+  [ARQUIVO] Fosfatol 900ml 2.png
+  [ARQUIVO] fundo preparador Mococa balde 18L 1.png
+  [ARQUIVO] massa cola trinca Mococa pote 1,5Kg.png
+  [ARQUIVO] massa madeira Mococa pote 1,3Kg 1.png
+  [ARQUIVO] óleo de linhaça 18 litros.png
+  [ARQUIVO] óleo de linhaça 5L.png
+  [ARQUIVO] óleo de linhaça 900ml óleo 1.png
+  [ARQUIVO] seladora nitro Mococa 900ml 1.png
+  [ARQUIVO] seladora nitro Mococa galão 3,6L 1.png
+  [ARQUIVO] sela-gesso balde 3,6L.png
+  [ARQUIVO] spray 400ml novo 01 2.jpg
+  [ARQUIVO] Velacor Mococafrasco 200ml 1.png
+  [ARQUIVO] verniz mais cor Mococa galão 3,6L 1.png
+
+============================================================
+PASTA RAIZ: PRODUTOS
+============================================================
+[PASTA] da Maza - Produtos Limpeza
+  [PASTA] ÁLCOOL 70°
+    [ARQUIVO] ÁLCOOL 70.mp4
+  [PASTA] ALVEJANTE SEM CLORO
+    [ARQUIVO] ALVEJANTE SEM CLORO - VÍDEO 02.mp4
+    [ARQUIVO] ALVEJANTE SEM CLORO.mp4
+  [PASTA] CLORO GEL
+    [ARQUIVO] CLORO GEL - OPÇÃO 02.mp4
+    [ARQUIVO] CLORO GEL.mp4
+  [PASTA] DESINFETANTE
+    [ARQUIVO] DESINFETEANTE.mp4
+  [PASTA] EMBALAGENS
+    [ARQUIVO] EMBALAGENS.mp4
+  [PASTA] LIMPA PEDRAS
+    [ARQUIVO] LIMPA PEDRA.mp4
+[PASTA] Imobiliária
+  [PASTA] Acrílica
+    [PASTA] AÇO CORTEN
+      [PASTA] Imagens
+        [ARQUIVO] MAZACORTEN - Aplicação Balcão Madeira.jpg
+        [ARQUIVO] MAZACORTEN - Aplicação Parede 02.png
+        [ARQUIVO] MAZACORTEN - Aplicação Parede.jpg
+        [ARQUIVO] MAZACORTEN - Produtos.jpg
+        [ARQUIVO] MAZACORTEN Foto 01.jpg
+        [ARQUIVO] MAZACORTEN Foto 02.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] Aço Corten - O efeito ferrugem adorado na decoração!.mp4
+        [ARQUIVO] AÇO CORTEN MAZA - APLICAÇÃO LOJA.mp4
+        [ARQUIVO] AÇO CORTEN MAZA - FLÁVIO AQUI SE FAZ AQUI NÃO PAGA.mp4
+        [ARQUIVO] AÇO CORTEN MAZA APLICAÇÃO PLACAS 3D.mp4
+        [ARQUIVO] CONFIRA A DICA DO NOSSO PARCEIRO, GERALDO MAGELA!.mp4
+        [ARQUIVO] EFEITO AÇO CORTEN MAZA - WA EFEITOS DECORATIVOS.mp4
+        [ARQUIVO] EFEITO AÇO CORTEN, O EFEITO QUE TODO MUNDO QUER E ESTÁ NA MODA!.mp4
+    [PASTA] ACRÍLICO EXTRA
+      [PASTA] Imagens
+        [PASTA] Imagens
+        [PASTA] Vídeos
+    [PASTA] Acrílico plus
+      [PASTA] Imagens
+        [ARQUIVO] acrílico3.jpg
+        [ARQUIVO] acrílicoplus1.jpg
+        [ARQUIVO] acrílicoplus2.jpg
+        [ARQUIVO] acrílicoplus4.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] ACRÍLICO PLUS TRIPLA AÇÃO - Tintas Maza.mp4
+        [ARQUIVO] ACRÍLICO PLUS TRIPLA AÇÃO MAZA, ÓTIMO CUSTO E BENEFÍCIO! (1).mp4
+    [PASTA] Acrílico premium total protect
+      [PASTA] Imagens
+        [ARQUIVO] acrílicopremium1.jpg
+        [ARQUIVO] acrílicopremium10.png
+        [ARQUIVO] acrílicopremium11.jpg
+        [ARQUIVO] acrílicopremium12.jpg
+        [ARQUIVO] acrílicopremium2.jpg
+        [ARQUIVO] acrílicopremium3.jpg
+        [ARQUIVO] acrílicopremium4.jpg
+        [ARQUIVO] acrílicopremium5.jpg
+        [ARQUIVO] acrílicopremium6.jpg
+        [ARQUIVO] acrílicopremium7.png
+        [ARQUIVO] acrílicopremium8.jpg
+        [ARQUIVO] acrílicopremium9.png
+      [PASTA] Vídeos
+        [ARQUIVO] A CRIATIVIDADE MUDA O MUNDO.mp4
+        [ARQUIVO] ACRÍLICO PREMIUM TOTAL PROTECT -  Tintas Maza.mp4
+        [ARQUIVO] TINTA ACRÍLICO PREMIUM TOTAL PROTECT, ESSA RENDE MUITO!.mp4
+    [PASTA] Acrílico profissional
+      [PASTA] Imagens
+        [ARQUIVO] acrílicoprofiossional.jpg
+        [ARQUIVO] acrílicoprofissional1.jpg
+        [ARQUIVO] acrílicoprofissional2.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] Acrílico Profissional - vídeos.mp4
+    [PASTA] Acrílico ultra
+      [PASTA] Imagens
+        [PASTA] ACRÍLICO ULTRA- Imagens
+    [PASTA] BASE PARA EFEITOS DECORATIVOS
+      [PASTA] Vídeos
+        [ARQUIVO] BASE PARA EFEITOS DECORATIVOS - Tintas Maza.mp4
+    [PASTA] Cimento queimado
+      [PASTA] Imagens
+        [ARQUIVO] Cimento Queimado - Camurça.jpg
+        [ARQUIVO] Cimento Queimado - Chumbo.jpg
+        [ARQUIVO] Cimento Queimado - Cinza.jpg
+        [ARQUIVO] Cimento Queimado - Concreto.jpg
+        [ARQUIVO] CIMENTO QUEIMADO - Modernidade e Sofisticação 01.png
+        [ARQUIVO] CIMENTO QUEIMADO - Modernidade e Sofisticação 02.jpg
+        [ARQUIVO] Cimento Queimado - Original.jpg
+        [ARQUIVO] Cimento Queimado - Platina.png
+        [ARQUIVO] Cimento Queimado - Rose Gold.jpg
+        [ARQUIVO] Cimento Queimado - Terracota.jpg
+        [ARQUIVO] Cimento Queimado -Shitake.jpg
+        [ARQUIVO] cimentoqueimado.jpg
+        [ARQUIVO] cimentoqueimado1.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] Cimento Queimado - Ambiente Transformado Loja Móveis.mp4
+        [ARQUIVO] Cimento Queimado - Depoimento Pintor Alex.mp4
+        [ARQUIVO] Cimento Queimado - Gêmeos Atacadão das Tintas.mp4
+        [ARQUIVO] Cimento Queimado - Gilvan Pintor.mp4
+        [ARQUIVO] Cimento Queimado - Parede.mp4
+        [ARQUIVO] Cimento Queimado - Tarcísio Pintor.mp4
+        [ARQUIVO] Cimento Queimado - Terracota aplicado.mp4
+        [ARQUIVO] Cimento Queimado - Transformação Apartamento.mp4
+        [ARQUIVO] Cimento Queimado - Vídeo Busca Digitando - Voz Artificial.mp4
+        [ARQUIVO] Cimento Queimado é só CINZA A resposta é NÃO!!! 9 Cores disponíveis para você se jogar! #shorts.mp4
+        [ARQUIVO] COMO FIZ O CIMENTO QUEIMADO DA PAREDE DA MINHA CASA #shorts.mp4
+    [PASTA] Cimento queimado perolizado
+      [PASTA] Imagens
+        [ARQUIVO] cimentoqueimadoperolizado1.jpg
+        [ARQUIVO] cimentoqueimadoperolizado10.jpg
+        [ARQUIVO] cimentoqueimadoperolizado11.jpg
+        [ARQUIVO] cimentoqueimadoperolizado2.jpg
+        [ARQUIVO] cimentoqueimadoperolizado3.jpg
+        [ARQUIVO] cimentoqueimadoperolizado4.jpg
+        [ARQUIVO] cimentoqueimadoperolizado5.jpg
+        [ARQUIVO] cimentoqueimadoperolizado6.jpg
+        [ARQUIVO] cimentoqueimadoperolizado7.jpg
+        [ARQUIVO] cimentoqueimadoperolizado8.jpg
+        [ARQUIVO] cimentoqueimadoperolizado9.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] APLICAÇÃO CIMENTO QUEIMADO PEROLIZADO.mp4
+        [ARQUIVO] CIMENTO QUEIMADO PEROLIZADO .mp4
+        [ARQUIVO] CIMENTO QUEIMADO PEROLIZADO- DECORAÇÃO.mp4
+        [ARQUIVO] CIMENTO QUEIMADO.crdownload
+        [ARQUIVO] PASSO A PASSO CIMENTO QUEIMADO PEROLIZADO .mp4
+        [ARQUIVO] Reelvideo aplicação cimento queimado.mp4
+    [PASTA] Fundo preparador base solvente
+      [PASTA] Vídeos
+        [ARQUIVO] FUNDO PREPARADOR (BASE SOLVENTE) - Tintas Maza.mp4
+    [PASTA] Fundo preparador de paredes
+      [PASTA] Imagens
+        [ARQUIVO] fundopreparador1.png
+        [ARQUIVO] fundopreparador2.jpg
+        [ARQUIVO] fundopreparadordeparede.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] FUNDO PREPARADOR - Tintas Maza.mp4
+    [PASTA] Liquibrilho
+      [PASTA] Imagens
+        [ARQUIVO] liquibrilho1.jpg
+        [ARQUIVO] liquibrilho2.jpg
+        [ARQUIVO] liquibrilho3.jpg
+        [ARQUIVO] liquibrilho4.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] LIQUIBRILHO - Tintas Maza.mp4
+    [PASTA] Litoral e Campo
+      [PASTA] Litoral e campo- imagens
+        [ARQUIVO] Litoral e Campo - Banner.jpg
+        [ARQUIVO] Litoral e Campo - Blindagem.jpg
+        [ARQUIVO] Litoral e Campo - Cores Disponíveis.jpg
+        [ARQUIVO] Litoral e Campo - Cores Novas.jpg
+        [ARQUIVO] Litoral e Campo - Hoje é Sexta Feira!.jpg
+        [ARQUIVO] Litoral e Campo - Nossa Borracha Líquida.jpg
+        [ARQUIVO] Litoral e Campo - Proteção (criativo 02).jpg
+        [ARQUIVO] Litoral e Campo - Proteção (criativo 03).jpg
+        [ARQUIVO] Litoral e Campo - Proteção.jpg
+      [PASTA] Litoral e campo- vídeos
+        [ARQUIVO] BLINDE SUA PAREDE COM A BORRACHA LÍQUIDA LITORAL E CAMPO MAZA.mp4
+        [ARQUIVO] BORRACHA LÍQUIDA LITORAL & CAMPO MAZA ✅.mp4
+        [ARQUIVO] BORRACHA LÍQUIDA LITORAL E CAMPO MAZA.mp4
+        [ARQUIVO] Daiani Oficial - Litoral e Campo - Aplicação Muro.mp4
+        [ARQUIVO] Litoral e Campo - Decor Texturas.mp4
+        [ARQUIVO] Litoral e Campo - Motion.mp4
+        [ARQUIVO] Litoral e Campo - Música Fundo.mp4
+        [ARQUIVO] Litoral e Campo - Teste Hidrorrepelência.mp4
+        [ARQUIVO] Litoral e Campo - Voz Inteligência Artificial .mp4
+        [ARQUIVO] Litoral e Campo - WA EFEITOS DECORATIVOS.mp4
+        [ARQUIVO] LITORAL E CAMPO MAZA - BORRACHA LÍQUIDA.mp4
+        [ARQUIVO] Litoral e Campo MAZA ✅.mp4
+        [ARQUIVO] Tinta Emborrachada  A Original  ✅.mp4
+    [PASTA] MASSA ACRÍLICA
+    [PASTA] Massa corrida
+      [PASTA] Imagens
+        [ARQUIVO] massacorrida.jpg
+        [ARQUIVO] massacorrida1.jpg
+        [ARQUIVO] massacorrida2.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] MASSA CORRIDA - Tintas Maza.mp4
+    [PASTA] Massa regularizadora (sem pub)
+    [PASTA] Mazapiso
+      [PASTA] Imagens
+        [ARQUIVO] mazapiso.jpg
+        [ARQUIVO] mazapiso1.jpg
+        [ARQUIVO] mazapiso10.jpg
+        [ARQUIVO] mazapiso11.jpg
+        [ARQUIVO] mazapiso2.jpg
+        [ARQUIVO] mazapiso3.jpg
+        [ARQUIVO] mazapiso4.jpg
+        [ARQUIVO] mazapiso5.jpg
+        [ARQUIVO] mazapiso6.jpg
+        [ARQUIVO] mazapiso7.jpg
+        [ARQUIVO] mazapiso8.jpg
+        [ARQUIVO] mazapiso9.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] Reelvideo Mazapiso premium.mp4
+        [ARQUIVO] TINTA MAZAPISO PREMIUM - Tintas Maza.mp4
+    [PASTA] Mazathermic
+      [PASTA] Imagens
+        [ARQUIVO] mazathermic1.jpg
+        [ARQUIVO] mazathermic10.png
+        [ARQUIVO] mazathermic2.jpg
+        [ARQUIVO] mazathermic3.jpg
+        [ARQUIVO] mazathermic4.jpg
+        [ARQUIVO] mazathermic5.jpg
+        [ARQUIVO] mazathermic6.jpg
+        [ARQUIVO] mazathermic7.jpg
+        [ARQUIVO] mazathermic8.png
+        [ARQUIVO] mazathermic9.png
+        [ARQUIVO] superflex3.png
+      [PASTA] Vídeos
+        [ARQUIVO] MAZATHERMIC ☀ - Revestimento Térmico para Telhados, Lajes e Paredes.mp4
+        [ARQUIVO] MAZATHERMIC é uma tinta térmica para telhados, lajes e paredes..mp4
+        [ARQUIVO] MAZATHERMIC, seu ambiente na temperatura ideal!.mp4
+        [ARQUIVO] Reelvideo buscando a temperatura ideal.mp4
+        [ARQUIVO] Revestimento térmico.mp4
+        [ARQUIVO] Ter mais conforto térmico na sua casa pode ser mais fácil com o MAZATHERMIC! #shorts (1).mp4
+    [PASTA] Selador acrílico
+      [PASTA] 19. Selador acrílico
+        [PASTA] Vídeos
+    [PASTA] Verniz acríllico (sem pub)
+  [PASTA] Efeitos Decorativos
+    [PASTA] CIMENTO QUEIMADO 3 EM 1
+      [PASTA] Vídeos
+        [ARQUIVO] APLICAÇÃO WASH PRIMER CIMENTO QUEIMADO PARA PISO.mp4
+        [ARQUIVO] CIMENTO QUEIMADO 3 EM 1 APLICAÇÃO PISO.mp4
+        [ARQUIVO] CIMENTO QUEIMADO PISO GERALDO MAGELA.m4v
+        [ARQUIVO] PISO FINALIZADO COM VERNIZ PU PARA PISO.mp4
+        [ARQUIVO] PRIMEIRA DEMÃO CIMENTO QUEIMADO PARA PISO.mp4
+        [ARQUIVO] SEGUNDA DEMÃO CIMENTO QUEIMADO PISO.mp4
+        [ARQUIVO] TERCEIRA DEMÃO CIMENTO QUEIMADO PISO.mp4
+        [ARQUIVO] video-94710.mp4
+  [PASTA] Esmalte
+    [PASTA] Direto na ferrugem
+      [PASTA] Imagens
+        [ARQUIVO] diretonaferrugem.png
+        [ARQUIVO] diretonaferrugem1.png
+        [ARQUIVO] diretonaferrugem10.jpg
+        [ARQUIVO] diretonaferrugem11.jpg
+        [ARQUIVO] diretonaferrugem2.png
+        [ARQUIVO] diretonaferrugem3.png
+        [ARQUIVO] diretonaferrugem4.png
+        [ARQUIVO] diretonaferrugem5.png
+        [ARQUIVO] diretonaferrugem6.jpg
+        [ARQUIVO] diretonaferrugem7.jpg
+        [ARQUIVO] diretonaferrugem8.jpg
+        [ARQUIVO] diretonaferrugem9.jpg
+      [PASTA] Vídeos
+        [PASTA] Vídeos
+    [PASTA] Esmalte base água
+      [PASTA] Imagens
+        [ARQUIVO] esmaltebaseágua.jpg
+        [ARQUIVO] esmaltebaseágua1.jpg
+        [ARQUIVO] esmaltebaseágua2.png
+        [ARQUIVO] esmaltebaseágua3.jpg
+        [ARQUIVO] esmaltebaseágua4.jpg
+        [ARQUIVO] esmaltebaseágua5.png
+        [ARQUIVO] esmaltebaseágua6.jpg
+        [ARQUIVO] esmaltebaseágua7.jpg
+        [ARQUIVO] esmaltebaseágua8.png
+      [PASTA] Vídeos
+        [ARQUIVO] Pintando as portas de madeira com o Esmalte Base Água 😍 Se gostou, CURTE ❤ #shorts.mp4
+    [PASTA] Esmalte martelado
+      [PASTA] Imagens
+        [ARQUIVO] esmaltemartelado.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] ESMALTE MARTELADO - Tintas Maza.mp4
+    [PASTA] ESMALTE SINTÉTICO
+      [PASTA] Vídeo
+        [ARQUIVO] Esmalte sintético - vídeo.mp4
+    [PASTA] Ferromack
+      [PASTA] Imagens
+        [ARQUIVO] ferromack.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] ESMALTE SINTÉTICO FERROMACK - Tintas Maza.mp4
+    [PASTA] FUNDO NIVELADOR PARA MADEIRA
+      [PASTA] Vídeo
+        [ARQUIVO] FUNDO NIVELADOR PARA MADEIRA (LINHA IMOBILIÁRIA) - Tintas Maza.mp4
+    [PASTA] GALVIMAZA ECO 5 EM 1
+      [PASTA] Vídeos
+        [ARQUIVO] GALVIMAZA ECO 5 EM 1 - Tintas Maza.mp4
+    [PASTA] GALVIMAZA SINTÉTICO
+      [ARQUIVO] GALVIMAZA (Promotor de Aderência) - Tintas Maza.mp4
+    [PASTA] PRIMER ACABAMENTO
+      [PASTA] Vídeos
+        [ARQUIVO] TINTA PRIMER ACABAMENTO - Tintas Maza.mp4
+    [PASTA] PRIMER CROMATO DE ZINCO
+      [PASTA] Vídeos
+        [PASTA] Vídeos
+    [PASTA] Zarcão
+      [PASTA] Imagens
+        [ARQUIVO] zarcao.jpg
+  [PASTA] Específico
+    [PASTA] Base gel envelhecedor (sem pub)
+    [PASTA] Corantes
+      [PASTA] Imagens
+        [ARQUIVO] CORANTES.jpg
+        [ARQUIVO] CORANTES1.jpg
+        [ARQUIVO] CORANTES2.jpg
+        [ARQUIVO] CORANTES3.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] CORANTE LÍQUIDO - Tintas Maza (1).mp4
+        [ARQUIVO] MAZA CORANTE LÍQUIDO, UMA INFINIDADE DE POSSIBILIDADES!.mp4
+        [ARQUIVO] Reformando as gavetas.mp4
+    [PASTA] ECO PRIMER BASE ÁGUA
+      [PASTA] Vídeos
+        [ARQUIVO] ECO PRIMER (BASE ÁGUA) - Tintas Maza.mp4
+    [PASTA] Efeito glitter
+      [PASTA] Imagens
+        [ARQUIVO] EFEITOGLITTER.jpg
+        [ARQUIVO] EFEITOGLITTER1.jpg
+        [ARQUIVO] EFEITOGLITTER2.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] EFEITO GLITTER MAZA, SOFISTICAÇÃO E BELEZA PARA O SEU AMBIENTE!.mp4
+        [ARQUIVO] Efeito glitter- verniz base água .mp4
+    [PASTA] Gesso dupla ação (sem pub)
+    [PASTA] Massa tapa fácil
+      [PASTA] Imagens
+        [ARQUIVO] MASSATAPAFACIL1.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] ❌ Chega de buraqueira nas paredes hein...▶️ MASSA TAPA FÁCIL MAZA ✅ #shorts #parede #furos.mp4
+        [ARQUIVO] ▶️ Massa TAPA FÁCIL, o nome já diz tudo... Créditos do vídeo @DaianiOficial #shorts #tintasmaza.mp4
+        [ARQUIVO] MASSA TAPA FÁCIL - Tintas Maza.mp4
+        [ARQUIVO] Massa TAPA FÁCIL MAZA, essa você vai gostar! #shorts.mp4
+        [ARQUIVO] Massa TAPA FÁCIL MAZA, sua melhor opção para pequenos reparos! #shorts #viral #decor #diy #massa.mp4
+    [PASTA] Resina Acrílica
+      [PASTA] Imagens
+        [ARQUIVO] resinaacrílica.jpg
+        [ARQUIVO] resinaacrílica1.jpg
+        [ARQUIVO] resinaacrílica2.png
+        [ARQUIVO] resinaacrílica3.png
+        [ARQUIVO] resinaacrílica4.jpg
+        [ARQUIVO] resinaacrílica5.jpg
+        [ARQUIVO] resinaacrílica6.jpg
+        [ARQUIVO] resinaacrílica7.jpg
+        [ARQUIVO] resinaacrílica8.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] RESINA ACRÍLICA PREMIUM Solvente Base Água (Linha Impermeabilizantes) - Tintas Maza.mp4
+    [PASTA] RESINA ACRÍLICA BASE SOLVENTE
+      [PASTA] Vídeos
+        [ARQUIVO] RESINA ACRÍLICA PREMIUM Solvente Base Água (Linha Impermeabilizantes) - Tintas Maza.mp4
+        [ARQUIVO] REVITA~1.MP4
+    [PASTA] SELANTE ACRÍLICO BASE ÁGUA
+      [PASTA] Vídeos
+        [ARQUIVO] SELANTE ACRÍLICO (BASE ÁGUA) - Tintas Maza.mp4
+    [PASTA] SILICONE
+      [ARQUIVO] RESINA SILICONE BASE SOLVENTE (Linha Impermeabilizantes) - Tintas Maza.mp4
+    [PASTA] SILICONE ACÉTICO
+      [PASTA] Vídeos
+        [ARQUIVO] SELANTE ACRÍLICO (BASE ÁGUA) - Tintas Maza.mp4
+    [PASTA] Tinta epóxi base água
+      [PASTA] Vídeos
+        [ARQUIVO] RESINA SILICONE BASE SOLVENTE (Linha Impermeabilizantes) - Tintas Maza.mp4
+    [PASTA] TINTA GRAPHITE CINZA
+      [ARQUIVO] TINTA GRAPHITE (Pintura de Pisos Cimentícios) - Tintas Maza.mp4
+    [PASTA] TINTA HOSPITALAR
+      [ARQUIVO] TINTA HOSPITALAR - Tintas Maza.mp4
+    [PASTA] Tinta intumescente
+      [PASTA] Imagens
+        [ARQUIVO] tintaintumescente.jpg
+        [ARQUIVO] tintaintumescente1.png
+      [PASTA] Vídeos
+        [ARQUIVO] LINHA INTUMESCENTE MAZA. SEGURANÇA E PROTEÇÃO COM A MELHOR CERTIFICAÇÃO!.mp4
+        [ARQUIVO] TINTA INTUMESCENTE - Tintas Maza.mp4
+        [ARQUIVO] TINTA INTUMESCENTE (Demonstração Produto) - Tintas Maza.mp4
+    [PASTA] TINTA P AZULEJOS BASE ÁGUA
+      [PASTA] Vídeos
+        [ARQUIVO] TINTA PARA AZULEJOS - Tintas Maza.mp4
+    [PASTA] TINTA PARA PISCINA
+      [PASTA] Imagens
+        [ARQUIVO] PISCINA1.jpg
+        [ARQUIVO] PISCINA10.jpg
+        [ARQUIVO] PISCINA11.jpg
+        [ARQUIVO] PISCINA12.jpg
+        [ARQUIVO] PISCINA13.jpg
+        [ARQUIVO] PISCINA14.jpg
+        [ARQUIVO] PISCINA15.jpg
+        [ARQUIVO] PISCINA16.jpg
+        [ARQUIVO] PISCINA17.jpg
+        [ARQUIVO] PISCINA2.jpg
+        [ARQUIVO] PISCINA3.jpg
+        [ARQUIVO] PISCINA4.png
+        [ARQUIVO] PISCINA5.png
+        [ARQUIVO] PISCINA6.jpg
+        [ARQUIVO] PISCINA7.jpg
+        [ARQUIVO] PISCINA8.jpg
+        [ARQUIVO] PISCINA9.jpg
+      [PASTA] Vídeos
+        [PASTA] Vídeos
+  [PASTA] Solvente
+    [PASTA] 1. Aguarraz
+      [PASTA] Imagens
+        [ARQUIVO] Aguarraz.jpg
+    [PASTA] 2. Querosene (sem pub)
+    [PASTA] 3. THINNER SM 100 (SEM PUB)
+    [PASTA] 4. THINNER SM 116 (SEM PUB)
+    [PASTA] 5. THINNER SM 800 (SEM PUB)
+    [PASTA] Vídeo- Linha Solventes
+      [PASTA] Vídeo- Linha Solventes
+        [ARQUIVO] LINHA SOLVENTES - Tintas Maza.mp4
+  [PASTA] Spray
+    [PASTA] SPRAY – ALTA TEMPERATURA 600ºC
+      [PASTA] Imagens
+        [ARQUIVO] altatemp1.png
+        [ARQUIVO] altatemp2.jpg
+        [ARQUIVO] altatemp3.png
+      [PASTA] Vídeos
+        [ARQUIVO] Reelvideo-Tinta spray.mp4
+    [PASTA] SPRAY - PRIMER RÁPIDO CINZA (SEM PUB)
+    [PASTA] SPRAY – SELADORA PARA PLÁSTICO
+      [PASTA] Imagens
+        [ARQUIVO] seladoraspray.jpg
+    [PASTA] SPRAY – VERNIZ ACRÍLICO
+      [PASTA] Imagens
+        [ARQUIVO] sprayverniz.jpg
+        [ARQUIVO] sprayverniz1.jpg
+        [ARQUIVO] sprayverniz2.jpg
+        [ARQUIVO] sprayvernizacrílico.jpg
+    [PASTA] SPRAY- FUNDO LUMINOSO BRANCO (SEM PUB)
+    [PASTA] SPRAY LUMINOSO (SEM PUB)
+    [PASTA] TINTA SPRAY PREMIUM
+      [ARQUIVO] Ação social Tintas Maza, utilizando a linha Spray Premium com Luzia Cardozo.mp4
+      [ARQUIVO] Arte e cor da TINTA SPRAY em parede, confira ! - Tintas Maza.mp4
+      [ARQUIVO] ARTESANATOS SÓ SE FOR COM A TINTA EM SPRAY PREMIUM MAZA! (1).mp4
+      [ARQUIVO] ARTESANATOS SÓ SE FOR COM A TINTA EM SPRAY PREMIUM MAZA! (2).mp4
+      [ARQUIVO] Daiani- decoração de natal.mp4
+      [ARQUIVO] Decoração com tinta spray.mp4
+      [ARQUIVO] Decoração natal.mp4
+      [ARQUIVO] Decoração.mp4
+      [ARQUIVO] Escola promove ação com TINTA SPRAY em parceria com Tintas Maza !.mp4
+      [ARQUIVO] Fabricação- tinta spray.mp4
+      [ARQUIVO] Mais um artista experimenta Spray Maza e aprova - Tintas Maza.mp4
+      [ARQUIVO] Maza e Macister + uma ação com Tinta Spray !.mp4
+      [ARQUIVO] MESA DE AÇO E MADEIRA RENOVADA COM TINTA SPRAY MAZA.mp4
+      [ARQUIVO] Sabe como usar corretamente a Tinta em Spray Então confira a dica! #shorts.mp4
+      [ARQUIVO] TINTA SPRAY + ARTISTA = ❤️ OBRA DE ARTE PERFEITA !.mp4
+      [ARQUIVO] TINTA SPRAY PREMIUM - Tintas Maza.mp4
+      [ARQUIVO] Tinta spray premium.mp4
+      [ARQUIVO] Tinta spray.mp4
+  [PASTA] Textura
+    [PASTA] 1. LAMATO (SEM PUB)
+    [PASTA] 2. LATECRYL MICROREVESTIMENTO (SEM PUB)
+    [PASTA] 3. TEXTURA RUGOSA ORIGINAL (SEM PUB)
+    [PASTA] 4.  CIMENTO QUEIMADO 3 EM 1
+      [PASTA] 4.  CIMENTO QUEIMADO 3 EM 1
+        [PASTA] Imagens
+    [PASTA] 5. CRISTALLO
+      [PASTA] Imagens
+        [ARQUIVO] cristalo.jpg
+        [ARQUIVO] cristalo1.jpg
+        [ARQUIVO] cristalo2.jpg
+        [ARQUIVO] cristalo3.jpg
+        [ARQUIVO] cristalo4.jpg
+        [ARQUIVO] cristalo5.jpg
+        [ARQUIVO] cristalo6.jpg
+        [ARQUIVO] cristalo7.jpg
+        [ARQUIVO] cristalo8.png
+        [ARQUIVO] cristalo9.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] ▶️ Textura Cristallo Maza, o brilho lindo das pedras para a sua parede!.mp4
+        [ARQUIVO] Efeito Cristallo Maza, elegância com toque de cristais..mp4
+        [ARQUIVO] PENSA EM UM BRILHO QUE É SURREAL...ESSA É A TEXTURA CRISTALLO MAZA!.mp4
+        [ARQUIVO] Reelvideo-aplicação.mp4
+        [ARQUIVO] Reelvideo-cristallo.mp4
+        [ARQUIVO] TEXTURA CRISTALLO, UM TOQUE DE ELEGÊNCIA PARA A SUA PAREDE..mp4
+    [PASTA] 6. REVESTIMENTO PEDRA NATURAL
+      [PASTA] Imagens
+        [ARQUIVO] PEDRANATURAL.jpg
+        [ARQUIVO] PEDRANATURAL1.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] ✨ REVESTIMENTO PEDRA NATURAL ✨ + 2.000 CORES para escolher! #shorts #tintasmaza #pedranatural.mp4
+        [ARQUIVO] PEDRA NATURAL, DISPONÍVEL EM VÁRIAS CORES!!!.mp4
+        [ARQUIVO] REVESTIMENTO PEDRA NATURAL MAZA, SEU AMBIENTE MAIS ACONCHEGANTE!.mp4
+        [ARQUIVO] REVESTIMENTO PEDRAS NATURAIS - Transforme o seu ambiente, sua elegância está nos detalhes! #shorts.mp4
+        [ARQUIVO] Revestimento Pedras Naturais MAZA cor Diamante Finno! Créditos vídeo @satintas #shorts #viral.mp4
+        [ARQUIVO] REVESTIMENTO PEDRAS NATURAIS, sua elegância está nos detalhes, devido ao brilho e nuances 🤩 #shorts.mp4
+        [ARQUIVO] Revestimento.mp4
+    [PASTA] 7.  TEXTURA GRANFINNO
+      [PASTA] Imagens
+        [ARQUIVO] granfinno.jpg
+    [PASTA] 8. TEXTURA RISCADA ORIGINAL
+      [PASTA] Vídeos
+        [ARQUIVO] DICAS DE TEXTURAS - EFEITO RISCADO (Tintas Maza).mp4
+    [PASTA] 9. TEXTURA FINA HIDROREPELENTE
+      [PASTA] Vídeos
+        [ARQUIVO] CONHEÇA NOSSA TEXTURA FINA HIDROREPELENTE!.mp4
+  [PASTA] Verniz
+    [PASTA] Adesivo de contato
+      [PASTA] Imagens
+        [ARQUIVO] adesivodecontato.jpg
+        [ARQUIVO] adesivodecontato1.jpg
+        [ARQUIVO] adesivodecontato2.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] ADESIVO DE CONTATO MAZA, ESSE COLA DE VERDADE!.mp4
+    [PASTA] Seladora concentrada
+      [PASTA] Imagens
+        [ARQUIVO] seladoraconcentrada.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] Seladora Concentrada - Tintas Maza.mp4
+    [PASTA] Verniz deck
+      [PASTA] Imagens
+        [ARQUIVO] vernizdeck.jpg
+        [ARQUIVO] vernizdeck1.png
+        [ARQUIVO] vernizdeck2.jpg
+        [ARQUIVO] vernizdeck3.jpg
+        [ARQUIVO] vernizdeck4.jpg
+        [ARQUIVO] vernizdeck5.jpg
+        [ARQUIVO] vernizdeck6.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] Aplicação Verniz Deck Maza 😮🥰 #shorts #verniz #acabamento #top #foco #viral #decor.mp4
+        [ARQUIVO] Reelvideo- verniz deck maza.mp4
+        [ARQUIVO] VERNIZ DECK (LINHA IMOBILIÁRIA) - Tintas Maza.mp4
+        [ARQUIVO] verniz deck maza.mp4
+    [PASTA] VERNIZ INTUMESCENTE
+      [PASTA] Imagens
+        [ARQUIVO] vernizintumescente.jpg
+        [ARQUIVO] vernizintumescente.png
+      [PASTA] Vídeos
+        [ARQUIVO] DESEMPENHO DO VERNIZ INTUMESCENTE - Tintas Maza.mp4
+        [ARQUIVO] VERNIZ INTUMESCENTE (BASE ÁGUA) - Tintas Maza.mp4
+        [ARQUIVO] Verniz intumescente .mp4
+    [PASTA] Verniz Marítimo
+      [PASTA] Imagens
+        [ARQUIVO] vernizmarítimo.jpg
+        [ARQUIVO] vernizmarítimo1.jpg
+        [ARQUIVO] vernizmarítimo2.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] Escolha o melhor...Verniz Marítimo Triplo Filtro Solar MAZA 🚀 #shorts #verniz #madeira #maritimo.mp4
+        [ARQUIVO] Reelvideo-75966.mp4
+        [ARQUIVO] Reelvideo-86732.mp4
+        [ARQUIVO] VERNIZ MARÍTIMO TRIPLO FILTRO SOLAR - Tintas Maza.mp4
+    [PASTA] VERNIZ NITRO BRILHANTE
+      [PASTA] Vídeos
+        [ARQUIVO] VERNIZ NITRO (LINHA IMOBILIÁRIA) - Tintas Maza.mp4
+    [PASTA] Verniz spray premium
+      [PASTA] Imagens
+        [ARQUIVO] vernizspraypremium.jpg
+        [ARQUIVO] vernizspraypremium1.jpg
+        [ARQUIVO] vernizspraypremium3.jpg
+    [PASTA] VERNIZ STAIN TRANSPARENTE
+      [PASTA] Imagens
+        [ARQUIVO] vernizstain1.jpg
+        [ARQUIVO] vernizstain2.jpg
+        [ARQUIVO] vernizstain3.jpg
+        [ARQUIVO] vernizstain4.jpg
+        [ARQUIVO] vernizstain5.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] VERNIZ STAIN TRANSPARENTE, TINTAS MAZA..mp4
+[PASTA] Impermeabilizantes
+  [PASTA] 1. HIDROFUGANTE ACQUABLOCK
+    [PASTA] Imagens
+      [ARQUIVO] acquablock.jpg
+      [ARQUIVO] acquablock1.jpg
+      [ARQUIVO] acquablock2.jpg
+      [ARQUIVO] acquablock3.jpg
+      [ARQUIVO] acquablock4.jpg
+      [ARQUIVO] acquablock5.jpg
+    [PASTA] Vídeos
+      [ARQUIVO] Blinde sua parede, deixando impermeável contra água e umidade!.mp4
+      [ARQUIVO] HIDROFUGANTE ACQUABLOCK MAZA 💦.mp4
+      [ARQUIVO] hidrofugante.mp4
+  [PASTA] 10. MAZALIN
+    [PASTA] Imagens
+      [ARQUIVO] Mazapóxi1.png
+    [PASTA] Vídeos
+      [ARQUIVO] MAZALIN MANTA LÍQUIDA (Linha Impermeabilizante) - Tintas Maza.mp4
+  [PASTA] 11. MAZAMOL
+    [PASTA] Imagens
+      [ARQUIVO] mazaprenparede2.png
+    [PASTA] Vídeos
+      [ARQUIVO] MAZAMOL (Linha Impermeabilizantes) - Tintas Maza (1).mp4
+      [ARQUIVO] MazaMol (Linha Impermeabilizantes) - Tintas Maza.mp4
+  [PASTA] 12. MAZATOP
+    [PASTA] Imagens
+      [ARQUIVO] mazatop1.png
+    [PASTA] Vídeos
+      [ARQUIVO] MAZATOP (Linha Impermeabilizantes) - Tintas Maza.mp4
+  [PASTA] 2. MAZACHAPISCO
+    [PASTA] Imagens
+      [ARQUIVO] MAZACHAPISCO.jpg
+      [ARQUIVO] mazachapisco1.png
+    [PASTA] Vídeos
+      [ARQUIVO] MAZACHAPISCO (Linha Impermeabilizantes) - Tintas Maza.mp4
+  [PASTA] 3. MAZALIT
+    [PASTA] Imagens
+      [ARQUIVO] MAZALIT.jpg
+      [ARQUIVO] Mazalit1.png
+    [PASTA] Vídeos
+      [ARQUIVO] MazaLit (Linha Impermeabilizantes) - Tintas Maza (1).mp4
+      [ARQUIVO] MAZALIT (Linha Impermeabilizantes) - Tintas Maza.mp4
+  [PASTA] 4. MAZAPOXI ADESIVO ESTRUTURAL PASTOSO
+    [PASTA] Imagens
+      [ARQUIVO] Mazapóxi1.png
+  [PASTA] 5. MAZAPREN LAJE
+    [PASTA] Imagens
+      [ARQUIVO] MAZAPRENLAJE.jpg
+      [ARQUIVO] MAZAPRENLAJE1.jpg
+      [ARQUIVO] MAZAPRENLAJE2.jpg
+      [ARQUIVO] MAZAPRENLAJE3.jpg
+      [ARQUIVO] MAZAPRENLAJE4.jpg
+      [ARQUIVO] mazaprenlaje5.png
+    [PASTA] Vídeos
+      [ARQUIVO] INFILTRAÇÕES EM SUA LAJE MAZAPREN DÁ CONTA DO RECADO..mp4
+      [ARQUIVO] MAZAPREN LAJE (Linha Impermeabilizantes) - Tintas Maza.mp4
+      [ARQUIVO] Mazapren Laje 🏠.mp4
+      [ARQUIVO] Mazapren Laje, manta líquida impermeabilizante! Cobre microfissuras, super flexível! #shorts #viral.mp4
+      [ARQUIVO] Mazapren laje.mp4
+      [ARQUIVO] Mazapren solução também para o seu telhado! #shorts #viral #viralreels #pintor #telha #borracha.mp4
+  [PASTA] 6. MAZAPREN PAREDE
+    [PASTA] Imagens
+      [ARQUIVO] MAZAPRENPAREDE.jpg
+      [ARQUIVO] MAZAPRENPAREDE1.jpg
+      [ARQUIVO] mazaprenparede2.png
+    [PASTA] Vídeos
+      [ARQUIVO] Mazapren .mp4
+      [ARQUIVO] MAZAPREN PAREDE (Linha Impermeabilizantes) - Tintas Maza (1).mp4
+      [ARQUIVO] MAZAPREN PAREDE! Sucesso na sua impermeabilização e Pintura! 👏🏻👏🏻👏🏻Preparação lavar a superfície com cloro e aplicar fundo preparador de paredes antes da aplicação do Mazapren parede.Tintas Maza.mp4
+      [ARQUIVO] MAZAPREN PAREDE, O IMPERMEABILIZANTE QUE RESOLVE E CONQUISTOU TODO O BRASIL! ☀️⛈ ✅ PROTEÇÃO SOL E CHUVA; ✅ TAMPA FISSURAS; ✅ SELA E IMPERMEABILIZA; ✅ AÇÃO HIDRORREPELENTE; ✅ ELÁSTICO E FLEXÍVEL;.mp4
+      [ARQUIVO] MAZAPREN PAREDE.mp4
+      [ARQUIVO] Reelvideo-99462.mp4
+      [ARQUIVO] Temos a solução para você! MAZAPREN PAREDE. Impermeabiliza e cobre microfissuras ✅ #shorts #viral.mp4
+  [PASTA] 7. MAZATROL
+    [PASTA] Imagens
+      [ARQUIVO] MAZATROL.jpg
+      [ARQUIVO] Mazatrol1.png
+    [PASTA] Vídeos
+      [ARQUIVO] MAZATROL (Linha Impermeabilizantes) - Tintas Maza.mp4
+  [PASTA] 8. SUPERFLEX PAREDE
+    [PASTA] Imagens
+      [ARQUIVO] SUPERFLEX.jpg
+      [ARQUIVO] SUPERFLEX1.jpg
+      [ARQUIVO] superflex3.png
+      [ARQUIVO] superflex4.png
+      [ARQUIVO] superflex5.png
+      [ARQUIVO] superflex6.png
+    [PASTA] Vídeos
+      [ARQUIVO] Superflex Parede - Tintas Maza.mp4
+      [ARQUIVO] TINTA EMBORRACHADA PROTEÇÃO SOL E CHUVA - SUPERFLEX PAREDE.mp4
+  [PASTA] 9. MAZACIT
+    [PASTA] imagens
+      [ARQUIVO] mazachapisco1.png
+    [PASTA] Vídeos
+      [ARQUIVO] MAZACIT (Linha Impermeabilizantes) - Tintas Maza.mp4
+[PASTA] Industrial
+  [PASTA] Demarcação Viária
+    [PASTA] DEMARCAÇÃO ACRÍLICA VIÁRIA - BASE ÁGUA- IMAGENS
+      [PASTA] Imagens
+        [ARQUIVO] demarcaçãoviaria.jpg
+        [ARQUIVO] demarcaçãoviaria1.jpg
+    [PASTA] DEMARCAÇÃO ACRÍLICA VIÁRIA - DNIT 3,16- VÍDEOS
+      [PASTA] Imagens
+        [ARQUIVO] DEMARCAÇÃO3,16.jpg
+        [ARQUIVO] DEMARCAÇÃOO3,16.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] Reelvideo-20504.mp4
+        [ARQUIVO] TINTA DEMARCAÇÃO VIÁRIA - Tintas Maza.mp4
+    [PASTA] DEMARCAÇÃO ACRÍLICA VIÁRIA DER 3,09 (SEM PUB)
+      [ARQUIVO] Reelvideo-10824.mp4
+  [PASTA] Epóxi
+    [PASTA] 1. KIT MAZAPOXI AUTONIVELANTE CINZA CLARO N6,5 3X1
+      [PASTA] Imagens
+        [ARQUIVO] KIT MAZAPOXI AUTONIVELANTE CINZA CLARO N6,5 3X1.jpg
+    [PASTA] 10. VERNIZ PU PARA PISO 5X1
+      [PASTA] Imagens
+        [ARQUIVO] VERNIZ PU PARA PISO 5X1.jpg
+        [ARQUIVO] VERNIZ PU PARA PISO 5X11.jpg
+        [ARQUIVO] VERNIZ PU PARA PISO 5X12.jpg
+        [ARQUIVO] VERNIZ PU PARA PISO 5X13.jpg
+        [ARQUIVO] VERNIZ PU PARA PISO 5X14.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] KIT VERNIZ PU PARA PISO 5X1 AGORA DISPONÍVEL EM 3 ACABAMENTOS!.mp4
+        [ARQUIVO] KIT VERNIZ PU PARA PISO 5X1 AGORA DISPONÍVEL EM 3 ACABAMENTOS.BRILHANTE, ACETINADO E FOSCO #shorts.mp4
+        [ARQUIVO] Olha o brilho que ficou este piso! KIT VERNIZ PU PARA PISO 5X1 DISPONÍVEL EM 3 ACABAMENTOS #shorts.mp4
+        [ARQUIVO] Reelvideo-verniz pu para piso.mp4
+        [ARQUIVO] VERNIZ PU PARA PISO 5x1 - Tintas Maza.mp4
+    [PASTA] 12. MAZAPOXI KIT M298 II
+      [PASTA] Fotos Aplicação Mazapóxi M298
+        [ARQUIVO] 275425763_4866482956781843_1882451019221074840_n.png
+        [ARQUIVO] APLICAÇÃO ESTACIONAMENTO FOTO 01.png
+        [ARQUIVO] APLICAÇÃO ESTACIONAMENTO FOTO 02.png
+        [ARQUIVO] APLICAÇÃO ESTACIONAMENTO FOTO 03.png
+        [ARQUIVO] APLICAÇÃO ESTACIONAMENTO FOTO 04.png
+        [ARQUIVO] APLICAÇÃO GARAGEM SUBTERRÂNEO FOTO 01.jpg
+        [ARQUIVO] APLICAÇÃO GARAGEM SUBTERRÂNEO FOTO 02.jpg
+        [ARQUIVO] APLICAÇÃO GARAGEM SUBTERRÂNEO FOTO 03.jpg
+        [ARQUIVO] APLICAÇÃO GARAGEM SUBTERRÂNEO FOTO 04.jpg
+        [ARQUIVO] APLICAÇÃO GARAGEM SUBTERRÂNEO FOTO 05.jpg
+        [ARQUIVO] APLICAÇÃO GARAGEM SUBTERRÂNEO FOTO 06.jpg
+        [ARQUIVO] APLICAÇÃO GARAGEM SUBTERRÂNEO FOTO 07.jpg
+        [ARQUIVO] APLICAÇÃO QUADRA POLIESPORTIVA 01.png
+        [ARQUIVO] APLICAÇÃO QUADRA POLIESPORTIVA 02.png
+      [PASTA] Vídeos
+        [ARQUIVO] aplicação mazapóxi.mp4
+        [ARQUIVO] MAZAPOXI KIT M298 ESTE É TOP.mp4
+        [ARQUIVO] MazaPoxi M298 (Linha Industrial) - Tintas Maza (1).mp4
+        [ARQUIVO] MazaPoxi M298 (Linha Industrial) - Tintas Maza.mp4
+        [ARQUIVO] mazapoxi.mp4
+    [PASTA] 13. MAZAPOXI M680
+      [PASTA] Vídeo
+        [ARQUIVO] PINTURA DE PISO COM ULTRA PROTEÇÃO LINHA INDUSTRIAL MAZA É A SOLUÇÃO..mp4
+    [PASTA] 3. MASSA EPOXI BRANCO 3X1
+      [PASTA] Imagens
+        [ARQUIVO] MASSA EPOXI BRANCO 3X1.jpg
+    [PASTA] 9. VERNIZ EPOXI 3X1
+      [PASTA] Imagens
+        [PASTA] Imagens
+    [PASTA] KIT MAZAPOXI NIVELANTE 2X1 (SEM PUB)
+    [PASTA] KIT PORCELANATO LÍQUIDO 2X1 (SEM PUB)
+    [PASTA] MAZAPOXI M198 (SEM PUB)
+    [PASTA] MAZAPOXI M202
+    [PASTA] MAZAPOXI M628
+    [PASTA] MAZAPOXI M629
+    [PASTA] MAZAPOXI M630
+    [PASTA] MAZAPOXI M678 (SEM PUB)
+    [PASTA] VERNIZ EPOXI 3X1
+      [PASTA] Imagens
+        [PASTA] Imagens
+  [PASTA] Esmalte Industrial
+    [PASTA] 1. ESMALTE INDUSTRIAL AUTOMOTIVO AGRÍCOLA- imagens
+      [PASTA] Imagens
+        [ARQUIVO] ESMALTE INDUSTRIAL AUTOMOTIVO AGRÍCOLA.jpg
+        [ARQUIVO] ESMALTE INDUSTRIAL AUTOMOTIVO AGRÍCOLA1.jpg
+        [ARQUIVO] ESMALTE INDUSTRIAL AUTOMOTIVO AGRÍCOLA2.jpg
+        [ARQUIVO] ESMALTE INDUSTRIAL AUTOMOTIVO AGRÍCOLA3.jpg
+        [ARQUIVO] ESMALTE INDUSTRIAL AUTOMOTIVO AGRÍCOLA4.jpg
+        [ARQUIVO] ESMALTE INDUSTRIAL AUTOMOTIVO AGRÍCOLA5.jpg
+        [ARQUIVO] ESMALTE INDUSTRIAL AUTOMOTIVO AGRÍCOLA6.jpg
+        [ARQUIVO] ESMALTE INDUSTRIAL AUTOMOTIVO AGRÍCOLA7.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] ESMALTE INDUSTRIAL E EQUIPAMENTOS AGRÍCOLAS (LINHA AUTOMOTIVA) - Tintas Maza.mp4
+    [PASTA] TINTA ALTA TEMP (SEM PUB)
+  [PASTA] Normas Petrobras
+    [PASTA] 6. MAZATHANE M677
+      [PASTA] Imagens
+        [ARQUIVO] MAZATHANE M677.jpg
+        [ARQUIVO] MAZATHANE M6771.jpg
+        [ARQUIVO] MAZATHANE M6772.jpg
+        [ARQUIVO] MAZATHANE M6773.png
+        [ARQUIVO] MAZATHANE M6774.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] Antes x Depois pintura de Piso com o nosso Mazathane M677, tinta epóxi de alta qualidade! #shorts.mp4
+        [ARQUIVO] Depoimento Profissionais da Pintura Mazathane.mp4
+        [ARQUIVO] Mazathane Inca Finalizado-1.m4v
+        [ARQUIVO] MAZATHANE M677 (LINHA INDUSTRIAL) - Tintas Maza.mp4
+        [ARQUIVO] Mazathane Pintura Piso - Casa Nenê.mp4
+        [ARQUIVO] MAZATHANE.mp4
+        [ARQUIVO] quer renovar seu piso sem quebradeira.mp4
+        [ARQUIVO] Renovação de piso sem precisar trocar.mp4
+        [ARQUIVO] RENOVE O SEU PISO SEM QUEBRADEIRA! TINTA MAZATHANE M677 ✅.mp4
+    [PASTA] 7. MAZAVED M265
+      [PASTA] Imagens
+        [ARQUIVO] MAZAVED M265 (1).pptx
+    [PASTA] CLEAR EPÓXI 3X1 (SEM PUB)
+    [PASTA] MAZAFEN M259 (SEM PUB)
+    [PASTA] MAZAPOXI KIT M295 II
+    [PASTA] MAZAPOXI M288 (SEM PUB)
+    [PASTA] MAZASINT DF SV (SEM PUB)
+    [PASTA] MAZAVED M761 (SEM PUB)
+    [PASTA] MAZAZINC M231 (SEM PUB)
+    [PASTA] MAZAZINC M277 (SEM PUB)
+    [PASTA] MAZAZINC M661 (SEM PUB)
+    [PASTA] MAZAZINC M841 (SEM PUB)
+  [PASTA] Solventes (prod em geral sem pub)
+[PASTA] Linha Automotiva
+  [PASTA] Adesivos
+    [PASTA] 1. Adesivo plástico light
+      [PASTA] Adesivo plástico light- Imagens
+        [ARQUIVO] adesivoplástico3.png
+        [ARQUIVO] linhaadesivo.jpg
+      [PASTA] Adesivo plástico light- Vídeos
+        [ARQUIVO] ADESIVO MAXX LIGHT - Tintas Maza.mp4
+        [ARQUIVO] Adesivo poliéster.mp4
+    [PASTA] 2. Adesivo poliéster
+      [PASTA] Adesivo poliéster- Imagens
+        [ARQUIVO] adesivopoliéster1.jpg
+        [ARQUIVO] adesivopoliéster2.jpg
+        [ARQUIVO] adesivopoliéster3.png
+        [ARQUIVO] adesivopoliéster4.png
+      [PASTA] Adesivo poliéster- vídeos
+        [ARQUIVO] ADESIVO POLIÉSTER - (FÓRMULA ANTIGA x NOVA FÓRMULA).mp4
+        [ARQUIVO] Adesivo Poliéster (Linha Automotiva) - Tintas Maza.mp4
+        [ARQUIVO] Adesivo Poliéster Light - Tecnologia e inovação.mp4.72f1-f534-0633-f780.part
+        [ARQUIVO] Adesivo poliéster.mp4
+        [ARQUIVO] MASSA POLIÉSTER, TECNOLOGIA E INOVAÇÃO PARA O SEU CARRO!.mp4
+        [ARQUIVO] Reelvideo- Adesivo poliéster.mp4
+    [PASTA] 3. Adesivo plástico
+      [PASTA] Adesivo Plástico - Imagens
+        [ARQUIVO] adesivoplástico1.jpg
+        [ARQUIVO] adesivoplástico2.png
+    [PASTA] 4. Adesivo para laminação
+      [PASTA] Adesivos para laminação- Imagens
+        [ARQUIVO] linhaadesivomaza.jpg
+      [PASTA] Adesivos para laminação- vídeos
+        [ARQUIVO] ADESIVO PARA LAMINAÇÃO E MANTA DE FIBRA DE VIDRO - Tintas Maza.mp4
+        [ARQUIVO] Adesivo para laminação UV - Modelagem imediata.mp4
+  [PASTA] Binders (sem publicações)
+  [PASTA] Complementos
+    [PASTA] ACELERADOR DE SECAGEM
+      [ARQUIVO] Acelerador de Secagem (Linha Automotiva) - Tintas Maza.mp4
+    [PASTA] ADITIVO ANTI CRATERA 5266
+      [ARQUIVO] 362304608_336260312089507_2153545661585903944_n.jpg
+      [ARQUIVO] mazamax2.png
+    [PASTA] BATIDA DE PEDRA
+      [PASTA] BATIDA DE PEDRA- IMAGENS
+        [ARQUIVO] batidadepedra1.jpg
+        [ARQUIVO] batidadepedra2.png
+        [ARQUIVO] batidadepedra3.png
+      [PASTA] BATIDA DE PEDRA- VÍDEO
+        [ARQUIVO] Batida de Pedra (Linha Automotiva) - Tintas Maza.mp4
+    [PASTA] KIT PRETO FOSCO VINÍLICO
+      [PASTA] KIT PRETO FOSCO VINÍLICO- IMAGENS
+        [ARQUIVO] KIT PRETO FOSCO VINÍLICO1.jpg
+        [ARQUIVO] KIT PRETO FOSCO VINÍLICO2.jpg
+        [ARQUIVO] KIT PRETO FOSCO VINÍLICO3.png
+        [ARQUIVO] KIT PRETO FOSCO VINÍLICO4.png
+      [PASTA] KIT PRETO FOSCO VINÍLICO- VÍDEOS
+        [ARQUIVO] KIT PRETO FOSCO VINÍLICO - Tintas Maza.mp4
+        [ARQUIVO] KIT PRETO FOSCO VINÍLICO.mp4
+    [PASTA] KIT REPARADOR DE PLÁSTICOS 1X1
+      [PASTA] KIT REPARADOR DE PLÁSTICOS - IMAGENS
+        [ARQUIVO] kitreparador3.png
+        [ARQUIVO] kitreparador4.png
+        [ARQUIVO] kitreparador5.png
+        [ARQUIVO] reparador2.png
+        [ARQUIVO] reparadordeplásticos1.jpg
+      [PASTA] KIT REPARADOR DE PLÁSTICOS- VÍDEOS
+        [ARQUIVO] MASSA PEQUENOS REPAROS (LINHA AUTOMOTIVA) - Tintas Maza.mp4
+    [PASTA] KIT WASH PRIMER FOSFATIZANTE
+      [PASTA] KIT WASH PRIMER FOSFATIZANTE- Imagens
+        [ARQUIVO] washprimer1.jpg
+      [PASTA] KIT WASH PRIMER FOSFATIZANTE- Vídeos
+        [ARQUIVO] WASH PRIMER (LINHA AUTOMOTIVA) - Tintas Maza.mp4
+    [PASTA] LIQUIDO DE MASCARAMENTO
+      [PASTA] LIQUIDO DE MASCARAMENTO- Vídeo
+        [ARQUIVO] LÍQUIDO DE MASCARAMENTO (Linha Automotiva) - Tintas Maza.mp4
+    [PASTA] MANTA DE FIBRA DE VIDRO
+      [PASTA] Manta Fibra de vidro- Imagens
+        [ARQUIVO] mantafibradevidro1.jpg
+        [ARQUIVO] mantafibradevidro2.jpg
+      [PASTA] Manta fibra de vidro- vídeo
+        [ARQUIVO] ADESIVO PARA LAMINAÇÃO E MANTA DE FIBRA DE VIDRO - Tintas Maza (1).mp4
+    [PASTA] MASSA ANTI-RUÍDO
+      [PASTA] MASSA ANTI-RUÍDO- Vídeo
+        [ARQUIVO] Massa Anti-Ruído (Linha Automotiva) - Tintas Maza.mp4
+    [PASTA] PRIMER SINTÉTICO VERMELHO ÓXIDO
+      [PASTA] PRIMER SINTÉTICO VERMELHO ÓXIDO- Vídeo
+        [ARQUIVO] PRIMER SINTÉTICO - Tintas Maza.mp4
+    [PASTA] PRIMER UNIVERSAL BRANCO
+      [PASTA] PRIMER UNIVERSAL- VÍDEO
+        [ARQUIVO] PRIMER UNIVERSAL (LINHA AUTOMOTIVA) - Tintas Maza.mp4
+    [PASTA] REMOVEDOR PASTOSO
+      [PASTA] REMOVEDOR PASTOSO- Imagens
+        [ARQUIVO] REMOVEDORPASTOSO1.jpg
+        [ARQUIVO] REMOVEDORPASTOSO2.jpg
+        [ARQUIVO] REMOVEDORPASTOSO3.jpg
+    [PASTA] SELADORA PARA PLÁSTICO
+      [PASTA] SELADORA PARA PLÁSTICO- Vídeo
+        [ARQUIVO] Seladora para Plástico (Linha Automotiva) - Tintas Maza.mp4
+    [PASTA] SILICONE SPRAY PREMIUM
+      [PASTA] SILICONE SPRAY PREMIUM- Imagens
+        [ARQUIVO] siliconespray1.jpg
+        [ARQUIVO] siliconespray2.jpg
+        [ARQUIVO] siliconespray3.jpg
+        [ARQUIVO] siliconespray4.jpg
+        [ARQUIVO] siliconespraypremium.jpg
+      [PASTA] SILICONE SPRAY PREMIUM-VÍDEO
+        [ARQUIVO] SILICONE SPRAY PREMIUM - Tintas Maza.mp4
+    [PASTA] SOLUÇÃO DESENGRAXANTE
+      [PASTA] Solução Desengraxante- Imagens
+        [ARQUIVO] SOLUÇÃODESENGRAXANTE.png
+        [ARQUIVO] SOLUÇÃODESENGRAXANTE1.png
+      [PASTA] Solução Desengraxante- Vídeo
+        [ARQUIVO] Solução Desengraxante (Linha Automotiva) - Tintas Maza.mp4
+  [PASTA] Primers
+    [PASTA] 1. KIT PRIMER PU 1500
+      [ARQUIVO] Primer PU 1500 (Linha Automotiva) - Tintas Maza.mp4
+    [PASTA] 2.  KIT PRIMER PU 2500
+      [ARQUIVO] VERNIZ PU 2500 (LINHA AUTOMOTIVA) - Tintas Maza.mp4
+    [PASTA] 3.  KIT PRIMER PU FAST 6500
+      [ARQUIVO] Primer PU 6500 Fast (Linha Automotiva) - Tintas Maza.mp4
+    [PASTA] 4.  KIT PRIMER PU5500 ALTO SÓLIDOS
+      [ARQUIVO] PRIMER PU PREMIUM ALTO SÓLIDOS (LINHA AUTOMOTIVA) - Tintas Maza.mp4
+    [PASTA] 5. PRIMER RÁPIDO CINZA (SEM PUB)
+    [PASTA] 6.  PRIMER RÁPIDO
+      [ARQUIVO] Primer Rápido (Linha Automotiva) - Tintas Maza.mp4
+    [PASTA] 7. Primer universal (sem pub)
+  [PASTA] Resinas (sem pub)
+  [PASTA] Sistema maxing maza (sem pub)
+  [PASTA] Solventes
+    [PASTA] 1. REDUTOR PARA SINTÉTICO 5250 (SEM PUB)
+    [PASTA] 2. THINNER FLOW
+      [PASTA] imagens
+        [PASTA] THINNER FLOW- Imagens
+      [PASTA] vídeos
+        [ARQUIVO] THINNER FLOW (Linha Automotiva) - Tintas Maza.mp4
+    [PASTA] 3.  THINNER P PU5220
+      [PASTA] Vídeos
+        [ARQUIVO] THINNER PU 5220 (LINHA AUTOMOTIVA) - Tintas Maza.mp4
+    [PASTA] 4. THINNER P PU5230
+      [ARQUIVO] THINNER PU 5230 (LINHA AUTOMOTIVA) - Tintas Maza.mp4
+    [PASTA] 5.  THINNER P PU5240
+      [ARQUIVO] THINNER PU 5240 (LINHA AUTOMOTIVA) - Tintas Maza.mp4
+    [PASTA] 6. THINNER PARA RETOQUE (SEM PUB)
+    [PASTA] 7. THINER SM100 (SEM PUB)
+    [PASTA] 9. THINNER VINILICO (SEM PUB)
+  [PASTA] Tintas
+    [PASTA] 1.  MAZADUR POLIÉSTER
+      [PASTA] Imagens
+        [ARQUIVO] mazadur2.jpg
+        [ARQUIVO] MAZADURPOLIÉSTER2.png
+        [ARQUIVO] MAZADURPOLIÉSTER3.png
+        [ARQUIVO] MAZADURPOLIÉSTER4.png
+        [ARQUIVO] mazadurpoliéstertintas.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] MAZADUR POLIÉSTER, A TINTA CERTA PARA O SEU CARRO! (1).mp4
+        [ARQUIVO] Reelvideo-5566.mp4
+    [PASTA] 2.  MAZADUR PU
+      [PASTA] Imagens
+        [ARQUIVO] MAZADUR3.png
+        [ARQUIVO] MAZADURPU.png
+        [ARQUIVO] MAZADURPU1.png
+        [ARQUIVO] poliuretano1.jpg
+        [ARQUIVO] poliuretano2.jpg
+        [ARQUIVO] poliuretano3.jpg
+        [ARQUIVO] poliuretano4.jpg
+        [ARQUIVO] poliuretano5.png
+      [PASTA] Vídeos
+        [ARQUIVO] Mazadur PU (Linha Automotiva) - Tintas Maza.mp4
+    [PASTA] 3. MAZALAC
+      [PASTA] Imagens
+        [ARQUIVO] mazalac.jpg
+        [ARQUIVO] MAZALAC1.png
+        [ARQUIVO] MAZALAC2.png
+        [ARQUIVO] MAZALAC3.png
+      [PASTA] Vídeos
+        [PASTA] MAZALAC- VÍDEO
+    [PASTA] 4. MAZALUX
+      [PASTA] Imagens
+        [ARQUIVO] MAZALUX.jpg
+        [ARQUIVO] MAZALUX1.jpg
+        [ARQUIVO] MAZALUX2.jpg
+        [ARQUIVO] MAZALUX3.png
+      [PASTA] Vídeos
+        [ARQUIVO] MAZALUX (LINHA AUTOMOTIVA) - Tintas Maza.mp4
+        [ARQUIVO] MAZALUX, a Tinta com acabamento perfeito e durabilidade para o seu carro!.mp4
+        [ARQUIVO] Reelvideo-63828.mp4
+  [PASTA] Vernizes
+    [PASTA] 1.  KIT VERNIZ PU 1500
+      [PASTA] Imagens
+        [ARQUIVO] kitverniz1.png
+        [ARQUIVO] kitverniz1500.png
+        [ARQUIVO] vernizpu.jpg
+        [ARQUIVO] vernizpu2.jpg
+        [ARQUIVO] vernizpu3.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] APLICAÇÃO VERNIZ PU 1500.mp4
+    [PASTA] 2. KIT VERNIZ PU 2500
+      [PASTA] Imagens
+        [ARQUIVO] kitverniz2500.png
+        [ARQUIVO] kitverniz25001.png
+        [ARQUIVO] kitverniz25002.png
+        [ARQUIVO] kitverniz25003.png
+        [ARQUIVO] vernizpu2500.jpg
+      [PASTA] Vídeos
+        [ARQUIVO] VERNIZ PU 2500 (LINHA AUTOMOTIVA) - Tintas Maza.mp4
+    [PASTA] 3.  KIT VERNIZ PU ALTO SÓLIDOS 4500 5X1 (Sem publicação)
+      [ARQUIVO] kitverniz4500.png
+    [PASTA] 4. KIT VERNIZ PU ALTO SÓLIDOS 5500
+      [PASTA] Imagens
+        [ARQUIVO] altosólidos5500.jpg
+        [ARQUIVO] kitverniz5500.png
+    [PASTA] 5. KIT VERNIZ PU FAST 6500
+      [PASTA] Imagens
+        [ARQUIVO] verniz6500.png
+      [PASTA] Vídeo
+        [ARQUIVO] Verniz PU 6500 Fast (Linha Automotiva) - Tintas Maza (1).mp4
+[PASTA] Madeira
+  [PASTA] 1. Betume da judéia
+    [PASTA] Imagens
+      [ARQUIVO] betumedajudéia.jpg
+    [PASTA] Vídeos
+      [ARQUIVO] Tintas Mococa - BETUME JUDÉIA (1).mp4
+      [ARQUIVO] Tintas Mococa - BETUME JUDÉIA.mp4
+  [PASTA] 2. Cera de carnaúba
+    [PASTA] Imagens
+      [ARQUIVO] CERA DE CARNAÚBA.jpg
+      [ARQUIVO] CERA DE CARNAÚBA1.jpg
+      [ARQUIVO] CERA DE CARNAÚBA2.jpg
+      [ARQUIVO] CERA DE CARNAÚBA3.jpg
+    [PASTA] Vídeos
+      [ARQUIVO] Cera de carnaúba decoração.mp4
+      [ARQUIVO] Reelvideo-Cera de carnaúba.mp4
+  [PASTA] 3. CLAREADOR DE MADEIRA (SAL AZEDO)
+    [PASTA] Imagens
+      [ARQUIVO] clareadordemadeira1.jpg
+      [ARQUIVO] clareadordemadeira2.jpg
+      [ARQUIVO] clareadordemadeira3.jpg
+    [PASTA] Vídeos
+      [ARQUIVO] Tintas Mococa - Clareador de madeira.mp4
+  [PASTA] 4. Massa para madeiras
+    [PASTA] Vídeos
+      [ARQUIVO] Já conhece a Massa para Madeira Você sabia que ela possui várias cores #shorts #viral #diy #maza.mp4
+      [ARQUIVO] Reelvideo- Massa para madeiras.crdownload
+      [ARQUIVO] Tintas Mococa - MASSA PARA MADEIRA.mp4
+  [PASTA] 5. Exterminador de cupins
+    [PASTA] Vídeos
+      [ARQUIVO] Tintas Mococa - EXTERMINADOR DE CUPINS.mp4
+  [PASTA] 6. Oléo de linhaça
+    [PASTA] Vídeos
+      [ARQUIVO] O melhor Tratamento e Proteção para madeira..mp4
+  [PASTA] 7. SELADORA NITRO UNIVERSAL
+    [PASTA] Vídeos
+      [ARQUIVO] Tintas Mococa - SELADORA NITRO UNIVERSAL.mp4
+  [PASTA] 8. Velacor
+    [PASTA] Imagens
+      [ARQUIVO] velacor1.jpg
+    [PASTA] Vídeos
+      [ARQUIVO] Tintas Mococa - VELACOR (Tingidor Vernizes e Seladoras).mp4
+  [PASTA] 9. Verniz+ cor
+    [PASTA] Vídeos
+      [ARQUIVO] Tintas Mococa - VERNIZ + COR.mp4
+[PASTA] Tintas SV
+  [PASTA] LIQUI - BRILHO
+    [PASTA] Vídeos
+      [ARQUIVO] Liqui Brilho - TINTAS SV.mp4
+  [PASTA] Massa Corrida
+    [PASTA] Vídeos
+      [ARQUIVO] Massa Corrida - TINTAS SV.mp4
+  [PASTA] Verniz Acrílico
+    [PASTA] Vídeos
+      [ARQUIVO] Verniz Acrílico - TINTAS SV.mp4
+[PASTA] VÍDEO INSERÇÃO TV LOJA
+  [ARQUIVO] VÍDEOS RECEPÇÃO 01.mp4
+[PASTA] Vídeos Nenê - Maza
+  [ARQUIVO] CHAMADA NENÊ_finalizado.mp4
+
+============================================================
+PASTA RAIZ: TREINAMENTO SISTEMAS
+============================================================
+[PASTA] MAZAMIX - SISTEMA LINHA AUTOMOTIVA
+  [ARQUIVO] TREINAMENTO TI MAZAMIX LINHA AUTOMOTIVA.mp4
+[PASTA] SISTEMA PEDIDOS MAZA
+  [ARQUIVO] Treinamento Sistema Representantes-1.m4v
+
+============================================================
+PASTA RAIZ: CATÁLOGO DIGITAIS
+============================================================
+[PASTA] Apresentação Tintas Maza - Empresa
+  [ARQUIVO] APRESENTAÇÃO TINTAS MAZA (6).pdf
+[PASTA] Catálogo Cores Imobiliárias (Balcão) Maza
+  [ARQUIVO] Catálogo Cores Imobiliário 2025 digital.pdf
+[PASTA] Corante Líquido
+  [ARQUIVO] Corante Líquido Cartela Digital.pdf
+[PASTA] da Maza - Acessórios Limpeza
+  [ARQUIVO] Catalogo_Produtos_DaMaza_Acessorios_Impressao_PDF (1).pdf
+[PASTA] Demarcação Viária Maza
+  [ARQUIVO] Catálogo Demarcação Viária 2023 1.pdf
+[PASTA] Direto na Ferrugem Maza
+  [ARQUIVO] Catalogo_Cores_Esmalte_Direto_na_Ferrugem_Cores_2023.pdf
+[PASTA] Epóxi SV
+  [ARQUIVO] Catalogo_Cores_SV_Epoxi_Profissional_curvas_PDF.pdf
+[PASTA] Esmalte Sintético Automotivo Rural
+  [ARQUIVO] Catalogo Esmalte Sintetico Automotivo Rural 30x21cm digital.pdf
+[PASTA] FILIPETAS
+  [PASTA] ACRÍLICO EXTRA
+    [ARQUIVO] Filipeta Acrílico Extra 16X9cm.pdf
+  [PASTA] ACRÍLICO PLUS
+    [ARQUIVO] Filipeta Acrílico Plus 16X9cm.pdf
+  [PASTA] ACRÍLICO PREMIUM TOTAL PROTECT
+    [ARQUIVO] Filepeta_6x19_Maza_Premium.pdf
+  [PASTA] ACRÍLICO PROFISSIONAL
+    [ARQUIVO] Filipeta Acrílico Profissional 16X9cm.pdf
+  [PASTA] ACRÍLICO ULTRA
+    [ARQUIVO] Filipeta Acrílico Ultra 16X9cm.pdf
+  [PASTA] BORRACHA LÍQUIDA LITORAL & CAMPO
+    [ARQUIVO] Filipeta Litoral e Campo 16X9cm 4.pdf
+  [PASTA] EPÓXI BASE ÁGUA
+    [ARQUIVO] Filipeta Epóxi BA 16X9cm.pdf
+  [PASTA] ESMALTE BASE ÁGUA
+    [ARQUIVO] Filipeta Esmalte Base Água 16X9cm 2.pdf
+  [PASTA] ESMALTE MARTELADO
+    [ARQUIVO] Filipeta Esmalte Martelado 16X9cm 1.pdf
+  [PASTA] ESMALTE SINTÉTICO
+    [ARQUIVO] Filipeta Esmalte Sintético 16X9cm 1 (1).pdf
+  [PASTA] FERROMACK
+    [ARQUIVO] Filipeta_6X19_Ferromack.pdf
+  [PASTA] GALVIMAZA
+    [ARQUIVO] Filipeta Galvimaza 16X9cm 2.pdf
+  [PASTA] MAZAPISO
+    [ARQUIVO] Filipeta Mazapiso 16X9cm.pdf
+  [PASTA] PRIMER ACABAMENTO
+    [ARQUIVO] Filipeta Primer Acabamento 16X9cm.pdf
+  [PASTA] RESINA ACRÍLICA
+    [ARQUIVO] Filipeta Resina Acrílica 16X9cm.pdf
+  [PASTA] SV CRYL
+    [ARQUIVO] Filipeta Sv Cryl 16X9cm.pdf
+  [PASTA] TINTA SPRAY DIRETO NA FERRUGEM
+    [ARQUIVO] Filipeta Esmalte Direto Ferrugem Spray 16X9cm.pdf
+  [PASTA] VERNIZ MARÍTIMO
+    [ARQUIVO] Filipeta_6X19_Verniz_Madeira_Maza_curvas_PDF.pdf
+[PASTA] Linha Automotiva
+  [ARQUIVO] Catálogo Automotivo 2023 digital01.pdf
+[PASTA] Linha Impermeabilizantes Maza
+[PASTA] Pedra Natural Maza
+  [ARQUIVO] Catálogo Pedras Naturais (1).pdf
+[PASTA] Texturas Maza
+  [ARQUIVO] Catálogo Texturas 2025.pdf
+[PASTA] Tinta Epóxi Maza
+  [ARQUIVO] Catalogo Epoxi PU 2023.pdf
+[PASTA] Tinta Spray
+  [ARQUIVO] Catalogo_Tinta_Spray 2023.pdf
+[PASTA] Tintas Mococa
+  [ARQUIVO] Catalogo_Tintas_Mococa_PDF (atualizado).pdf
+[PASTA] Tintas SV
+  [ARQUIVO] Catalogo_Produtos_SV_Balcao_2021_Formato_A3_PDF (1).pdf
+
+================================================================================
+FIM DA LISTAGEM
+================================================================================

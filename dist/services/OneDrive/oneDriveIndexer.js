@@ -3,11 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.init = init;
 exports.getRootFolderNames = getRootFolderNames;
 exports.getSubfolders = getSubfolders;
-exports.getNestedSubfolders = getNestedSubfolders;
 exports.getFilesInSubfolder = getFilesInSubfolder;
 exports.downloadFile = downloadFile;
 exports.listContents = listContents;
-exports.sync = sync;
 const oneDriveService_1 = require("./oneDriveService");
 const fileCache_1 = require("../../cache/fileCache");
 const config_1 = require("../../config/config");
@@ -41,12 +39,6 @@ async function getSubfolders(rootFolderName) {
         throw new Error(`Pasta mãe não encontrada: ${rootFolderName}`);
     }
     const items = await (0, oneDriveService_1.listChildrenByItemId)(config_1.oneDriveConfig.driveId, root.id);
-    const folders = items.filter((i) => i.folder);
-    return folders.map((f) => f.name);
-}
-async function getNestedSubfolders(rootFolderName, subfolderPath) {
-    const folderId = await resolveFolderPath(rootFolderName, subfolderPath);
-    const items = await (0, oneDriveService_1.listChildrenByItemId)(config_1.oneDriveConfig.driveId, folderId);
     const folders = items.filter((i) => i.folder);
     return folders.map((f) => f.name);
 }
@@ -106,10 +98,5 @@ async function resolveFolderPath(rootFolderName, subfolderPath) {
         currentId = folder.id;
     }
     return currentId;
-}
-async function sync() {
-    initialized = false;
-    await (0, fileCache_1.clearCache)();
-    await init();
 }
 //# sourceMappingURL=oneDriveIndexer.js.map

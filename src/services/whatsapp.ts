@@ -25,6 +25,12 @@ import {
 // Templates
 import { mensagemBoasVindas, menuPrincipal } from '../utils/listTemplates';
 
+// Guardrails
+import { checkMessage } from '../agents/guardrails';
+
+// Audio Transcription
+import { isAudioMessage, processAudioMessage } from './audioTranscription';
+
 let sock: ReturnType<typeof makeWASocket> | undefined;
 
 // Mapeamento de números para tipo de agente
@@ -40,6 +46,47 @@ const WELCOME_MESSAGES: Record<AgentType, string> = {
     catalogo: '📑 *Assistente de Catálogos Digitais*\n\nQual catálogo você precisa? Me diga o tipo de produto.',
     videos: '🎬 *Assistente de Vídeos de Treinamento*\n\nQual conteúdo você busca? Me diga o tema do treinamento.',
 };
+
+/**
+ * Verifica se a transcrição parece confusa ou sem sentido
+ */
+function isTranscriptionUnclear(text: string): boolean {
+    const trimmed = text.trim();
+
+    // Muito curta (menos de 3 caracteres)
+    if (trimmed.length < 3) {
+        return true;
+    }
+
+    // Apenas sons/interjeições sem sentido
+    const nonsensePatterns = [
+        /^[aeiouáéíóúãõ\s]+$/i,           // Apenas vogais
+        /^(hm+|ah+|eh+|uh+|oh+|ih+)+$/i,  // Sons de hesitação
+        /^\.+$/,                           // Apenas pontos
+        /^\?+$/,                           // Apenas interrogações
+        /^!+$/,                            // Apenas exclamações
+        /^(blá|bla|lalala|tá|né|então|tipo|assim)+$/i, // Palavras vazias repetidas
+    ];
+
+    for (const pattern of nonsensePatterns) {
+        if (pattern.test(trimmed)) {
+            return true;
+        }
+    }
+
+    // Muitos caracteres repetidos (ex: "aaaaaaa", "kkkkkk")
+    if (/(.)\1{4,}/.test(trimmed)) {
+        return true;
+    }
+
+    // Texto muito curto sem palavras reconhecíveis
+    const words = trimmed.split(/\s+/).filter(w => w.length > 2);
+    if (words.length === 0 && trimmed.length < 10) {
+        return true;
+    }
+
+    return false;
+}
 
 /**
  * Inicia o bot WhatsApp
@@ -79,11 +126,16 @@ export async function startBot() {
         if (connection === 'close') {
             const statusCode = (lastDisconnect?.error as Boom | undefined)?.output?.statusCode;
 
-            if (statusCode === DisconnectReason.restartRequired) {
-                console.log('Reconectando...');
-                startBot();
+            console.log(`[Conexão] Fechada com código: ${statusCode}`);
+
+            // Reconecta automaticamente, exceto se for logout
+            if (statusCode !== DisconnectReason.loggedOut) {
+                console.log('[Conexão] Reconectando em 3 segundos...');
+                setTimeout(() => {
+                    startBot();
+                }, 3000);
             } else {
-                console.error('Conexão fechada:', statusCode, lastDisconnect?.error);
+                console.error('[Conexão] Deslogado do WhatsApp. Delete a pasta /auth e reinicie para escanear novo QR.');
             }
         } else if (connection === 'open') {
             console.log('✅ Conectado ao WhatsApp!');
@@ -125,12 +177,38 @@ async function handleMessage(
     jid: string,
     msg: WAMessage
 ) {
-    // Extrai texto da mensagem
-    const body = (
-        msg.message?.conversation ||
-        msg.message?.extendedTextMessage?.text ||
-        ''
-    ).trim();
+    let body = '';
+    let isFromAudio = false;
+
+    // Verifica se é mensagem de áudio
+    if (isAudioMessage(msg)) {
+        console.log(`[Audio] Recebido áudio de ${jid}, transcrevendo...`);
+        await sendTextMessage(jid, '🎤 Transcrevendo seu áudio...');
+
+        const transcription = await processAudioMessage(msg);
+        if (transcription) {
+            body = transcription;
+            isFromAudio = true;
+            console.log(`[Audio] Transcrição: "${body}"`);
+
+            // Verifica se a transcrição parece confusa/sem sentido
+            if (isTranscriptionUnclear(body)) {
+                console.log(`[Audio] Transcrição parece confusa, pedindo clareza`);
+                await sendTextMessage(jid, '🔊 Não consegui entender bem o seu áudio. Poderia falar com mais clareza ou enviar uma mensagem de texto?');
+                return;
+            }
+        } else {
+            await sendTextMessage(jid, '❌ Não consegui transcrever o áudio. Por favor, envie uma mensagem de texto.');
+            return;
+        }
+    } else {
+        // Extrai texto da mensagem
+        body = (
+            msg.message?.conversation ||
+            msg.message?.extendedTextMessage?.text ||
+            ''
+        ).trim();
+    }
 
     if (!body) return;
 
@@ -159,9 +237,6 @@ async function handleMessage(
     await processWithAgent(socket, jid, body);
 }
 
-// Nota: O Baileys não expõe facilmente o texto do voto da poll.
-// A detecção de agente acontece via detectAgentFromText quando o usuário
-// envia uma mensagem de texto após ver o menu.
 
 /**
  * Detecta agente a partir do texto
@@ -216,30 +291,54 @@ async function processWithAgent(
         return;
     }
 
+    // 🛡️ Guardrails - Verifica se a mensagem é válida
+    const guardrailResult = await checkMessage(message);
+    if (!guardrailResult.allowed) {
+        console.log(`[Guardrail] Mensagem bloqueada de ${jid}: "${message.substring(0, 50)}..."`);
+        await sendTextMessage(jid, guardrailResult.reason || 'Desculpe, não entendi. Como posso ajudar com produtos da Maza?');
+        return;
+    }
+
     // Seleciona agente
     const agent = getAgentByType(session.agentType);
     if (!agent) return;
 
     console.log(`[Agent] Processando com ${session.agentType}: "${message}"`);
 
+    // Envia mensagem de aguardo
+    await sendTextMessage(jid, '🔍 Aguarde, estou procurando o que você pediu...');
+
     // Executa agente
     const response = await runAgentWithContext(jid, agent, message);
 
-    // Verifica se tem arquivo para enviar
-    const fileMatch = response.match(/__FILE_READY__:(.+?):(.+?)(?:$|\n)/);
+    console.log(`[DEBUG] Resposta do agente: ${response.substring(0, 200)}...`);
+    console.log(`[DEBUG] Resposta completa contém __FILE_READY__: ${response.includes('__FILE_READY__')}`);
+
+    // Verifica se tem arquivo para enviar (usa ||| como delimitador para evitar conflito com C: do Windows)
+    // Regex mais robusta: captura tudo entre os delimitadores
+    const fileMatch = response.match(/__FILE_READY__\|\|\|([^|]+)\|\|\|([^|\n\r]+)/);
+
+    console.log(`[DEBUG] fileMatch encontrado: ${fileMatch ? 'SIM' : 'NÃO'}`);
+    if (fileMatch) {
+        console.log(`[DEBUG] Match completo: ${fileMatch[0]}`);
+        console.log(`[DEBUG] localPath: "${fileMatch[1]}"`);
+        console.log(`[DEBUG] fileName: "${fileMatch[2]}"`);
+    }
 
     if (fileMatch) {
         const [, localPath, fileName] = fileMatch;
 
         // Remove a marcação da resposta
-        const textResponse = response.replace(/__FILE_READY__.+?(?:$|\n)/, '').trim();
+        const textResponse = response.replace(/__FILE_READY__\|\|\|[^|]+\|\|\|[^|\n\r]+/, '').trim();
 
+        // Envia arquivo PRIMEIRO
+        console.log(`[DEBUG] Tentando enviar arquivo: ${localPath.trim()}`);
+        await sendFile(socket, jid, localPath.trim(), fileName.trim());
+
+        // Depois envia a mensagem de texto
         if (textResponse) {
             await sendTextMessage(jid, textResponse);
         }
-
-        // Envia arquivo
-        await sendFile(socket, jid, localPath.trim(), fileName.trim());
     } else {
         // Apenas texto
         await sendTextMessage(jid, response);
@@ -266,8 +365,17 @@ function getAgentByType(type: AgentType) {
  * Envia mensagem de texto
  */
 async function sendTextMessage(jid: string, text: string) {
-    if (!sock) return;
-    await sock.sendMessage(jid, { text });
+    if (!sock) {
+        console.log('[sendTextMessage] Socket não disponível');
+        return;
+    }
+
+    try {
+        await sock.sendMessage(jid, { text });
+    } catch (error: any) {
+        console.error(`[sendTextMessage] Erro ao enviar mensagem: ${error.message}`);
+        // Não propaga o erro, apenas loga
+    }
 }
 
 /**
@@ -280,44 +388,64 @@ async function sendFile(
     fileName: string
 ) {
     try {
+        console.log(`[sendFile] Iniciando envio...`);
+        console.log(`[sendFile] localPath: "${localPath}"`);
+        console.log(`[sendFile] fileName: "${fileName}"`);
+
         // Verifica se arquivo existe
         if (!fs.existsSync(localPath)) {
+            console.log(`[sendFile] ERRO: Arquivo não existe no caminho!`);
             await sendTextMessage(jid, `❌ Arquivo não encontrado: ${fileName}`);
             return;
         }
 
         const ext = path.extname(localPath).toLowerCase();
+        const stats = fs.statSync(localPath);
+        console.log(`[sendFile] Extensão: ${ext}`);
+        console.log(`[sendFile] Tamanho: ${(stats.size / 1024 / 1024).toFixed(2)} MB`);
+
         const buffer = fs.readFileSync(localPath);
+        console.log(`[sendFile] Buffer lido: ${buffer.length} bytes`);
 
         // Detecta tipo de mídia
         const isVideo = ['.mp4', '.mov', '.avi', '.mkv', '.webm'].includes(ext);
         const isImage = ['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext);
         const isAudio = ['.mp3', '.ogg', '.m4a', '.wav'].includes(ext);
 
+        console.log(`[sendFile] Tipo detectado: isVideo=${isVideo}, isImage=${isImage}, isAudio=${isAudio}`);
+
         if (isVideo) {
+            console.log(`[sendFile] Enviando como vídeo...`);
             await socket.sendMessage(jid, {
                 video: buffer,
                 caption: `🎬 ${fileName}`,
                 mimetype: 'video/mp4',
             });
+            console.log(`[sendFile] Vídeo enviado com sucesso!`);
         } else if (isImage) {
+            console.log(`[sendFile] Enviando como imagem...`);
             await socket.sendMessage(jid, {
                 image: buffer,
                 caption: `🖼️ ${fileName}`,
             });
+            console.log(`[sendFile] Imagem enviada com sucesso!`);
         } else if (isAudio) {
+            console.log(`[sendFile] Enviando como áudio...`);
             await socket.sendMessage(jid, {
                 audio: buffer,
                 mimetype: 'audio/mp4',
                 ptt: false,
             });
+            console.log(`[sendFile] Áudio enviado com sucesso!`);
         } else {
             // Documento genérico (PDF, etc)
+            console.log(`[sendFile] Enviando como documento...`);
             await socket.sendMessage(jid, {
                 document: buffer,
                 mimetype: getMimeType(ext),
                 fileName: fileName,
             });
+            console.log(`[sendFile] Documento enviado com sucesso!`);
         }
 
         console.log(`[Arquivo] Enviado para ${jid}: ${fileName}`);

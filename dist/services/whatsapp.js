@@ -47,6 +47,8 @@ const agenteEmbalagem_1 = require("../agents/agenteEmbalagem");
 const agenteVideos_1 = require("../agents/agenteVideos");
 const sessionManager_1 = require("./sessionManager");
 const listTemplates_1 = require("../utils/listTemplates");
+const guardrails_1 = require("../agents/guardrails");
+const audioTranscription_1 = require("./audioTranscription");
 let sock;
 const NUMBER_TO_AGENT = {
     '1': 'embalagem',
@@ -58,6 +60,33 @@ const WELCOME_MESSAGES = {
     catalogo: '📑 *Assistente de Catálogos Digitais*\n\nQual catálogo você precisa? Me diga o tipo de produto.',
     videos: '🎬 *Assistente de Vídeos de Treinamento*\n\nQual conteúdo você busca? Me diga o tema do treinamento.',
 };
+function isTranscriptionUnclear(text) {
+    const trimmed = text.trim();
+    if (trimmed.length < 3) {
+        return true;
+    }
+    const nonsensePatterns = [
+        /^[aeiouáéíóúãõ\s]+$/i,
+        /^(hm+|ah+|eh+|uh+|oh+|ih+)+$/i,
+        /^\.+$/,
+        /^\?+$/,
+        /^!+$/,
+        /^(blá|bla|lalala|tá|né|então|tipo|assim)+$/i,
+    ];
+    for (const pattern of nonsensePatterns) {
+        if (pattern.test(trimmed)) {
+            return true;
+        }
+    }
+    if (/(.)\1{4,}/.test(trimmed)) {
+        return true;
+    }
+    const words = trimmed.split(/\s+/).filter(w => w.length > 2);
+    if (words.length === 0 && trimmed.length < 10) {
+        return true;
+    }
+    return false;
+}
 async function startBot() {
     console.log("Iniciando bot com nova configuração...");
     const { state, saveCreds } = await (0, baileys_1.useMultiFileAuthState)('./auth');
@@ -83,12 +112,15 @@ async function startBot() {
         }
         if (connection === 'close') {
             const statusCode = lastDisconnect?.error?.output?.statusCode;
-            if (statusCode === baileys_1.DisconnectReason.restartRequired) {
-                console.log('Reconectando...');
-                startBot();
+            console.log(`[Conexão] Fechada com código: ${statusCode}`);
+            if (statusCode !== baileys_1.DisconnectReason.loggedOut) {
+                console.log('[Conexão] Reconectando em 3 segundos...');
+                setTimeout(() => {
+                    startBot();
+                }, 3000);
             }
             else {
-                console.error('Conexão fechada:', statusCode, lastDisconnect?.error);
+                console.error('[Conexão] Deslogado do WhatsApp. Delete a pasta /auth e reinicie para escanear novo QR.');
             }
         }
         else if (connection === 'open') {
@@ -117,9 +149,32 @@ function setupMessageHandler(socket) {
     console.log('[Handler] Message handler configurado');
 }
 async function handleMessage(socket, jid, msg) {
-    const body = (msg.message?.conversation ||
-        msg.message?.extendedTextMessage?.text ||
-        '').trim();
+    let body = '';
+    let isFromAudio = false;
+    if ((0, audioTranscription_1.isAudioMessage)(msg)) {
+        console.log(`[Audio] Recebido áudio de ${jid}, transcrevendo...`);
+        await sendTextMessage(jid, '🎤 Transcrevendo seu áudio...');
+        const transcription = await (0, audioTranscription_1.processAudioMessage)(msg);
+        if (transcription) {
+            body = transcription;
+            isFromAudio = true;
+            console.log(`[Audio] Transcrição: "${body}"`);
+            if (isTranscriptionUnclear(body)) {
+                console.log(`[Audio] Transcrição parece confusa, pedindo clareza`);
+                await sendTextMessage(jid, '🔊 Não consegui entender bem o seu áudio. Poderia falar com mais clareza ou enviar uma mensagem de texto?');
+                return;
+            }
+        }
+        else {
+            await sendTextMessage(jid, '❌ Não consegui transcrever o áudio. Por favor, envie uma mensagem de texto.');
+            return;
+        }
+    }
+    else {
+        body = (msg.message?.conversation ||
+            msg.message?.extendedTextMessage?.text ||
+            '').trim();
+    }
     if (!body)
         return;
     console.log(`[Mensagem] ${jid}: ${body}`);
@@ -167,19 +222,35 @@ async function processWithAgent(socket, jid, message) {
         await sendTextMessage(jid, listTemplates_1.menuPrincipal);
         return;
     }
+    const guardrailResult = await (0, guardrails_1.checkMessage)(message);
+    if (!guardrailResult.allowed) {
+        console.log(`[Guardrail] Mensagem bloqueada de ${jid}: "${message.substring(0, 50)}..."`);
+        await sendTextMessage(jid, guardrailResult.reason || 'Desculpe, não entendi. Como posso ajudar com produtos da Maza?');
+        return;
+    }
     const agent = getAgentByType(session.agentType);
     if (!agent)
         return;
     console.log(`[Agent] Processando com ${session.agentType}: "${message}"`);
+    await sendTextMessage(jid, '🔍 Aguarde, estou procurando o que você pediu...');
     const response = await (0, sessionManager_1.runAgentWithContext)(jid, agent, message);
-    const fileMatch = response.match(/__FILE_READY__:(.+?):(.+?)(?:$|\n)/);
+    console.log(`[DEBUG] Resposta do agente: ${response.substring(0, 200)}...`);
+    console.log(`[DEBUG] Resposta completa contém __FILE_READY__: ${response.includes('__FILE_READY__')}`);
+    const fileMatch = response.match(/__FILE_READY__\|\|\|([^|]+)\|\|\|([^|\n\r]+)/);
+    console.log(`[DEBUG] fileMatch encontrado: ${fileMatch ? 'SIM' : 'NÃO'}`);
+    if (fileMatch) {
+        console.log(`[DEBUG] Match completo: ${fileMatch[0]}`);
+        console.log(`[DEBUG] localPath: "${fileMatch[1]}"`);
+        console.log(`[DEBUG] fileName: "${fileMatch[2]}"`);
+    }
     if (fileMatch) {
         const [, localPath, fileName] = fileMatch;
-        const textResponse = response.replace(/__FILE_READY__.+?(?:$|\n)/, '').trim();
+        const textResponse = response.replace(/__FILE_READY__\|\|\|[^|]+\|\|\|[^|\n\r]+/, '').trim();
+        console.log(`[DEBUG] Tentando enviar arquivo: ${localPath.trim()}`);
+        await sendFile(socket, jid, localPath.trim(), fileName.trim());
         if (textResponse) {
             await sendTextMessage(jid, textResponse);
         }
-        await sendFile(socket, jid, localPath.trim(), fileName.trim());
     }
     else {
         await sendTextMessage(jid, response);
@@ -198,47 +269,71 @@ function getAgentByType(type) {
     }
 }
 async function sendTextMessage(jid, text) {
-    if (!sock)
+    if (!sock) {
+        console.log('[sendTextMessage] Socket não disponível');
         return;
-    await sock.sendMessage(jid, { text });
+    }
+    try {
+        await sock.sendMessage(jid, { text });
+    }
+    catch (error) {
+        console.error(`[sendTextMessage] Erro ao enviar mensagem: ${error.message}`);
+    }
 }
 async function sendFile(socket, jid, localPath, fileName) {
     try {
+        console.log(`[sendFile] Iniciando envio...`);
+        console.log(`[sendFile] localPath: "${localPath}"`);
+        console.log(`[sendFile] fileName: "${fileName}"`);
         if (!node_fs_1.default.existsSync(localPath)) {
+            console.log(`[sendFile] ERRO: Arquivo não existe no caminho!`);
             await sendTextMessage(jid, `❌ Arquivo não encontrado: ${fileName}`);
             return;
         }
         const ext = node_path_1.default.extname(localPath).toLowerCase();
+        const stats = node_fs_1.default.statSync(localPath);
+        console.log(`[sendFile] Extensão: ${ext}`);
+        console.log(`[sendFile] Tamanho: ${(stats.size / 1024 / 1024).toFixed(2)} MB`);
         const buffer = node_fs_1.default.readFileSync(localPath);
+        console.log(`[sendFile] Buffer lido: ${buffer.length} bytes`);
         const isVideo = ['.mp4', '.mov', '.avi', '.mkv', '.webm'].includes(ext);
         const isImage = ['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext);
         const isAudio = ['.mp3', '.ogg', '.m4a', '.wav'].includes(ext);
+        console.log(`[sendFile] Tipo detectado: isVideo=${isVideo}, isImage=${isImage}, isAudio=${isAudio}`);
         if (isVideo) {
+            console.log(`[sendFile] Enviando como vídeo...`);
             await socket.sendMessage(jid, {
                 video: buffer,
                 caption: `🎬 ${fileName}`,
                 mimetype: 'video/mp4',
             });
+            console.log(`[sendFile] Vídeo enviado com sucesso!`);
         }
         else if (isImage) {
+            console.log(`[sendFile] Enviando como imagem...`);
             await socket.sendMessage(jid, {
                 image: buffer,
                 caption: `🖼️ ${fileName}`,
             });
+            console.log(`[sendFile] Imagem enviada com sucesso!`);
         }
         else if (isAudio) {
+            console.log(`[sendFile] Enviando como áudio...`);
             await socket.sendMessage(jid, {
                 audio: buffer,
                 mimetype: 'audio/mp4',
                 ptt: false,
             });
+            console.log(`[sendFile] Áudio enviado com sucesso!`);
         }
         else {
+            console.log(`[sendFile] Enviando como documento...`);
             await socket.sendMessage(jid, {
                 document: buffer,
                 mimetype: getMimeType(ext),
                 fileName: fileName,
             });
+            console.log(`[sendFile] Documento enviado com sucesso!`);
         }
         console.log(`[Arquivo] Enviado para ${jid}: ${fileName}`);
     }

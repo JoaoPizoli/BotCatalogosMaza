@@ -19,9 +19,5 @@ export declare function addMessage(jid: string, role: 'user' | 'assistant', cont
 export declare function refreshTimeout(jid: string): void;
 export declare function clearSession(jid: string): void;
 export declare function runAgentWithContext(jid: string, agent: Agent, userMessage: string): Promise<string>;
-export declare function getSessionStats(): {
-    total: number;
-    byAgent: Record<string, number>;
-};
 export {};
 //# sourceMappingURL=sessionManager.d.ts.map

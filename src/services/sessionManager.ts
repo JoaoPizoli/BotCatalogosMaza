@@ -1,4 +1,7 @@
 import { run, Agent } from '@openai/agents';
+import { openAISemaphore } from '../utils/concurrency';
+import { withRetry } from '../utils/retry';
+import { getStructureForAgent, isStructureCacheReady } from '../cache/structureCache';
 
 type ChatMessage = { role: 'user' | 'assistant'; content: string };
 
@@ -124,6 +127,8 @@ export function clearSession(jid: string): void {
 
 /**
  * Executa agente com contexto da sessão
+ * Usa semáforo para limitar concorrência e retry para resilência
+ * Injeta estrutura de pastas do OneDrive no contexto
  */
 export async function runAgentWithContext(
     jid: string,
@@ -141,13 +146,38 @@ export async function runAgentWithContext(
         `${m.role === 'user' ? 'Usuário' : 'Assistente'}: ${m.content}`
     );
 
-    // Monta input com contexto
-    const input = contextParts.length > 0
-        ? `[Histórico recente]\n${contextParts.join('\n')}\n\n[Mensagem atual]\nUsuário: ${userMessage}`
-        : userMessage;
+    // Obtém estrutura de pastas do cache (se disponível)
+    let structureContext = '';
+    if (session.agentType && isStructureCacheReady()) {
+        const structure = getStructureForAgent(session.agentType);
+        if (structure) {
+            structureContext = `\n[ESTRUTURA DE PASTAS DISPONÍVEIS]\n${structure}\n`;
+        }
+    }
 
-    // Executa agente
-    const result = await run(agent, input);
+    // Monta input com contexto completo
+    let input = '';
+    if (structureContext) {
+        input += structureContext + '\n';
+    }
+    if (contextParts.length > 0) {
+        input += `[Histórico recente]\n${contextParts.join('\n')}\n\n`;
+    }
+    input += `[Mensagem atual]\nUsuário: ${userMessage}`;
+
+    // Executa com controle de concorrência (max 10 simultâneos) e retry
+    const result = await openAISemaphore.run(() =>
+        withRetry(
+            () => run(agent, input, { maxTurns: 25 }),
+            {
+                maxRetries: 2,
+                baseDelayMs: 2000,
+                onRetry: (err, attempt) => {
+                    console.log(`[Agent] Retry ${attempt} para ${jid}: ${err.message}`);
+                }
+            }
+        )
+    );
 
     // Obtém resposta
     const response = typeof result.finalOutput === 'string'
@@ -163,27 +193,4 @@ export async function runAgentWithContext(
     return response;
 }
 
-/**
- * Retorna estatísticas das sessões ativas
- */
-export function getSessionStats(): { total: number; byAgent: Record<string, number> } {
-    const byAgent: Record<string, number> = {
-        catalogo: 0,
-        embalagem: 0,
-        videos: 0,
-        none: 0,
-    };
 
-    for (const session of sessions.values()) {
-        if (session.agentType) {
-            byAgent[session.agentType]++;
-        } else {
-            byAgent['none']++;
-        }
-    }
-
-    return {
-        total: sessions.size,
-        byAgent,
-    };
-}
