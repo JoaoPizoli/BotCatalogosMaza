@@ -52,6 +52,20 @@ const listTemplates_1 = require("../utils/listTemplates");
 const guardrails_1 = require("../agents/guardrails");
 const audioTranscription_1 = require("./audioTranscription");
 let sock;
+function getDisconnectReasonName(code) {
+    if (!code)
+        return 'unknown';
+    const reasons = {
+        [baileys_1.DisconnectReason.badSession]: 'badSession',
+        [baileys_1.DisconnectReason.connectionClosed]: 'connectionClosed',
+        [baileys_1.DisconnectReason.connectionLost]: 'connectionLost',
+        [baileys_1.DisconnectReason.connectionReplaced]: 'connectionReplaced',
+        [baileys_1.DisconnectReason.loggedOut]: 'loggedOut',
+        [baileys_1.DisconnectReason.restartRequired]: 'restartRequired',
+        [baileys_1.DisconnectReason.timedOut]: 'timedOut',
+    };
+    return reasons[code] || `code_${code}`;
+}
 const NUMBER_TO_AGENT = {
     '1': 'embalagem',
     '2': 'catalogo',
@@ -108,10 +122,13 @@ async function startBot() {
             agent = new https_proxy_agent_1.HttpsProxyAgent(proxyUrl);
         }
     }
+    const pairingPhoneNumber = process.env.WHATSAPP_PAIRING_PHONE;
     const socket = (0, baileys_1.default)({
         auth: state,
         logger: (0, pino_1.default)({ level: 'warn' }),
-        browser: ['Bot Maza', 'Chrome', '120.0.0'],
+        browser: pairingPhoneNumber
+            ? ['Chrome (Linux)', 'Chrome', '120.0.0']
+            : ['Bot Maza', 'Chrome', '120.0.0'],
         syncFullHistory: false,
         defaultQueryTimeoutMs: 60000,
         connectTimeoutMs: 60000,
@@ -142,18 +159,34 @@ async function startBot() {
         }
         if (connection === 'close') {
             const statusCode = lastDisconnect?.error?.output?.statusCode;
-            console.log(`[Conexão] Fechada - Código: ${statusCode}`);
+            console.log(`[Conexão] Fechada - Código: ${statusCode} (${getDisconnectReasonName(statusCode)})`);
             if (statusCode === baileys_1.DisconnectReason.loggedOut) {
                 console.error('\n❌ Sessão encerrada. Delete a pasta auth/ e reinicie.\n');
                 process.exit(1);
             }
+            if (statusCode === baileys_1.DisconnectReason.restartRequired) {
+                console.log('[Conexão] Restart necessário (normal após QR scan), reconectando...');
+                startBot();
+                return;
+            }
+            if (statusCode === baileys_1.DisconnectReason.connectionClosed) {
+                console.log('[Conexão] Conexão fechada, reconectando...');
+                startBot();
+                return;
+            }
+            if (statusCode === baileys_1.DisconnectReason.connectionLost) {
+                console.log('[Conexão] Conexão perdida, reconectando...');
+                startBot();
+                return;
+            }
             if (statusCode === 408 || statusCode === 503 || statusCode === 515) {
                 retryCount++;
                 if (retryCount > MAX_RETRIES) {
-                    console.error('\n❌ Muitas tentativas falhas. Verifique:');
-                    console.error('1. Conexão de internet');
-                    console.error('2. Delete a pasta auth/ e tente novamente');
-                    console.error('3. Firewall pode estar bloqueando\n');
+                    console.error('\n❌ Muitas tentativas falhas. Possíveis causas:');
+                    console.error('1. IP do servidor pode estar bloqueado pelo WhatsApp');
+                    console.error('2. Conexão de internet instável');
+                    console.error('3. Configure WHATSAPP_PROXY no .env para usar um proxy');
+                    console.error('4. Delete a pasta auth/ e tente novamente\n');
                     process.exit(1);
                 }
                 const delay = Math.min(retryCount * 2000, 10000);

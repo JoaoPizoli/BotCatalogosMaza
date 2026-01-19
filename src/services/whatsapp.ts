@@ -38,19 +38,20 @@ let sock: ReturnType<typeof makeWASocket> | undefined;
 // Helper para mostrar nome do código de desconexão
 function getDisconnectReasonName(code: number | undefined): string {
     if (!code) return 'unknown';
-    const reasons: Record<number, string> = {
-        [DisconnectReason.badSession]: 'badSession',
-        [DisconnectReason.connectionClosed]: 'connectionClosed',
-        [DisconnectReason.connectionLost]: 'connectionLost',
-        [DisconnectReason.connectionReplaced]: 'connectionReplaced',
-        [DisconnectReason.loggedOut]: 'loggedOut',
-        [DisconnectReason.restartRequired]: 'restartRequired',
-        [DisconnectReason.timedOut]: 'timedOut',
-        408: 'timeout (408)',
-        503: 'serviceUnavailable (503)',
-        515: 'streamError (515)',
-    };
-    return reasons[code] || `code_${code}`;
+    
+    switch (code) {
+        case DisconnectReason.badSession: return 'badSession';
+        case DisconnectReason.connectionClosed: return 'connectionClosed';
+        case DisconnectReason.connectionLost: return 'connectionLost';
+        case DisconnectReason.connectionReplaced: return 'connectionReplaced';
+        case DisconnectReason.loggedOut: return 'loggedOut';
+        case DisconnectReason.restartRequired: return 'restartRequired';
+        case DisconnectReason.timedOut: return 'timedOut';
+        case 408: return 'timeout (408)';
+        case 503: return 'serviceUnavailable (503)';
+        case 515: return 'streamError (515)';
+        default: return `code_${code}`;
+    }
 }
 
 // Mapeamento de números para tipo de agente
