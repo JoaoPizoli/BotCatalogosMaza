@@ -97,7 +97,7 @@ export async function startBot() {
 
     const socket = makeWASocket({
         auth: state,
-        printQRInTerminal: false,
+        printQRInTerminal: true,  // Ativado para mostrar QR no terminal
         logger: P({ level: 'warn' }),
         browser: Browsers.macOS('Desktop'),
         syncFullHistory: false,
