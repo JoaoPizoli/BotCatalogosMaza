@@ -93,19 +93,31 @@ function isTranscriptionUnclear(text: string): boolean {
  */
 export async function startBot() {
     console.log("Iniciando bot...");
-    const { state, saveCreds } = await useMultiFileAuthState('./auth');
+    
+    // Verifica se existe sessão antiga
+    const fs = await import('node:fs');
+    const authPath = './auth';
+    const hasAuth = fs.existsSync(authPath) && fs.readdirSync(authPath).length > 0;
+    console.log(`[Auth] Sessão existente: ${hasAuth ? 'SIM' : 'NÃO (vai gerar QR)'}`);
+    
+    const { state, saveCreds } = await useMultiFileAuthState(authPath);
 
+    console.log('[Socket] Criando conexão...');
+    
     const socket = makeWASocket({
         auth: state,
-        logger: P({ level: 'silent' }),
+        logger: P({ level: 'debug' }),  // Debug para ver o que está acontecendo
         browser: ['Ubuntu', 'Chrome', '122.0.0'],
         syncFullHistory: false,
-        defaultQueryTimeoutMs: 60000,
-        connectTimeoutMs: 60000,
-        keepAliveIntervalMs: 25000,
-        markOnlineOnConnect: true,
-        retryRequestDelayMs: 250,
+        defaultQueryTimeoutMs: 120000,
+        connectTimeoutMs: 120000,
+        keepAliveIntervalMs: 30000,
+        markOnlineOnConnect: false,
+        retryRequestDelayMs: 500,
+        qrTimeout: 60000,  // 60 segundos para escanear QR
     });
+
+    console.log('[Socket] Conexão criada, aguardando eventos...');
 
     sock = socket;
 
