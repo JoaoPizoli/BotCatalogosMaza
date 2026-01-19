@@ -1,4 +1,4 @@
-import makeWASocket, { DisconnectReason, useMultiFileAuthState, Browsers, WAMessage } from '@whiskeysockets/baileys';
+import makeWASocket, { DisconnectReason, useMultiFileAuthState, WAMessage } from '@whiskeysockets/baileys';
 import P from 'pino';
 import QRCode from 'qrcode';
 import { Boom } from '@hapi/boom';
@@ -92,15 +92,19 @@ function isTranscriptionUnclear(text: string): boolean {
  * Inicia o bot WhatsApp
  */
 export async function startBot() {
-    console.log("Iniciando bot com nova configuração...");
+    console.log("Iniciando bot...");
     const { state, saveCreds } = await useMultiFileAuthState('./auth');
 
     const socket = makeWASocket({
         auth: state,
-        printQRInTerminal: true,  // Ativado para mostrar QR no terminal
-        logger: P({ level: 'warn' }),
-        browser: Browsers.ubuntu('Desktop'),
+        logger: P({ level: 'silent' }),
+        browser: ['Ubuntu', 'Chrome', '122.0.0'],
         syncFullHistory: false,
+        defaultQueryTimeoutMs: 60000,
+        connectTimeoutMs: 60000,
+        keepAliveIntervalMs: 25000,
+        markOnlineOnConnect: true,
+        retryRequestDelayMs: 250,
     });
 
     sock = socket;
@@ -112,34 +116,66 @@ export async function startBot() {
         await sendTextMessage(jid, '⏱️ Sessão encerrada por inatividade. Envie uma mensagem para recomeçar.');
     });
 
+    // Contador de tentativas
+    let retryCount = 0;
+    const MAX_RETRIES = 10;
+
     // Evento de conexão
     socket.ev.on('connection.update', async (update) => {
         const { connection, lastDisconnect, qr } = update;
 
+        // Mostra QR Code quando disponível
         if (qr) {
+            retryCount = 0;
+            console.log('\n' + '='.repeat(50));
+            console.log('📱 QR CODE - Escaneie com WhatsApp:');
+            console.log('='.repeat(50));
             const qrTerm = await QRCode.toString(qr, { type: 'terminal', small: true });
-            console.clear();
-            console.log('Escaneie este QR no WhatsApp > Aparelhos conectados:');
             console.log(qrTerm);
+            console.log('='.repeat(50));
+            console.log('Abra WhatsApp > Aparelhos Conectados > Conectar');
+            console.log('='.repeat(50) + '\n');
         }
 
         if (connection === 'close') {
             const statusCode = (lastDisconnect?.error as Boom | undefined)?.output?.statusCode;
 
-            console.log(`[Conexão] Fechada com código: ${statusCode}`);
+            console.log(`[Conexão] Fechada - Código: ${statusCode}`);
 
-            // Reconecta automaticamente, exceto se for logout
-            if (statusCode !== DisconnectReason.loggedOut) {
-                console.log('[Conexão] Reconectando em 3 segundos...');
-                setTimeout(() => {
-                    startBot();
-                }, 3000);
-            } else {
-                console.error('[Conexão] Deslogado do WhatsApp. Delete a pasta /auth e reinicie para escanear novo QR.');
+            // Logout - precisa reautenticar
+            if (statusCode === DisconnectReason.loggedOut) {
+                console.error('\n❌ Sessão encerrada. Delete a pasta auth/ e reinicie.\n');
+                process.exit(1);
             }
+            
+            // Timeout (408) ou outros erros de conexão
+            if (statusCode === 408 || statusCode === 503 || statusCode === 515) {
+                retryCount++;
+                
+                if (retryCount > MAX_RETRIES) {
+                    console.error('\n❌ Muitas tentativas falhas. Verifique:');
+                    console.error('1. Conexão de internet');
+                    console.error('2. Delete a pasta auth/ e tente novamente');
+                    console.error('3. Firewall pode estar bloqueando\n');
+                    process.exit(1);
+                }
+                
+                const delay = Math.min(retryCount * 2000, 10000);
+                console.log(`[Conexão] Tentativa ${retryCount}/${MAX_RETRIES} - Aguardando ${delay/1000}s...`);
+                setTimeout(() => startBot(), delay);
+                return;
+            }
+
+            // Outros erros - reconecta
+            console.log('[Conexão] Reconectando em 3s...');
+            setTimeout(() => startBot(), 3000);
+
         } else if (connection === 'open') {
-            console.log('✅ Conectado ao WhatsApp!');
+            console.log('\n✅ CONECTADO AO WHATSAPP!\n');
+            retryCount = 0;
             setupMessageHandler(socket);
+        } else if (connection === 'connecting') {
+            console.log('[Conexão] Conectando...');
         }
     });
 }
