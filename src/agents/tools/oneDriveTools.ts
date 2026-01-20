@@ -12,6 +12,30 @@ import {
 // Flag para garantir inicialização única
 let isInitialized = false;
 
+// Cache global de arquivos baixados por sessão
+// Isso permite enviar o arquivo automaticamente após o agente processar
+const downloadedFiles = new Map<string, { path: string; name: string }>();
+
+/**
+ * Obtém e limpa o arquivo baixado para uma sessão
+ */
+export function getAndClearDownloadedFile(sessionId: string): { path: string; name: string } | null {
+    const file = downloadedFiles.get(sessionId);
+    if (file) {
+        downloadedFiles.delete(sessionId);
+        return file;
+    }
+    return null;
+}
+
+/**
+ * Define o ID da sessão atual (chamado antes de processar com o agente)
+ */
+let currentSessionId: string | null = null;
+export function setCurrentSession(sessionId: string) {
+    currentSessionId = sessionId;
+}
+
 /**
  * Garante que o OneDrive está inicializado
  */
@@ -101,11 +125,11 @@ export const getFilesTool = tool({
 });
 
 /**
- * Tool: Baixa um arquivo e retorna o caminho local
+ * Tool: Baixa um arquivo e armazena no cache da sessão
  */
 export const downloadFileTool = tool({
     name: 'download_file',
-    description: 'Baixa um arquivo do OneDrive e retorna o caminho local para envio. Use quando o usuário pedir para receber um arquivo.',
+    description: 'Baixa um arquivo do OneDrive. O arquivo será enviado automaticamente ao usuário.',
     parameters: z.object({
         rootFolder: z.string().describe('Nome da pasta raiz'),
         subfolderPath: z.string().describe('Caminho da subpasta onde o arquivo está'),
@@ -117,9 +141,14 @@ export const downloadFileTool = tool({
         try {
             const localPath = await downloadFile(rootFolder, subfolderPath, fileName);
 
-            // Retorna o caminho local marcado para o handler processar
-            // Usa ||| como delimitador para evitar conflito com C: do Windows
-            return `__FILE_READY__|||${localPath}|||${fileName}`;
+            // Armazena no cache da sessão atual
+            if (currentSessionId) {
+                downloadedFiles.set(currentSessionId, { path: localPath, name: fileName });
+                console.log(`[Tool] Arquivo baixado e armazenado para sessão ${currentSessionId}`);
+            }
+
+            // Retorna confirmação simples (não depende do LLM copiar o marcador)
+            return `Arquivo "${fileName}" baixado com sucesso. Será enviado automaticamente.`;
         } catch (error: any) {
             return `Erro ao baixar arquivo: ${error.message}`;
         }

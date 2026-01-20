@@ -1,55 +1,55 @@
 import OpenAI from 'openai';
 import fs from 'node:fs';
 import path from 'node:path';
-import { downloadMediaMessage } from '@whiskeysockets/baileys';
-import type { WAMessage } from '@whiskeysockets/baileys';
+import { Bot } from 'grammy';
+import https from 'node:https';
 
-// Cliente OpenAI
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, });
 
 // Diretório temporário para áudios
 const AUDIO_TEMP_DIR = path.resolve(process.cwd(), 'cache', 'audio');
 
 /**
- * Verifica se a mensagem contém áudio
+ * Baixa o áudio do Telegram e salva localmente
  */
-export function isAudioMessage(msg: WAMessage): boolean {
-    return !!(
-        msg.message?.audioMessage
-    );
-}
-
-/**
- * Baixa o áudio da mensagem e salva localmente
- */
-export async function downloadAudio(msg: WAMessage): Promise<string | null> {
+export async function downloadAudioFromTelegram(bot: Bot, fileId: string): Promise<string | null> {
     try {
         // Garante que o diretório existe
         if (!fs.existsSync(AUDIO_TEMP_DIR)) {
             fs.mkdirSync(AUDIO_TEMP_DIR, { recursive: true });
         }
 
-        // Baixa o áudio
-        const buffer = await downloadMediaMessage(
-            msg,
-            'buffer',
-            {},
-        );
-
-        if (!buffer) {
-            console.log('[Audio] Não foi possível baixar o áudio');
+        // Obtém informações do arquivo
+        const file = await bot.api.getFile(fileId);
+        if (!file.file_path) {
+            console.log('[Audio] file_path não disponível');
             return null;
         }
 
-        // Salva o arquivo temporariamente
-        const fileName = `audio_${Date.now()}.ogg`;
+        // Monta URL de download
+        const fileUrl = `https://api.telegram.org/file/bot${bot.token}/${file.file_path}`;
+
+        // Nome do arquivo local
+        const ext = path.extname(file.file_path) || '.ogg';
+        const fileName = `audio_${Date.now()}${ext}`;
         const filePath = path.join(AUDIO_TEMP_DIR, fileName);
 
-        fs.writeFileSync(filePath, buffer);
-        console.log(`[Audio] Salvo em: ${filePath}`);
+        // Baixa o arquivo
+        await new Promise<void>((resolve, reject) => {
+            const fileStream = fs.createWriteStream(filePath);
+            https.get(fileUrl, (response) => {
+                response.pipe(fileStream);
+                fileStream.on('finish', () => {
+                    fileStream.close();
+                    resolve();
+                });
+            }).on('error', (err) => {
+                fs.unlink(filePath, () => { });
+                reject(err);
+            });
+        });
 
+        console.log(`[Audio] Salvo em: ${filePath}`);
         return filePath;
     } catch (error) {
         console.error('[Audio] Erro ao baixar:', error);
@@ -90,9 +90,9 @@ export async function transcribeAudio(audioPath: string): Promise<string | null>
 /**
  * Processa mensagem de áudio: baixa, transcreve e retorna texto
  */
-export async function processAudioMessage(msg: WAMessage): Promise<string | null> {
+export async function processAudioMessage(bot: Bot, fileId: string): Promise<string | null> {
     // Baixa o áudio
-    const audioPath = await downloadAudio(msg);
+    const audioPath = await downloadAudioFromTelegram(bot, fileId);
     if (!audioPath) {
         return null;
     }
@@ -101,5 +101,3 @@ export async function processAudioMessage(msg: WAMessage): Promise<string | null
     const text = await transcribeAudio(audioPath);
     return text;
 }
-
-

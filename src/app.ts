@@ -1,6 +1,7 @@
-import { startBot } from "./services/whatsapp";
+import { startBot } from "./services/telegram";
 import { setupDatabase } from "./database/db";
 import { initStructureCache } from "./cache/structureCache";
+import { cleanupOldFiles } from "./cache/fileCache";
 
 // Tratamento global de erros não capturados
 process.on('uncaughtException', (error) => {
@@ -21,6 +22,15 @@ async function main() {
 
         // Carrega estrutura do OneDrive em cache (para contexto dos agentes)
         await initStructureCache();
+
+        // Agenda limpeza de arquivos antigos a cada 1 hora
+        setInterval(async () => {
+            try {
+                await cleanupOldFiles(24); // Remove arquivos > 24h
+            } catch (err) {
+                console.error('[App] Erro na limpeza de cache:', err);
+            }
+        }, 60 * 60 * 1000); // 1 hora
 
         await startBot();
 

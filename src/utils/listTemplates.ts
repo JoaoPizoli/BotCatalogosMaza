@@ -4,10 +4,6 @@ Bem-vindo ao *Assistente Maza*. Estou aqui para ajudá-lo a encontrar catálogos
 
 export const menuPrincipal = `📋 *Menu Principal*
 
-Envie o *número* da opção desejada:
+Escolha uma opção abaixo:
 
-1️⃣ Embalagens
-2️⃣ Catálogos Digitais
-3️⃣ Vídeos de Treinamento
-
-_Digite "menu" a qualquer momento para voltar aqui._`;
+_Use /menu a qualquer momento para voltar aqui._`;

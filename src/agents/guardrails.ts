@@ -153,7 +153,7 @@ export async function inputGuardrail(
  */
 export const contextVerifierAgent = new Agent({
     name: 'Context Verifier',
-    model: 'gpt-5-mini',
+    model: 'gpt-5-nano',
     modelSettings: {
         reasoning: { effort: 'low' },
         text: { verbosity: 'low' }
