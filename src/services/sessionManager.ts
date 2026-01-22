@@ -13,10 +13,15 @@ export interface UserSession {
     messages: ChatMessage[];
     lastActivity: Date;
     timeoutTimer: NodeJS.Timeout | null;
+    // Rate limiting
+    requestTimestamps: number[];
 }
 
 // Timeout de inatividade: 5 minutos
 const SESSION_TIMEOUT_MS = 5 * 60 * 1000;
+
+// Rate limiting: máximo de mensagens por minuto
+const MAX_MESSAGES_PER_MINUTE = 20;
 
 // Map de sessões por JID (telefone)
 const sessions = new Map<string, UserSession>();
@@ -44,6 +49,7 @@ export function getOrCreateSession(jid: string): UserSession {
             messages: [],
             lastActivity: new Date(),
             timeoutTimer: null,
+            requestTimestamps: [],
         };
         sessions.set(jid, session);
         console.log(`[Session] Nova sessão criada para ${jid}`);
@@ -109,6 +115,34 @@ export function refreshTimeout(jid: string): void {
         // Remove sessão
         clearSession(jid);
     }, SESSION_TIMEOUT_MS);
+}
+
+/**
+ * Verifica rate limiting (máx 20 msgs/minuto)
+ * Retorna true se permitido, false se bloqueado
+ */
+export function checkRateLimit(jid: string): { allowed: boolean; remainingSeconds?: number } {
+    const session = sessions.get(jid);
+    if (!session) return { allowed: true };
+
+    const now = Date.now();
+    const oneMinuteAgo = now - 60 * 1000;
+
+    // Remove timestamps antigos (> 1 minuto)
+    session.requestTimestamps = session.requestTimestamps.filter(ts => ts > oneMinuteAgo);
+
+    // Verifica se excedeu o limite
+    if (session.requestTimestamps.length >= MAX_MESSAGES_PER_MINUTE) {
+        // Calcula tempo até liberar
+        const oldestTimestamp = session.requestTimestamps[0];
+        const remainingSeconds = Math.ceil((oldestTimestamp + 60 * 1000 - now) / 1000);
+        console.log(`[RateLimit] Usuário ${jid} bloqueado. ${session.requestTimestamps.length} msgs no último minuto.`);
+        return { allowed: false, remainingSeconds };
+    }
+
+    // Registra novo timestamp
+    session.requestTimestamps.push(now);
+    return { allowed: true };
 }
 
 /**

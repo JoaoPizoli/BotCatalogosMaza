@@ -19,6 +19,7 @@ import {
     clearSession,
     refreshTimeout,
     setOnSessionExpired,
+    checkRateLimit,
     AgentType,
 } from './sessionManager';
 
@@ -165,6 +166,13 @@ async function handleTextMessage(ctx: Context) {
     const session = getOrCreateSession(chatId);
     refreshTimeout(chatId);
 
+    // Rate limiting (20 msgs/minuto)
+    const rateCheck = checkRateLimit(chatId);
+    if (!rateCheck.allowed) {
+        await ctx.reply(`⏳ Você está enviando mensagens muito rápido. Aguarde ${rateCheck.remainingSeconds} segundos.`);
+        return;
+    }
+
     // Se não tem agente definido, envia boas-vindas + menu
     if (!session.agentType) {
         // Se é primeira mensagem, envia boas-vindas
@@ -191,6 +199,13 @@ async function handleAudioMessage(ctx: Context) {
 
     const session = getOrCreateSession(chatId);
     refreshTimeout(chatId);
+
+    // Rate limiting (20 msgs/minuto)
+    const rateCheck = checkRateLimit(chatId);
+    if (!rateCheck.allowed) {
+        await ctx.reply(`⏳ Você está enviando mensagens muito rápido. Aguarde ${rateCheck.remainingSeconds} segundos.`);
+        return;
+    }
 
     if (!session.agentType) {
         await ctx.reply('Por favor, escolha uma opção no menu primeiro:', {
