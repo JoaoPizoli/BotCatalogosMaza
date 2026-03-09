@@ -142,9 +142,13 @@ export function searchProducts(query: string): CachedProduct[] {
 /** Busca exata por código do produto. Tenta o cache local, senão busca no ERP. */
 export async function getProductByCode(code: string): Promise<CachedProduct | undefined> {
     const cached = cache.products.find((p) => p.code.toLowerCase() === code.toLowerCase());
-    if (cached) return cached;
+    if (cached) {
+        console.log(`[ProductCache] getProductByCode("${code}"): encontrado no cache (preço: ${cached.price})`);
+        return cached;
+    }
 
     // Fallback: busca direto no ERP por código
+    console.log(`[ProductCache] getProductByCode("${code}"): não encontrado no cache (${cache.products.length} produtos). Buscando no ERP...`);
     try {
         const pool = getErpPool();
         const [rows] = await pool.execute<mysql.RowDataPacket[]>(
@@ -153,7 +157,7 @@ export async function getProductByCode(code: string): Promise<CachedProduct | un
         );
         if (rows.length > 0) {
             const row = rows[0];
-            return {
+            const product: CachedProduct = {
                 code: String(row['CODIGO_ITEM']),
                 name: String(row['DESCRICAO_ITEM'] ?? ''),
                 aliases: [],
@@ -162,9 +166,14 @@ export async function getProductByCode(code: string): Promise<CachedProduct | un
                 price: parseFloat(String(row['VALOR_VENDA'] ?? 0)),
                 updatedAt: new Date().toISOString(),
             };
+            // Adiciona ao cache em memória
+            cache.products.push(product);
+            console.log(`[ProductCache] getProductByCode("${code}"): encontrado no ERP (preço: ${product.price})`);
+            return product;
         }
+        console.log(`[ProductCache] getProductByCode("${code}"): NÃO encontrado no ERP`);
     } catch (err) {
-        console.error('[ProductCache] Erro ao buscar produto no ERP por código:', err);
+        console.error(`[ProductCache] Erro ao buscar produto "${code}" no ERP:`, err);
     }
     return undefined;
 }
@@ -186,14 +195,14 @@ export async function searchProductsInERP(query: string): Promise<CachedProduct[
     const likeClauses = terms.map(() => 'DESCRICAO_ITEM LIKE ?');
     const params = terms.map((t) => `%${t}%`);
 
-    const sql = `SELECT * FROM VW_PRODUTOS WHERE ATIVO = "s" AND DEPARTAMENTO = "PRODUTO ACABADO" AND ${likeClauses.join(' AND ')} LIMIT 20`;
+    const sql = `SELECT CODIGO_ITEM, DESCRICAO_ITEM, VALOR_VENDA FROM VW_PRODUTOS WHERE ATIVO = "S" AND DEPARTAMENTO = "PRODUTO ACABADO" AND ${likeClauses.join(' AND ')} GROUP BY CODIGO_ITEM LIMIT 20`;
 
     try {
         const [rows] = await pool.execute<mysql.RowDataPacket[]>(sql, params);
         console.log(`[ProductCache] Busca direta no ERP para "${query}": ${rows.length} resultados`);
 
         const now = new Date().toISOString();
-        return rows.map((row) => ({
+        const results: CachedProduct[] = rows.map((row) => ({
             code: String(row['CODIGO_ITEM'] ?? ''),
             name: String(row['DESCRICAO_ITEM'] ?? ''),
             aliases: [],
@@ -202,6 +211,16 @@ export async function searchProductsInERP(query: string): Promise<CachedProduct[
             price: parseFloat(String(row['VALOR_VENDA'] ?? 0)),
             updatedAt: now,
         }));
+
+        // Merge resultados no cache em memória para que getProductByCode os encontre
+        for (const product of results) {
+            if (!cache.products.find((p) => p.code === product.code)) {
+                cache.products.push(product);
+            }
+        }
+        console.log(`[ProductCache] ${results.length} produtos do ERP adicionados ao cache em memória`);
+
+        return results;
     } catch (err) {
         console.error('[ProductCache] Erro na busca direta no ERP:', err);
         return [];
