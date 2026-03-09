@@ -75,7 +75,7 @@ export async function syncFromERP(): Promise<void> {
     const pool = getErpPool();
 
     const [rows] = await pool.execute<mysql.RowDataPacket[]>(
-        ' SELECT DESCRICAO_ITEM FROM VW_PRODUTOS WHERE ATIVO = "s" and DEPARTAMENTO = "PRODUTO ACABADO"; ',
+        ' SELECT CODIGO_ITEM, DESCRICAO_ITEM, VALOR_VENDA from VW_PRODUTOS where DEPARTAMENTO = "PRODUTO ACABADO" and ATIVO = "S" GROUP BY CODIGO_ITEM; ',
     );
 
     // Mapa de aliases existentes (para preservar durante o sync)
