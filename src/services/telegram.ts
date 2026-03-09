@@ -8,6 +8,7 @@ import { agenteEmbalagens } from '../agents/agenteEmbalagem';
 import { agenteVideos } from '../agents/agenteVideos';
 import { agenteOrcamentos } from '../agents/agenteOrcamentos';
 import { setCurrentSession, getAndClearDownloadedFile } from '../agents/tools/oneDriveTools';
+import { setOrcamentoSession, getAndClearPendingPDF } from '../agents/tools/orcamentoTools';
 import { getFileId, saveFileId } from './telegramFileCache';
 import { videoQueue } from './videoQueue';
 
@@ -413,8 +414,10 @@ async function processWithAgent(ctx: Context, chatId: string, message: string) {
         await ctx.reply('🔍 Aguarde, estou procurando o que você pediu...');
     }
 
-    // Define sessão atual para tracking de downloads (só para agentes OneDrive)
-    if (session.agentType !== 'orcamentos') {
+    // Define sessão atual para tracking de downloads
+    if (session.agentType === 'orcamentos') {
+        setOrcamentoSession(chatId);
+    } else {
         setCurrentSession(chatId);
     }
 
@@ -425,16 +428,10 @@ async function processWithAgent(ctx: Context, chatId: string, message: string) {
 
     // Para orçamentos: verifica se tem PDF para enviar
     if (session.agentType === 'orcamentos') {
-        const pdfMatch = response.match(/__QUOTE_PDF__\|\|\|([^|]+)\|\|\|([^|\n\r]+)/);
-        if (pdfMatch) {
-            const [, pdfPath, pdfFileName] = pdfMatch;
-            const cleanResponse = response.replace(/__QUOTE_PDF__\|\|\|[^|]+\|\|\|[^|\n\r]+/, '').trim();
-            if (cleanResponse) {
-                await ctx.reply(cleanResponse);
-            }
-            await sendFile(ctx, pdfPath.trim(), pdfFileName.trim());
-        } else {
-            await ctx.reply(response);
+        const pendingPDF = getAndClearPendingPDF(chatId);
+        await ctx.reply(response);
+        if (pendingPDF) {
+            await sendFile(ctx, pendingPDF.path, pendingPDF.name);
         }
         return;
     }

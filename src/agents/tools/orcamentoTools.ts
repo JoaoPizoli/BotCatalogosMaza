@@ -13,6 +13,23 @@ import { generateQuotePDF, QuoteData } from '../../services/pdfGenerator';
 import path from 'node:path';
 import { writeFile, mkdir } from 'node:fs/promises';
 
+// Cache de PDFs gerados por sessão (mesmo padrão de oneDriveTools)
+const pendingPDFs = new Map<string, { path: string; name: string }>();
+let currentOrcamentoSession: string | null = null;
+
+export function setOrcamentoSession(sessionId: string) {
+    currentOrcamentoSession = sessionId;
+}
+
+export function getAndClearPendingPDF(sessionId: string): { path: string; name: string } | null {
+    const pdf = pendingPDFs.get(sessionId);
+    if (pdf) {
+        pendingPDFs.delete(sessionId);
+        return pdf;
+    }
+    return null;
+}
+
 // ─── Tool: Buscar Produtos ───────────────────────────────────────────────────
 
 export const searchProductsTool = tool({
@@ -213,7 +230,12 @@ export const confirmQuoteTool = tool({
 
             console.log(`[Tool:confirm_quote] PDF gerado: ${filePath}`);
 
-            return `__QUOTE_PDF__|||${filePath}|||${fileName}`;
+            // Armazena o PDF para o telegram.ts enviar
+            if (currentOrcamentoSession) {
+                pendingPDFs.set(currentOrcamentoSession, { path: filePath, name: fileName });
+            }
+
+            return JSON.stringify({ success: true, message: 'PDF do orçamento gerado com sucesso.' });
         } catch (err) {
             console.error('[Tool:confirm_quote] Erro ao gerar PDF:', err);
             return JSON.stringify({ error: 'Erro ao gerar o PDF do orçamento. Tente novamente.' });
