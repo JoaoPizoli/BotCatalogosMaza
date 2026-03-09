@@ -187,7 +187,7 @@ export const confirmQuoteTool = tool({
         totalWithoutDiscount: z.number(),
         totalWithDiscount: z.number(),
         totalSavings: z.number(),
-        warnings: z.array(z.string()).optional(),
+        warnings: z.array(z.string()).default([]),
     }),
     async execute({ uf, items, totalWithoutDiscount, totalWithDiscount, totalSavings, warnings }) {
         console.log(`[Tool:confirm_quote] Gerando PDF do orçamento...`);
@@ -199,7 +199,7 @@ export const confirmQuoteTool = tool({
                 totalWithoutDiscount,
                 totalWithDiscount,
                 totalSavings,
-                warnings: warnings ?? [],
+                warnings: warnings,
             };
 
             const pdfBuffer = await generateQuotePDF(quoteData);
