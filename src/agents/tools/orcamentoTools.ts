@@ -9,6 +9,9 @@ import { tool } from '@openai/agents';
 import { z } from 'zod';
 import { searchProducts, ensureCacheFresh, searchProductsInERP } from '../../services/productCache';
 import { getMaxDiscount } from '../../config/config';
+import { generateQuotePDF, QuoteData } from '../../services/pdfGenerator';
+import path from 'node:path';
+import { writeFile, mkdir } from 'node:fs/promises';
 
 // ─── Tool: Buscar Produtos ───────────────────────────────────────────────────
 
@@ -161,10 +164,68 @@ export const calculateQuoteTool = tool({
     },
 });
 
+// ─── Tool: Confirmar Orçamento e Gerar PDF ──────────────────────────────────────
+
+const confirmQuoteItemSchema = z.object({
+    productCode: z.string(),
+    productName: z.string(),
+    unit: z.string(),
+    quantity: z.number(),
+    unitPrice: z.number(),
+    appliedDiscount: z.number(),
+    subtotal: z.number(),
+});
+
+export const confirmQuoteTool = tool({
+    name: 'confirm_quote',
+    description:
+        'Confirma o orçamento e gera o PDF. Chame esta tool SOMENTE quando o representante confirmar o orçamento (ex: "sim", "confirmar", "ok"). ' +
+        'Passe todos os dados do orçamento calculado anteriormente.',
+    parameters: z.object({
+        uf: z.string().describe('UF do cliente'),
+        items: z.array(confirmQuoteItemSchema).min(1).describe('Itens do orçamento (do resultado de calculate_quote)'),
+        totalWithoutDiscount: z.number(),
+        totalWithDiscount: z.number(),
+        totalSavings: z.number(),
+        warnings: z.array(z.string()).optional(),
+    }),
+    async execute({ uf, items, totalWithoutDiscount, totalWithDiscount, totalSavings, warnings }) {
+        console.log(`[Tool:confirm_quote] Gerando PDF do orçamento...`);
+
+        try {
+            const quoteData: QuoteData = {
+                clientState: uf,
+                items,
+                totalWithoutDiscount,
+                totalWithDiscount,
+                totalSavings,
+                warnings: warnings ?? [],
+            };
+
+            const pdfBuffer = await generateQuotePDF(quoteData);
+
+            // Salva PDF em arquivo temporário
+            const tmpDir = path.resolve(__dirname, '../../../tmp');
+            await mkdir(tmpDir, { recursive: true });
+            const fileName = `orcamento_${Date.now()}.pdf`;
+            const filePath = path.join(tmpDir, fileName);
+            await writeFile(filePath, pdfBuffer);
+
+            console.log(`[Tool:confirm_quote] PDF gerado: ${filePath}`);
+
+            return `__QUOTE_PDF__|||${filePath}|||${fileName}`;
+        } catch (err) {
+            console.error('[Tool:confirm_quote] Erro ao gerar PDF:', err);
+            return JSON.stringify({ error: 'Erro ao gerar o PDF do orçamento. Tente novamente.' });
+        }
+    },
+});
+
 // ─── Export de todas as tools ─────────────────────────────────────────────────
 
 export const orcamentoTools = [
     searchProductsTool,
     getMaxDiscountTool,
     calculateQuoteTool,
+    confirmQuoteTool,
 ];

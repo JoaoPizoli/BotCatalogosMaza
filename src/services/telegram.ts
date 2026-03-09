@@ -423,9 +423,19 @@ async function processWithAgent(ctx: Context, chatId: string, message: string) {
 
     console.log(`[DEBUG] Resposta do agente: ${response.substring(0, 200)}...`);
 
-    // Para orçamentos: apenas envia texto
+    // Para orçamentos: verifica se tem PDF para enviar
     if (session.agentType === 'orcamentos') {
-        await ctx.reply(response);
+        const pdfMatch = response.match(/__QUOTE_PDF__\|\|\|([^|]+)\|\|\|([^|\n\r]+)/);
+        if (pdfMatch) {
+            const [, pdfPath, pdfFileName] = pdfMatch;
+            const cleanResponse = response.replace(/__QUOTE_PDF__\|\|\|[^|]+\|\|\|[^|\n\r]+/, '').trim();
+            if (cleanResponse) {
+                await ctx.reply(cleanResponse);
+            }
+            await sendFile(ctx, pdfPath.trim(), pdfFileName.trim());
+        } else {
+            await ctx.reply(response);
+        }
         return;
     }
 
