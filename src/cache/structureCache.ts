@@ -87,7 +87,7 @@ export function getStructure(rootFolder: string): string {
 /**
  * Obtém a estrutura para um tipo de agente
  */
-export function getStructureForAgent(agentType: 'catalogo' | 'embalagem' | 'videos'): string {
+export function getStructureForAgent(agentType: 'catalogo' | 'embalagem' | 'videos' | 'orcamentos'): string {
     switch (agentType) {
         case 'catalogo':
             return getStructure('catálogo');
@@ -97,6 +97,8 @@ export function getStructureForAgent(agentType: 'catalogo' | 'embalagem' | 'vide
             const treinamento = getStructure('treinamento');
             const produtos = getStructure('produtos');
             return `=== TREINAMENTO SISTEMAS ===\n${treinamento}\n\n=== PRODUTOS (vídeos de aplicação) ===\n${produtos}`;
+        case 'orcamentos':
+            return '';
         default:
             return "";
     }

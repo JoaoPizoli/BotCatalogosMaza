@@ -2,6 +2,7 @@ import { startBot } from "./services/telegram";
 import { setupDatabase } from "./database/db";
 import { initStructureCache } from "./cache/structureCache";
 import { cleanupOldFiles } from "./cache/fileCache";
+import { loadCache, ensureCacheFresh } from "./services/productCache";
 
 // Tratamento global de erros não capturados
 process.on('uncaughtException', (error) => {
@@ -22,6 +23,14 @@ async function main() {
 
         // Carrega estrutura do OneDrive em cache (para contexto dos agentes)
         await initStructureCache();
+
+        // Carrega cache de produtos para orçamentos e sincroniza se expirado
+        try {
+            await loadCache();
+            await ensureCacheFresh();
+        } catch (err) {
+            console.error('[App] Erro ao carregar cache de produtos (ERP pode estar indisponível):', err);
+        }
 
         // Agenda limpeza de arquivos antigos a cada 1 hora
         setInterval(async () => {

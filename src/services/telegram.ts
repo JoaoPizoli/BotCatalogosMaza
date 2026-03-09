@@ -6,9 +6,21 @@ import fs from 'node:fs';
 import { agenteCatalogo } from '../agents/agenteCatalogo';
 import { agenteEmbalagens } from '../agents/agenteEmbalagem';
 import { agenteVideos } from '../agents/agenteVideos';
+import { agenteOrcamentos } from '../agents/agenteOrcamentos';
 import { setCurrentSession, getAndClearDownloadedFile } from '../agents/tools/oneDriveTools';
 import { getFileId, saveFileId } from './telegramFileCache';
 import { videoQueue } from './videoQueue';
+
+// Auth
+import {
+    checkAuth,
+    startLoginFlow,
+    isInLoginFlow,
+    getLoginStep,
+    processLoginStep,
+    logoff,
+    getAuthenticatedUser,
+} from './authManager';
 
 // Session Manager
 import {
@@ -35,11 +47,18 @@ import { processAudioMessage } from './audioTranscription';
 // Bot instance
 let bot: Bot | null = null;
 
+// Mensagens de login
+const MSG_PEDIR_CODIGO = `Por favor, informe seu *código de cliente*:`;
+const MSG_PEDIR_SENHA = `Agora informe sua *senha*:`;
+const MSG_LOGIN_INVALIDO = `Credenciais inválidas. Por favor, informe seu *código de cliente* novamente:`;
+const MSG_LOGIN_SUCESSO = `Login realizado com sucesso!`;
+
 // Mensagens de boas-vindas por agente
 const WELCOME_MESSAGES: Record<AgentType, string> = {
     embalagem: '📦 *Assistente de Embalagens*\n\nO que você procura? Pode me dizer o nome do produto ou tipo de embalagem.',
     catalogo: '📑 *Assistente de Catálogos Digitais*\n\nQual catálogo você precisa? Me diga o tipo de produto.',
     videos: '🎬 *Assistente de Vídeos de Treinamento e Produtos*\n\nO que você busca? Posso ajudar com treinamentos ou **vídeos de aplicação de produtos**. Me diga o que precisa!',
+    orcamentos: '📋 *Assistente de Orçamentos*\n\nComo posso ajudá-lo? Pode me pedir orçamentos informando os produtos, quantidades, descontos e o estado (UF) do cliente.',
 };
 
 // Menu principal com botões inline
@@ -47,7 +66,8 @@ function getMenuKeyboard(): InlineKeyboard {
     return new InlineKeyboard()
         .text('📦 Embalagens', 'agent_embalagem').row()
         .text('📑 Catálogos Digitais', 'agent_catalogo').row()
-        .text('🎬 Vídeos de Treinamento/Produtos', 'agent_videos');
+        .text('🎬 Vídeos de Treinamento/Produtos', 'agent_videos').row()
+        .text('📋 Orçamentos', 'agent_orcamentos');
 }
 
 /**
@@ -71,11 +91,18 @@ export async function startBot() {
         const chatId = ctx.chat.id.toString();
         clearSession(chatId);
 
-        await ctx.reply(mensagemBoasVindas, { parse_mode: 'Markdown' });
-        await ctx.reply(menuPrincipal, {
-            parse_mode: 'Markdown',
-            reply_markup: getMenuKeyboard(),
-        });
+        const autenticado = await checkAuth(chatId);
+        if (autenticado) {
+            await ctx.reply(mensagemBoasVindas, { parse_mode: 'Markdown' });
+            await ctx.reply(menuPrincipal, {
+                parse_mode: 'Markdown',
+                reply_markup: getMenuKeyboard(),
+            });
+        } else {
+            await ctx.reply(mensagemBoasVindas, { parse_mode: 'Markdown' });
+            await ctx.reply(MSG_PEDIR_CODIGO, { parse_mode: 'Markdown' });
+            startLoginFlow(chatId);
+        }
 
         console.log(`[Bot] /start de ${chatId}`);
     });
@@ -83,6 +110,15 @@ export async function startBot() {
     // Comando /menu
     bot.command('menu', async (ctx) => {
         const chatId = ctx.chat.id.toString();
+
+        const autenticado = await checkAuth(chatId);
+        if (!autenticado) {
+            await ctx.reply('Você precisa fazer login primeiro.');
+            await ctx.reply(MSG_PEDIR_CODIGO, { parse_mode: 'Markdown' });
+            startLoginFlow(chatId);
+            return;
+        }
+
         clearSession(chatId);
 
         await ctx.reply(menuPrincipal, {
@@ -91,6 +127,15 @@ export async function startBot() {
         });
 
         console.log(`[Bot] /menu de ${chatId}`);
+    });
+
+    // Comando /logoff
+    bot.command('logoff', async (ctx) => {
+        const chatId = ctx.chat.id.toString();
+        clearSession(chatId);
+        await logoff(chatId);
+        await ctx.reply('Você foi desconectado. Até logo!\n\nUse /start para entrar novamente.');
+        console.log(`[Bot] /logoff de ${chatId}`);
     });
 
     // Callback dos botões de agente
@@ -104,6 +149,10 @@ export async function startBot() {
 
     bot.callbackQuery('agent_videos', async (ctx) => {
         await selectAgent(ctx, 'videos');
+    });
+
+    bot.callbackQuery('agent_orcamentos', async (ctx) => {
+        await selectAgent(ctx, 'orcamentos');
     });
 
     // Mensagens de texto
@@ -140,6 +189,15 @@ async function selectAgent(ctx: Context, agentType: AgentType) {
 
     await ctx.answerCallbackQuery();
 
+    // Verifica auth antes de permitir seleção de agente
+    const autenticado = await checkAuth(chatId);
+    if (!autenticado) {
+        await ctx.reply('Sua sessão de login expirou. Faça login novamente.');
+        await ctx.reply(MSG_PEDIR_CODIGO, { parse_mode: 'Markdown' });
+        startLoginFlow(chatId);
+        return;
+    }
+
     getOrCreateSession(chatId);
     setAgentType(chatId, agentType);
     refreshTimeout(chatId);
@@ -148,6 +206,37 @@ async function selectAgent(ctx: Context, agentType: AgentType) {
     await ctx.reply(welcomeMessage, { parse_mode: 'Markdown' });
 
     console.log(`[Agente] ${chatId} -> ${agentType}`);
+}
+
+/**
+ * Processa passo do login
+ */
+async function handleLoginStep(ctx: Context, chatId: string, text: string) {
+    const result = await processLoginStep(chatId, text);
+
+    switch (result) {
+        case 'need_password':
+            await ctx.reply(MSG_PEDIR_SENHA, { parse_mode: 'Markdown' });
+            break;
+
+        case 'success': {
+            const user = await getAuthenticatedUser(chatId);
+            const clientInfo = user ? ` (${user.clientCode})` : '';
+            await ctx.reply(`${MSG_LOGIN_SUCESSO}\n\nBem-vindo${clientInfo}!`);
+            await ctx.reply(menuPrincipal, {
+                parse_mode: 'Markdown',
+                reply_markup: getMenuKeyboard(),
+            });
+            break;
+        }
+
+        case 'invalid_credentials':
+            await ctx.reply(MSG_LOGIN_INVALIDO, { parse_mode: 'Markdown' });
+            break;
+
+        default:
+            break;
+    }
 }
 
 /**
@@ -161,7 +250,22 @@ async function handleTextMessage(ctx: Context) {
 
     console.log(`[Mensagem] ${chatId}: ${text}`);
 
-    // Verifica se é uma sessão nova (primeiro contato)
+    // ── Prioridade 1: fluxo de login em andamento ───────────────────
+    if (isInLoginFlow(chatId)) {
+        await handleLoginStep(ctx, chatId, text);
+        return;
+    }
+
+    // ── Prioridade 2: verificar autenticação ────────────────────────
+    const autenticado = await checkAuth(chatId);
+    if (!autenticado) {
+        await ctx.reply('Bem-vindo ao *Assistente Maza*! Para começar, faça login.', { parse_mode: 'Markdown' });
+        await ctx.reply(MSG_PEDIR_CODIGO, { parse_mode: 'Markdown' });
+        startLoginFlow(chatId);
+        return;
+    }
+
+    // ── Prioridade 3: sessão + rate limit ───────────────────────────
     const isNewSession = !getSession(chatId);
     const session = getOrCreateSession(chatId);
     refreshTimeout(chatId);
@@ -173,9 +277,8 @@ async function handleTextMessage(ctx: Context) {
         return;
     }
 
-    // Se não tem agente definido, envia boas-vindas + menu
+    // ── Prioridade 4: agente selecionado? ───────────────────────────
     if (!session.agentType) {
-        // Se é primeira mensagem, envia boas-vindas
         if (isNewSession) {
             await ctx.reply(mensagemBoasVindas, { parse_mode: 'Markdown' });
         }
@@ -186,7 +289,7 @@ async function handleTextMessage(ctx: Context) {
         return;
     }
 
-    // Tem agente ativo, processa com ele
+    // ── Prioridade 5: processar com agente ──────────────────────────
     await processWithAgent(ctx, chatId, text);
 }
 
@@ -196,6 +299,19 @@ async function handleTextMessage(ctx: Context) {
 async function handleAudioMessage(ctx: Context) {
     const chatId = ctx.chat?.id.toString();
     if (!chatId || !bot) return;
+
+    // Prioridade 1: login flow
+    if (isInLoginFlow(chatId)) {
+        await ctx.reply('Por favor, envie o código/senha como texto durante o login.');
+        return;
+    }
+
+    // Prioridade 2: auth check
+    const autenticado = await checkAuth(chatId);
+    if (!autenticado) {
+        await ctx.reply('Você precisa fazer login primeiro. Use /start para começar.');
+        return;
+    }
 
     const session = getOrCreateSession(chatId);
     refreshTimeout(chatId);
@@ -290,17 +406,30 @@ async function processWithAgent(ctx: Context, chatId: string, message: string) {
 
     console.log(`[Agent] Processando com ${session.agentType}: "${message}"`);
 
-    await ctx.reply('🔍 Aguarde, estou procurando o que você pediu...');
+    // Mensagem de processamento diferente para orçamentos
+    if (session.agentType === 'orcamentos') {
+        await ctx.replyWithChatAction('typing');
+    } else {
+        await ctx.reply('🔍 Aguarde, estou procurando o que você pediu...');
+    }
 
-    // Define sessão atual para tracking de downloads
-    setCurrentSession(chatId);
+    // Define sessão atual para tracking de downloads (só para agentes OneDrive)
+    if (session.agentType !== 'orcamentos') {
+        setCurrentSession(chatId);
+    }
 
     // Executa agente
     const response = await runAgentWithContext(chatId, agent, message);
 
     console.log(`[DEBUG] Resposta do agente: ${response.substring(0, 200)}...`);
 
-    // Verifica se tem arquivo baixado na sessão (método robusto)
+    // Para orçamentos: apenas envia texto
+    if (session.agentType === 'orcamentos') {
+        await ctx.reply(response);
+        return;
+    }
+
+    // Para agentes OneDrive: lógica de download de arquivo
     const downloadedFile = getAndClearDownloadedFile(chatId);
 
     if (downloadedFile) {
@@ -362,6 +491,7 @@ function getAgentByType(type: AgentType) {
         case 'catalogo': return agenteCatalogo;
         case 'embalagem': return agenteEmbalagens;
         case 'videos': return agenteVideos;
+        case 'orcamentos': return agenteOrcamentos;
         default: return null;
     }
 }
@@ -484,4 +614,3 @@ async function sendFile(ctx: Context, localPath: string, fileName: string) {
         await ctx.reply(`❌ Erro ao enviar arquivo: ${fileName}`);
     }
 }
-

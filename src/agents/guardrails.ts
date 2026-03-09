@@ -87,7 +87,7 @@ export async function inputGuardrail(
             console.log(`[Guardrail] Assunto fora de contexto detectado: ${pattern}`);
             return {
                 allowed: false,
-                reason: '🎨 Sou o assistente da *Maza Tintas* e só posso ajudar com:\n\n📦 Embalagens de produtos\n📑 Catálogos digitais\n🎬 Vídeos de treinamento\n\nPara outros assuntos, procure um profissional especializado. Como posso ajudar com produtos Maza?'
+                reason: '🎨 Sou o assistente da *Maza Tintas* e só posso ajudar com:\n\n📦 Embalagens de produtos\n📑 Catálogos digitais\n🎬 Vídeos de treinamento\n📋 Orçamentos\n\nPara outros assuntos, procure um profissional especializado. Como posso ajudar com produtos Maza?'
             };
         }
     }
@@ -122,9 +122,12 @@ export async function inputGuardrail(
         'cor', 'cores', 'colorido', 'branco', 'preto',
         // Marcas/linhas
         'maza', 'linha', 'premium', 'econômica', 'profissional',
-        // Ações comuns  
+        // Ações comuns
         'preciso', 'quero', 'buscar', 'procurar', 'encontrar', 'tem', 'existe',
         'qual', 'quais', 'onde', 'como', 'quanto',
+        // Orçamentos
+        'orçamento', 'orcamento', 'preço', 'preco', 'desconto',
+        'cotação', 'cotacao', 'pedido', 'quantidade', 'valor', 'calcular',
     ];
 
     const hasContext = mazaKeywords.some(keyword =>
@@ -141,7 +144,7 @@ export async function inputGuardrail(
         console.log(`[Guardrail] Mensagem fora de contexto detectada`);
         return {
             allowed: false,
-            reason: 'Parece que sua mensagem não está relacionada aos nossos serviços. Posso ajudar com:\n\n📦 Embalagens\n📑 Catálogos Digitais\n🎬 Vídeos de Treinamento\n\nComo posso ajudar?'
+            reason: 'Parece que sua mensagem não está relacionada aos nossos serviços. Posso ajudar com:\n\n📦 Embalagens\n📑 Catálogos Digitais\n🎬 Vídeos de Treinamento\n📋 Orçamentos\n\nComo posso ajudar?'
         };
     }
 

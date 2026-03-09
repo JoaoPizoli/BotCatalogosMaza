@@ -24,6 +24,8 @@
     "openai": "^6.16.0",
     "pino": "^9.11.0",
     "socks-proxy-agent": "^8.0.5",
+    "mysql2": "^3.14.1",
+    "pdfkit": "^0.17.2",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
     "yarn": "^1.22.22",
@@ -34,6 +36,7 @@
     "@types/express": "^5.0.3",
     "@types/fluent-ffmpeg": "^2.1.28",
     "@types/node": "^24.5.2",
+    "@types/pdfkit": "^0.17.5",
     "typescript": "^5.9.2"
   }
 }

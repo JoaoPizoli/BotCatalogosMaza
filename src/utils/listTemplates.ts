@@ -1,6 +1,6 @@
 export const mensagemBoasVindas = `👋 Olá, representante!
 
-Bem-vindo ao *Assistente Maza*. Estou aqui para ajudá-lo a encontrar catálogos, embalagens e vídeos de treinamento.`;
+Bem-vindo ao *Assistente Maza*. Estou aqui para ajudá-lo a encontrar catálogos, embalagens, vídeos de treinamento e gerar orçamentos.`;
 
 export const menuPrincipal = `📋 *Menu Principal*
 

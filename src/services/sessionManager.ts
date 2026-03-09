@@ -2,10 +2,11 @@ import { run, Agent } from '@openai/agents';
 import { openAISemaphore } from '../utils/concurrency';
 import { withRetry } from '../utils/retry';
 import { getStructureForAgent, isStructureCacheReady } from '../cache/structureCache';
+import { SESSION_TIMEOUT_MS, MAX_MESSAGES_PER_MINUTE } from '../config/config';
 
 type ChatMessage = { role: 'user' | 'assistant'; content: string };
 
-export type AgentType = 'catalogo' | 'embalagem' | 'videos';
+export type AgentType = 'catalogo' | 'embalagem' | 'videos' | 'orcamentos';
 
 export interface UserSession {
     jid: string;
@@ -17,11 +18,7 @@ export interface UserSession {
     requestTimestamps: number[];
 }
 
-// Timeout de inatividade: 5 minutos
-const SESSION_TIMEOUT_MS = 5 * 60 * 1000;
-
-// Rate limiting: máximo de mensagens por minuto
-const MAX_MESSAGES_PER_MINUTE = 20;
+// SESSION_TIMEOUT_MS e MAX_MESSAGES_PER_MINUTE importados do config
 
 // Map de sessões por JID (telefone)
 const sessions = new Map<string, UserSession>();
@@ -180,9 +177,9 @@ export async function runAgentWithContext(
         `${m.role === 'user' ? 'Usuário' : 'Assistente'}: ${m.content}`
     );
 
-    // Obtém estrutura de pastas do cache (se disponível)
+    // Obtém estrutura de pastas do cache (se disponível, exceto para orcamentos)
     let structureContext = '';
-    if (session.agentType && isStructureCacheReady()) {
+    if (session.agentType && session.agentType !== 'orcamentos' && isStructureCacheReady()) {
         const structure = getStructureForAgent(session.agentType);
         if (structure) {
             structureContext = `\n[ESTRUTURA DE PASTAS DISPONÍVEIS]\n${structure}\n`;
