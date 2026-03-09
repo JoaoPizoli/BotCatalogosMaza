@@ -106,12 +106,23 @@ export async function syncFromERP(): Promise<void> {
     console.log(`[ProductCache] Sync concluído: ${products.length} produtos atualizados`);
 }
 
+// Stop words em português para filtrar dos termos de busca
+const STOP_WORDS = new Set([
+    'a', 'o', 'e', 'de', 'do', 'da', 'dos', 'das', 'em', 'no', 'na', 'nos', 'nas',
+    'um', 'uma', 'uns', 'umas', 'com', 'por', 'para', 'ao', 'aos', 'se', 'que',
+    'os', 'as', 'ou', 'mais', 'menos', 'como', 'seu', 'sua', 'isso', 'este',
+    'essa', 'esse', 'não', 'sim', 'muito', 'bem', 'ser', 'ter', 'ir',
+]);
+
 /**
  * Busca produtos no cache por nome, aliases ou código.
+ * Retorna também o score máximo para que o caller saiba se o resultado é forte.
  */
-export function searchProducts(query: string): CachedProduct[] {
-    const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
-    if (terms.length === 0) return [];
+export function searchProducts(query: string): { products: CachedProduct[]; maxScore: number; totalTerms: number } {
+    const terms = query.toLowerCase().split(/\s+/)
+        .filter(Boolean)
+        .filter((t) => t.length > 2 && !STOP_WORDS.has(t));
+    if (terms.length === 0) return { products: [], maxScore: 0, totalTerms: 0 };
 
     const scored = cache.products
         .map((product) => {
@@ -136,7 +147,12 @@ export function searchProducts(query: string): CachedProduct[] {
         .filter((item) => item.score > 0)
         .sort((a, b) => b.score - a.score);
 
-    return scored.map((item) => item.product);
+    const maxScore = scored.length > 0 ? scored[0].score : 0;
+    return {
+        products: scored.map((item) => item.product),
+        maxScore,
+        totalTerms: terms.length,
+    };
 }
 
 /** Busca exata por código do produto. Tenta o cache local, senão busca no ERP. */
@@ -189,7 +205,9 @@ export function getAllProducts(): CachedProduct[] {
  */
 export async function searchProductsInERP(query: string): Promise<CachedProduct[]> {
     const pool = getErpPool();
-    const terms = query.trim().split(/\s+/).filter(Boolean);
+    const terms = query.trim().split(/\s+/)
+        .filter(Boolean)
+        .filter((t) => t.length > 2 && !STOP_WORDS.has(t.toLowerCase()));
     if (terms.length === 0) return [];
 
     const likeClauses = terms.map(() => 'DESCRICAO_ITEM LIKE ?');

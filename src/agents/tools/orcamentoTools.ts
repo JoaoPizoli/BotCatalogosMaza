@@ -44,14 +44,20 @@ export const searchProductsTool = tool({
     async execute({ query }) {
         console.log(`[Tool:search_products] Buscando "${query}"...`);
         await ensureCacheFresh();
-        let results = searchProducts(query);
+
+        const cacheResult = searchProducts(query);
+        let results = cacheResult.products;
         let source = 'cache';
 
-        // Fallback: se o cache não retornar resultados, busca direto no ERP
-        if (results.length === 0) {
-            console.log(`[Tool:search_products] Cache vazio/sem resultado. Buscando no ERP...`);
-            results = await searchProductsInERP(query);
-            source = 'erp';
+        // Busca no ERP se: cache vazio, ou score fraco (menos da metade dos termos matched)
+        const isWeakMatch = cacheResult.totalTerms > 0 && cacheResult.maxScore < Math.ceil(cacheResult.totalTerms / 2);
+        if (results.length === 0 || isWeakMatch) {
+            console.log(`[Tool:search_products] Cache ${results.length === 0 ? 'vazio' : 'com resultado fraco (score ' + cacheResult.maxScore + '/' + cacheResult.totalTerms + ')'}. Buscando no ERP...`);
+            const erpResults = await searchProductsInERP(query);
+            if (erpResults.length > 0) {
+                results = erpResults;
+                source = 'erp';
+            }
         }
 
         console.log(`[Tool:search_products] ${results.length} resultados encontrados (${source})`);
