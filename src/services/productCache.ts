@@ -88,14 +88,14 @@ export async function syncFromERP(): Promise<void> {
 
     const now = new Date().toISOString();
     const products: CachedProduct[] = rows.map((row) => {
-        const code = row['code'] as string;
+        const code = String(row['CODIGO_ITEM']);
         return {
             code,
-            name: row['name'] as string,
+            name: String(row['DESCRICAO_ITEM'] ?? ''),
             aliases: existingAliases.get(code) ?? [],
-            description: (row['description'] as string) ?? '',
-            unit: (row['unit'] as string) ?? 'UN',
-            price: parseFloat(String(row['price'])),
+            description: String(row['DESCRICAO_ITEM'] ?? ''),
+            unit: 'UN',
+            price: parseFloat(String(row['VALOR_VENDA'] ?? 0)),
             updatedAt: now,
         };
     });
