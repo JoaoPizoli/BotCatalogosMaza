@@ -54,10 +54,13 @@ Representante diz: "22 por cento de desconto para tres cimento queimado cliente 
 Você DEVE:
 → Chamar search_products("cimento queimado")
 → Chamar get_max_discount("SP")
-→ Chamar calculate_quote com { items: [{ productCode, quantity: 3, discountPercent: 22 }], uf: "SP" }
+→ Dos resultados de search_products, pegar o code, name e price do produto
+→ Chamar calculate_quote com { items: [{ productCode: "CODIGO", productName: "NOME", unitPrice: PRECO, quantity: 3, discountPercent: 22 }], uf: "SP" }
 → Apresentar o orçamento completo
 → Perguntar "Deseja confirmar?"
 TUDO em uma única resposta, sem perguntas intermediárias.
+
+IMPORTANTE: Ao chamar calculate_quote, SEMPRE passe productName e unitPrice que vieram do resultado de search_products. Nunca chame calculate_quote sem incluir o preço.
 
 # Desconto
 - Se o desconto pedido exceder o máximo para a UF, ajuste para o máximo e avise no orçamento.

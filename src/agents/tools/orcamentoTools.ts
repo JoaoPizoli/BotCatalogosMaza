@@ -7,7 +7,7 @@
 
 import { tool } from '@openai/agents';
 import { z } from 'zod';
-import { searchProducts, getProductByCode, ensureCacheFresh, searchProductsInERP } from '../../services/productCache';
+import { searchProducts, ensureCacheFresh, searchProductsInERP } from '../../services/productCache';
 import { getMaxDiscount } from '../../config/config';
 
 // ─── Tool: Buscar Produtos ───────────────────────────────────────────────────
@@ -60,40 +60,6 @@ export const searchProductsTool = tool({
     },
 });
 
-// ─── Tool: Obter Preço do Produto ────────────────────────────────────────────
-
-export const getProductPriceTool = tool({
-    name: 'get_product_price',
-    description:
-        'Retorna o preço e detalhes de um produto específico pelo seu código.',
-    parameters: z.object({
-        code: z.string().describe('Código do produto'),
-    }),
-    async execute({ code }) {
-        console.log(`[Tool:get_product_price] Buscando código "${code}"...`);
-        await ensureCacheFresh();
-        const product = await getProductByCode(code);
-
-        if (!product) {
-            return JSON.stringify({
-                found: false,
-                message: `Produto com código "${code}" não encontrado.`,
-            });
-        }
-
-        return JSON.stringify({
-            found: true,
-            product: {
-                code: product.code,
-                name: product.name,
-                description: product.description,
-                unit: product.unit,
-                price: product.price,
-            },
-        });
-    },
-});
-
 // ─── Tool: Desconto Máximo por UF ────────────────────────────────────────────
 
 export const getMaxDiscountTool = tool({
@@ -118,6 +84,8 @@ export const getMaxDiscountTool = tool({
 
 const quoteItemSchema = z.object({
     productCode: z.string().describe('Código do produto'),
+    productName: z.string().describe('Nome do produto (retornado pelo search_products)'),
+    unitPrice: z.number().positive().describe('Preço unitário do produto (retornado pelo search_products)'),
     quantity: z.number().positive().describe('Quantidade do produto'),
     discountPercent: z.number().min(0).max(100).describe('Porcentagem de desconto solicitada para este item'),
 });
@@ -126,15 +94,15 @@ export const calculateQuoteTool = tool({
     name: 'calculate_quote',
     description:
         'Calcula o orçamento completo com itens, descontos e totais. ' +
+        'Cada item DEVE incluir productCode, productName, unitPrice (do search_products), quantity e discountPercent. ' +
         'Valida se cada desconto está dentro do máximo permitido para a UF do cliente. ' +
         'Se algum desconto exceder o máximo, ajusta automaticamente e avisa.',
     parameters: z.object({
         uf: z.string().describe('Sigla do estado (UF) do cliente'),
-        items: z.array(quoteItemSchema).min(1).describe('Lista de itens do orçamento'),
+        items: z.array(quoteItemSchema).min(1).describe('Lista de itens do orçamento com preço unitário incluso'),
     }),
     async execute({ uf, items }) {
         console.log(`[Tool:calculate_quote] UF: ${uf}, ${items.length} item(ns)`);
-        await ensureCacheFresh();
 
         const maxDiscount = getMaxDiscount(uf);
         const warnings: string[] = [];
@@ -150,29 +118,25 @@ export const calculateQuoteTool = tool({
         }> = [];
 
         for (const item of items) {
-            const product = await getProductByCode(item.productCode);
-            if (!product) {
-                warnings.push(`Produto "${item.productCode}" não encontrado no catálogo.`);
-                continue;
-            }
+            console.log(`[Tool:calculate_quote] Item: ${item.productCode} | ${item.productName} | Preço: ${item.unitPrice} | Qtd: ${item.quantity} | Desc: ${item.discountPercent}%`);
 
             let appliedDiscount = item.discountPercent;
             if (appliedDiscount > maxDiscount) {
                 warnings.push(
-                    `Desconto de ${item.discountPercent}% para "${product.name}" excede o máximo de ${maxDiscount}% para ${uf.toUpperCase()}. Ajustado para ${maxDiscount}%.`,
+                    `Desconto de ${item.discountPercent}% para "${item.productName}" excede o máximo de ${maxDiscount}% para ${uf.toUpperCase()}. Ajustado para ${maxDiscount}%.`,
                 );
                 appliedDiscount = maxDiscount;
             }
 
-            const discountedPrice = product.price * (1 - appliedDiscount / 100);
+            const discountedPrice = item.unitPrice * (1 - appliedDiscount / 100);
             const subtotal = discountedPrice * item.quantity;
 
             quoteItems.push({
-                productCode: product.code,
-                productName: product.name,
-                unit: product.unit,
+                productCode: item.productCode,
+                productName: item.productName,
+                unit: 'UN',
                 quantity: item.quantity,
-                unitPrice: product.price,
+                unitPrice: item.unitPrice,
                 requestedDiscount: item.discountPercent,
                 appliedDiscount,
                 subtotal: Math.round(subtotal * 100) / 100,
@@ -201,7 +165,6 @@ export const calculateQuoteTool = tool({
 
 export const orcamentoTools = [
     searchProductsTool,
-    getProductPriceTool,
     getMaxDiscountTool,
     calculateQuoteTool,
 ];
