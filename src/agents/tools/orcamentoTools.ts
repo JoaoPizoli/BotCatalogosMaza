@@ -72,7 +72,7 @@ export const getProductPriceTool = tool({
     async execute({ code }) {
         console.log(`[Tool:get_product_price] Buscando código "${code}"...`);
         await ensureCacheFresh();
-        const product = getProductByCode(code);
+        const product = await getProductByCode(code);
 
         if (!product) {
             return JSON.stringify({
@@ -150,7 +150,7 @@ export const calculateQuoteTool = tool({
         }> = [];
 
         for (const item of items) {
-            const product = getProductByCode(item.productCode);
+            const product = await getProductByCode(item.productCode);
             if (!product) {
                 warnings.push(`Produto "${item.productCode}" não encontrado no catálogo.`);
                 continue;

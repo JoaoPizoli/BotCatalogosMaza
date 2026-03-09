@@ -139,9 +139,34 @@ export function searchProducts(query: string): CachedProduct[] {
     return scored.map((item) => item.product);
 }
 
-/** Busca exata por código do produto. */
-export function getProductByCode(code: string): CachedProduct | undefined {
-    return cache.products.find((p) => p.code.toLowerCase() === code.toLowerCase());
+/** Busca exata por código do produto. Tenta o cache local, senão busca no ERP. */
+export async function getProductByCode(code: string): Promise<CachedProduct | undefined> {
+    const cached = cache.products.find((p) => p.code.toLowerCase() === code.toLowerCase());
+    if (cached) return cached;
+
+    // Fallback: busca direto no ERP por código
+    try {
+        const pool = getErpPool();
+        const [rows] = await pool.execute<mysql.RowDataPacket[]>(
+            'SELECT CODIGO_ITEM, DESCRICAO_ITEM, VALOR_VENDA FROM VW_PRODUTOS WHERE CODIGO_ITEM = ? AND DEPARTAMENTO = "PRODUTO ACABADO" AND ATIVO = "S" LIMIT 1',
+            [code],
+        );
+        if (rows.length > 0) {
+            const row = rows[0];
+            return {
+                code: String(row['CODIGO_ITEM']),
+                name: String(row['DESCRICAO_ITEM'] ?? ''),
+                aliases: [],
+                description: String(row['DESCRICAO_ITEM'] ?? ''),
+                unit: 'UN',
+                price: parseFloat(String(row['VALOR_VENDA'] ?? 0)),
+                updatedAt: new Date().toISOString(),
+            };
+        }
+    } catch (err) {
+        console.error('[ProductCache] Erro ao buscar produto no ERP por código:', err);
+    }
+    return undefined;
 }
 
 /** Retorna todos os produtos do cache. */
@@ -169,12 +194,12 @@ export async function searchProductsInERP(query: string): Promise<CachedProduct[
 
         const now = new Date().toISOString();
         return rows.map((row) => ({
-            code: String(row['CODIGO_ITEM'] ?? row['code'] ?? row['ID'] ?? ''),
+            code: String(row['CODIGO_ITEM'] ?? ''),
             name: String(row['DESCRICAO_ITEM'] ?? ''),
             aliases: [],
             description: String(row['DESCRICAO_ITEM'] ?? ''),
-            unit: String(row['UNIDADE'] ?? row['unit'] ?? 'UN'),
-            price: parseFloat(String(row['PRECO'] ?? row['PRECO_VENDA'] ?? row['price'] ?? 0)) || 0,
+            unit: 'UN',
+            price: parseFloat(String(row['VALOR_VENDA'] ?? 0)),
             updatedAt: now,
         }));
     } catch (err) {
