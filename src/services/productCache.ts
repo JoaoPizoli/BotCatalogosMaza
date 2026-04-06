@@ -75,7 +75,7 @@ export async function syncFromERP(): Promise<void> {
     const pool = getErpPool();
 
     const [rows] = await pool.execute<mysql.RowDataPacket[]>(
-        ' SELECT CODIGO_ITEM, DESCRICAO_ITEM, VALOR_VENDA from VW_PRODUTOS where DEPARTAMENTO = "PRODUTO ACABADO" and ATIVO = "S" GROUP BY CODIGO_ITEM; ',
+        ` SELECT CODIGO_ITEM, DESCRICAO_ITEM, VALOR_VENDA from VW_PRODUTOS where DEPARTAMENTO = "PRODUTO ACABADO" and DESCRICAO_ITEM NOT LIKE '%ÑUSAR+%' and ATIVO = "S" GROUP BY CODIGO_ITEM; `,
     );
 
     // Mapa de aliases existentes (para preservar durante o sync)
@@ -168,7 +168,7 @@ export async function getProductByCode(code: string): Promise<CachedProduct | un
     try {
         const pool = getErpPool();
         const [rows] = await pool.execute<mysql.RowDataPacket[]>(
-            'SELECT CODIGO_ITEM, DESCRICAO_ITEM, VALOR_VENDA FROM VW_PRODUTOS WHERE CODIGO_ITEM = ? AND DEPARTAMENTO = "PRODUTO ACABADO" AND ATIVO = "S" LIMIT 1',
+            `SELECT CODIGO_ITEM, DESCRICAO_ITEM, VALOR_VENDA FROM VW_PRODUTOS WHERE CODIGO_ITEM = ? AND DEPARTAMENTO = "PRODUTO ACABADO" AND ATIVO = "S" AND DESCRICAO_ITEM NOT LIKE '%ÑUSAR+%' LIMIT 1`,
             [code],
         );
         if (rows.length > 0) {
@@ -213,7 +213,7 @@ export async function searchProductsInERP(query: string): Promise<CachedProduct[
     const likeClauses = terms.map(() => 'DESCRICAO_ITEM LIKE ?');
     const params = terms.map((t) => `%${t}%`);
 
-    const sql = `SELECT CODIGO_ITEM, DESCRICAO_ITEM, VALOR_VENDA FROM VW_PRODUTOS WHERE ATIVO = "S" AND DEPARTAMENTO = "PRODUTO ACABADO" AND ${likeClauses.join(' AND ')} GROUP BY CODIGO_ITEM LIMIT 20`;
+    const sql = `SELECT CODIGO_ITEM, DESCRICAO_ITEM, VALOR_VENDA FROM VW_PRODUTOS WHERE ATIVO = "S" AND DESCRICAO_ITEM NOT LIKE '%ÑUSAR+%' AND DEPARTAMENTO = "PRODUTO ACABADO" AND ${likeClauses.join(' AND ')} GROUP BY CODIGO_ITEM LIMIT 20`;
 
     try {
         const [rows] = await pool.execute<mysql.RowDataPacket[]>(sql, params);
