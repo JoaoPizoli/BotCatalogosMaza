@@ -66,10 +66,10 @@ export const PRODUCT_CACHE_TTL_HOURS = parseInt(
 // ─── Desconto Máximo por UF ─────────────────────────────────────────────────
 
 export const MAX_DISCOUNT_BY_STATE: Record<string, number> = {
-    AC: 33, AL: 33, AP: 33, AM: 33, BA: 33, CE: 33, DF: 33, ES: 33,
-    GO: 33, MA: 33, MT: 33, MS: 33, MG: 33, PA: 33, PB: 33, PR: 33,
-    PE: 33, PI: 33, RJ: 33, RN: 33, RS: 33, RO: 33, RR: 33, SC: 33,
-    SP: 33, SE: 33, TO: 33,
+    AC: 45, AL: 45, AP: 45, AM: 45, BA: 45, CE: 45, DF: 42, ES: 33,
+    GO: 42, MA: 45, MT: 42, MS: 42, MG: 33, PA: 45, PB: 45, PR: 39,
+    PE: 45, PI: 45, RJ: 33, RN: 45, RS: 39, RO: 45, RR: 45, SC: 39,
+    SP: 33, SE: 45, TO: 45,
 };
 
 export const DEFAULT_MAX_DISCOUNT = 33;

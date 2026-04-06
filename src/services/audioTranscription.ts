@@ -107,7 +107,7 @@ export async function transcribeAudio(audioPath: string): Promise<string | null>
 
         const transcription = await openai.audio.transcriptions.create({
             file: fs.createReadStream(fileToTranscribe),
-            model: "gpt-4o-transcribe", // Note: Verify if this model name is correct for your OpenAI version, otherwise standard is 'whisper-1'
+            model: "gpt-4o-transcribe",
             language: "pt",
             prompt: "O áudio está em português do Brasil."
         });

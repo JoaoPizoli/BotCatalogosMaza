@@ -20,11 +20,7 @@
     "noImplicitThis": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "moduleResolution": "node",
-    "baseUrl": "./",
-    "paths": {
-      "@/*": ["src/*"]
-    }
+    "moduleResolution": "node"
   },
   "include": [
     "src/**/*"

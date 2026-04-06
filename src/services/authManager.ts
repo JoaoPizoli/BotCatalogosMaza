@@ -16,7 +16,7 @@
  * /logoff  →  logoff(chatId)  →  remove de authenticated_users + limpa loginState
  */
 
-import { getDb } from '../database/db';
+import { getPgPool } from '../database/db';
 import { AUTH_TTL_MS } from '../config/config';
 
 // ─── Tipos internos ──────────────────────────────────────────────────────────
@@ -107,32 +107,31 @@ export async function processLoginStep(
  * Verifica se o chatId possui autenticação válida (dentro do TTL).
  */
 export async function checkAuth(chatId: string): Promise<boolean> {
-    const db = getDb();
-    if (!db) return false;
+    const pool = getPgPool();
 
     const cutoff = new Date(Date.now() - AUTH_TTL_MS).toISOString();
-    const row = await db.get(
-        'SELECT chat_id FROM authenticated_users WHERE chat_id = ? AND logged_in_at >= ?',
+    const result = await pool.query(
+        'SELECT chat_id FROM authenticated_users WHERE chat_id = $1 AND logged_in_at >= $2',
         [chatId, cutoff],
     );
-    return !!row;
+    return (result.rowCount ?? 0) > 0;
 }
 
 /**
  * Retorna os dados do usuário autenticado (ou null se não autenticado / expirado).
  */
 export async function getAuthenticatedUser(chatId: string): Promise<AuthenticatedUser | null> {
-    const db = getDb();
-    if (!db) return null;
+    const pool = getPgPool();
 
     const cutoff = new Date(Date.now() - AUTH_TTL_MS).toISOString();
-    const row = await db.get(
-        'SELECT chat_id, client_code, logged_in_at FROM authenticated_users WHERE chat_id = ? AND logged_in_at >= ?',
+    const result = await pool.query(
+        'SELECT chat_id, client_code, logged_in_at FROM authenticated_users WHERE chat_id = $1 AND logged_in_at >= $2',
         [chatId, cutoff],
     );
 
-    if (!row) return null;
+    if (result.rows.length === 0) return null;
 
+    const row = result.rows[0];
     return {
         chatId: row.chat_id as string,
         clientCode: row.client_code as string,
@@ -144,10 +143,9 @@ export async function getAuthenticatedUser(chatId: string): Promise<Authenticate
  * Remove a autenticação do chatId (logoff).
  */
 export async function logoff(chatId: string): Promise<void> {
-    const db = getDb();
-    if (!db) return;
+    const pool = getPgPool();
 
-    await db.run('DELETE FROM authenticated_users WHERE chat_id = ?', [chatId]);
+    await pool.query('DELETE FROM authenticated_users WHERE chat_id = $1', [chatId]);
     loginState.delete(chatId);
     console.log(`[Auth] Logoff efetuado: ${chatId}`);
 }
@@ -155,29 +153,28 @@ export async function logoff(chatId: string): Promise<void> {
 // ─── Funções internas ─────────────────────────────────────────────────────────
 
 /**
- * Persiste o login bem-sucedido no SQLite.
+ * Persiste o login bem-sucedido no PostgreSQL.
  */
 async function persistLogin(chatId: string, clientCode: string): Promise<void> {
-    const db = getDb();
-    if (!db) return;
+    const pool = getPgPool();
 
-    await db.run(
-        `INSERT OR REPLACE INTO authenticated_users (chat_id, client_code, logged_in_at)
-         VALUES (?, ?, datetime('now'))`,
+    await pool.query(
+        `INSERT INTO authenticated_users (chat_id, client_code, logged_in_at)
+         VALUES ($1, $2, NOW())
+         ON CONFLICT (chat_id) DO UPDATE SET client_code = $2, logged_in_at = NOW()`,
         [chatId, clientCode],
     );
 }
 
 /**
- * Valida as credenciais do representante.
+ * Valida as credenciais do representante via PostgreSQL.
  */
 async function validateCredentials(clientCode: string, password: string): Promise<boolean> {
-    const db = getDb();
-    if (!db) return false;
+    const pool = getPgPool();
 
-    const row = await db.get(
-        'SELECT client_code FROM representatives WHERE client_code = ? AND password = ? AND active = 1',
+    const result = await pool.query(
+        'SELECT client_code FROM representatives WHERE client_code = $1 AND password = $2 AND active = TRUE',
         [clientCode, password],
     );
-    return !!row;
+    return result.rowCount !== null && result.rowCount > 0;
 }
