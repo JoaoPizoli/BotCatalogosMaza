@@ -59,7 +59,7 @@ const WELCOME_MESSAGES: Record<AgentType, string> = {
     embalagem: '📦 *Assistente de Embalagens*\n\nO que você procura? Pode me dizer o nome do produto ou tipo de embalagem.',
     catalogo: '📑 *Assistente de Catálogos Digitais*\n\nQual catálogo você precisa? Me diga o tipo de produto.',
     videos: '🎬 *Assistente de Vídeos de Treinamento e Produtos*\n\nO que você busca? Posso ajudar com treinamentos ou **vídeos de aplicação de produtos**. Me diga o que precisa!',
-    orcamentos: '📋 *Assistente de Orçamentos*\n\nComo posso ajudá-lo? Pode me pedir orçamentos informando os produtos, quantidades, descontos e o estado (UF) do cliente.',
+    orcamentos: '📋 *Assistente de Orçamentos*\n\nComo posso ajudá-lo? Pode me pedir orçamentos informando os produtos, quantidades, descontos e o estado (UF) do cliente.\n\n💡 Você pode digitar ou enviar um áudio!',
 };
 
 // Menu principal com botões inline
