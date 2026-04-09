@@ -222,7 +222,7 @@ async function handleLoginStep(ctx: Context, chatId: string, text: string) {
 
         case 'success': {
             const user = await getAuthenticatedUser(chatId);
-            const clientInfo = user ? ` (${user.clientCode})` : '';
+            const clientInfo = user?.name ? ` ${user.name}` : '';
             await ctx.reply(`${MSG_LOGIN_SUCESSO}\n\nBem-vindo${clientInfo}!`);
             await ctx.reply(menuPrincipal, {
                 parse_mode: 'Markdown',

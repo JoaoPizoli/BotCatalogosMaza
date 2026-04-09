@@ -35,6 +35,7 @@ export type LoginResult =
 export interface AuthenticatedUser {
     chatId: string;
     clientCode: string;
+    name: string | null;
     loggedInAt: Date;
 }
 
@@ -125,7 +126,10 @@ export async function getAuthenticatedUser(chatId: string): Promise<Authenticate
 
     const cutoff = new Date(Date.now() - AUTH_TTL_MS).toISOString();
     const result = await pool.query(
-        'SELECT chat_id, client_code, logged_in_at FROM authenticated_users WHERE chat_id = $1 AND logged_in_at >= $2',
+        `SELECT au.chat_id, au.client_code, au.logged_in_at, r.name
+         FROM authenticated_users au
+         LEFT JOIN representatives r ON au.client_code = r.client_code
+         WHERE au.chat_id = $1 AND au.logged_in_at >= $2`,
         [chatId, cutoff],
     );
 
@@ -135,6 +139,7 @@ export async function getAuthenticatedUser(chatId: string): Promise<Authenticate
     return {
         chatId: row.chat_id as string,
         clientCode: row.client_code as string,
+        name: (row.name as string) ?? null,
         loggedInAt: new Date(row.logged_in_at as string),
     };
 }
