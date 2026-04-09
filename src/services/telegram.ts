@@ -87,34 +87,13 @@ export async function startBot() {
         await sendTextMessage(chatId, '⏱️ Sessão encerrada por inatividade. Use /menu para recomeçar.');
     });
 
-    // Comando /start
-    bot.command('start', async (ctx) => {
-        const chatId = ctx.chat.id.toString();
-        clearSession(chatId);
-
-        const autenticado = await checkAuth(chatId);
-        if (autenticado) {
-            await ctx.reply(mensagemBoasVindas, { parse_mode: 'Markdown' });
-            await ctx.reply(menuPrincipal, {
-                parse_mode: 'Markdown',
-                reply_markup: getMenuKeyboard(),
-            });
-        } else {
-            await ctx.reply(mensagemBoasVindas, { parse_mode: 'Markdown' });
-            await ctx.reply(MSG_PEDIR_CODIGO, { parse_mode: 'Markdown' });
-            startLoginFlow(chatId);
-        }
-
-        console.log(`[Bot] /start de ${chatId}`);
-    });
-
     // Comando /menu
     bot.command('menu', async (ctx) => {
         const chatId = ctx.chat.id.toString();
 
         const autenticado = await checkAuth(chatId);
         if (!autenticado) {
-            await ctx.reply('Você precisa fazer login primeiro.');
+            await ctx.reply(mensagemBoasVindas, { parse_mode: 'Markdown' });
             await ctx.reply(MSG_PEDIR_CODIGO, { parse_mode: 'Markdown' });
             startLoginFlow(chatId);
             return;
@@ -135,7 +114,7 @@ export async function startBot() {
         const chatId = ctx.chat.id.toString();
         clearSession(chatId);
         await logoff(chatId);
-        await ctx.reply('Você foi desconectado. Até logo!\n\nUse /start para entrar novamente.');
+        await ctx.reply('Você foi desconectado. Até logo!\n\nEnvie qualquer mensagem para entrar novamente.');
         console.log(`[Bot] /logoff de ${chatId}`);
     });
 
@@ -193,8 +172,7 @@ async function selectAgent(ctx: Context, agentType: AgentType) {
     // Verifica auth antes de permitir seleção de agente
     const autenticado = await checkAuth(chatId);
     if (!autenticado) {
-        await ctx.reply('Sua sessão de login expirou. Faça login novamente.');
-        await ctx.reply(MSG_PEDIR_CODIGO, { parse_mode: 'Markdown' });
+        await ctx.reply('Sua sessão de login expirou. Envie uma mensagem para fazer login novamente.');
         startLoginFlow(chatId);
         return;
     }
@@ -260,7 +238,7 @@ async function handleTextMessage(ctx: Context) {
     // ── Prioridade 2: verificar autenticação ────────────────────────
     const autenticado = await checkAuth(chatId);
     if (!autenticado) {
-        await ctx.reply('Bem-vindo ao *Assistente Maza*! Para começar, faça login.', { parse_mode: 'Markdown' });
+        await ctx.reply(mensagemBoasVindas, { parse_mode: 'Markdown' });
         await ctx.reply(MSG_PEDIR_CODIGO, { parse_mode: 'Markdown' });
         startLoginFlow(chatId);
         return;
@@ -310,7 +288,9 @@ async function handleAudioMessage(ctx: Context) {
     // Prioridade 2: auth check
     const autenticado = await checkAuth(chatId);
     if (!autenticado) {
-        await ctx.reply('Você precisa fazer login primeiro. Use /start para começar.');
+        await ctx.reply(mensagemBoasVindas, { parse_mode: 'Markdown' });
+        await ctx.reply(MSG_PEDIR_CODIGO, { parse_mode: 'Markdown' });
+        startLoginFlow(chatId);
         return;
     }
 
