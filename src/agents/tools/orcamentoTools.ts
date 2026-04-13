@@ -234,8 +234,8 @@ export const confirmQuoteTool = tool({
         totalSavings: z.number(),
         warnings: z.array(z.string()).default([]),
         withCD: z.boolean().default(false).describe('Se true, indica que o desconto de Condição de Pagamento (CD) de 2% foi aplicado'),
-        cdDiscountValue: z.number().optional().describe('Valor do desconto de CD aplicado sobre o total'),
-        totalWithCD: z.number().optional().describe('Total final após desconto de CD'),
+        cdDiscountValue: z.number().default(0).describe('Valor do desconto de CD aplicado sobre o total'),
+        totalWithCD: z.number().default(0).describe('Total final após desconto de CD'),
     }),
     async execute({ uf, items, totalWithoutDiscount, totalWithDiscount, totalSavings, warnings, withCD, cdDiscountValue, totalWithCD }) {
         console.log(`[Tool:confirm_quote] Gerando PDF do orçamento...`);
