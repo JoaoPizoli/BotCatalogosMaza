@@ -8,7 +8,7 @@ import { agenteEmbalagens } from '../agents/agenteEmbalagem';
 import { agenteVideos } from '../agents/agenteVideos';
 import { agenteOrcamentos } from '../agents/agenteOrcamentos';
 import { setCurrentSession, getAndClearDownloadedFile } from '../agents/tools/oneDriveTools';
-import { setOrcamentoSession, getAndClearPendingPDF } from '../agents/tools/orcamentoTools';
+import { setOrcamentoSession, getAndClearPendingPDF, getAndClearPendingDiscountSummary } from '../agents/tools/orcamentoTools';
 import { getFileId, saveFileId } from './telegramFileCache';
 import { videoQueue } from './videoQueue';
 
@@ -409,9 +409,19 @@ async function processWithAgent(ctx: Context, chatId: string, message: string) {
     // Para orçamentos: verifica se tem PDF para enviar
     if (session.agentType === 'orcamentos') {
         const pendingPDF = getAndClearPendingPDF(chatId);
-        await ctx.reply(response);
+        const discountSummary = getAndClearPendingDiscountSummary(chatId);
+
+        // Separa a resposta em múltiplas mensagens pelo marcador ---SPLIT---
+        const parts = response.split(/---SPLIT---/i).map((p) => p.trim()).filter(Boolean);
+        for (const part of parts) {
+            await ctx.reply(part);
+        }
+
         if (pendingPDF) {
             await sendFile(ctx, pendingPDF.path, pendingPDF.name);
+        }
+        if (discountSummary) {
+            await ctx.reply(discountSummary, { parse_mode: 'Markdown' });
         }
         return;
     }

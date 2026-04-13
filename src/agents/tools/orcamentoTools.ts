@@ -9,12 +9,13 @@ import { tool } from '@openai/agents';
 import { z } from 'zod';
 import { searchProducts, ensureCacheFresh, searchProductsInERP } from '../../services/productCache';
 import { getMaxDiscount } from '../../config/config';
-import { generateQuotePDF, QuoteData } from '../../services/pdfGenerator';
+import { generateQuotePDF, generateDiscountSummary, QuoteData } from '../../services/pdfGenerator';
 import path from 'node:path';
 import { writeFile, mkdir } from 'node:fs/promises';
 
 // Cache de PDFs gerados por sessão (mesmo padrão de oneDriveTools)
 const pendingPDFs = new Map<string, { path: string; name: string }>();
+const pendingDiscountSummaries = new Map<string, string>();
 let currentOrcamentoSession: string | null = null;
 
 export function setOrcamentoSession(sessionId: string) {
@@ -26,6 +27,15 @@ export function getAndClearPendingPDF(sessionId: string): { path: string; name: 
     if (pdf) {
         pendingPDFs.delete(sessionId);
         return pdf;
+    }
+    return null;
+}
+
+export function getAndClearPendingDiscountSummary(sessionId: string): string | null {
+    const summary = pendingDiscountSummaries.get(sessionId);
+    if (summary) {
+        pendingDiscountSummaries.delete(sessionId);
+        return summary;
     }
     return null;
 }
@@ -239,6 +249,12 @@ export const confirmQuoteTool = tool({
             // Armazena o PDF para o telegram.ts enviar
             if (currentOrcamentoSession) {
                 pendingPDFs.set(currentOrcamentoSession, { path: filePath, name: fileName });
+
+                // Gera resumo de desconto para o representante
+                const discountSummary = generateDiscountSummary(quoteData);
+                if (discountSummary) {
+                    pendingDiscountSummaries.set(currentOrcamentoSession, discountSummary);
+                }
             }
 
             return JSON.stringify({ success: true, message: 'PDF do orçamento gerado com sucesso.' });

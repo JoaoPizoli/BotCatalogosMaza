@@ -39,12 +39,11 @@ const FONT_SIZE_SMALL = 8;
 
 const COL_WIDTHS = {
     item: 30,
-    product: 160,
-    unit: 35,
-    qty: 40,
-    price: 70,
-    discount: 55,
-    subtotal: 75,
+    product: 190,
+    unit: 40,
+    qty: 45,
+    price: 80,
+    subtotal: 80,
 };
 
 // ─── Função principal ─────────────────────────────────────────────────────────
@@ -93,8 +92,6 @@ export function generateQuotePDF(data: QuoteData): Promise<Buffer> {
         x += COL_WIDTHS.qty;
         drawCell(doc, 'Preço Un.', x, headerY, COL_WIDTHS.price);
         x += COL_WIDTHS.price;
-        drawCell(doc, 'Desc.%', x, headerY, COL_WIDTHS.discount);
-        x += COL_WIDTHS.discount;
         drawCell(doc, 'Subtotal', x, headerY, COL_WIDTHS.subtotal);
 
         // Linha separadora
@@ -115,19 +112,19 @@ export function generateQuotePDF(data: QuoteData): Promise<Buffer> {
                 rowY = MARGIN;
             }
 
+            const discountedUnitPrice = item.unitPrice * (1 - item.appliedDiscount / 100);
+
             x = MARGIN;
             drawCell(doc, String(i + 1), x, rowY, COL_WIDTHS.item);
             x += COL_WIDTHS.item;
-            drawCell(doc, truncate(item.productName, 30), x, rowY, COL_WIDTHS.product);
+            drawCell(doc, truncate(item.productName, 35), x, rowY, COL_WIDTHS.product);
             x += COL_WIDTHS.product;
             drawCell(doc, item.unit, x, rowY, COL_WIDTHS.unit);
             x += COL_WIDTHS.unit;
             drawCell(doc, String(item.quantity), x, rowY, COL_WIDTHS.qty);
             x += COL_WIDTHS.qty;
-            drawCell(doc, formatCurrency(item.unitPrice), x, rowY, COL_WIDTHS.price);
+            drawCell(doc, formatCurrency(discountedUnitPrice), x, rowY, COL_WIDTHS.price);
             x += COL_WIDTHS.price;
-            drawCell(doc, `${item.appliedDiscount}%`, x, rowY, COL_WIDTHS.discount);
-            x += COL_WIDTHS.discount;
             drawCell(doc, formatCurrency(item.subtotal), x, rowY, COL_WIDTHS.subtotal);
 
             rowY += 18;
@@ -141,12 +138,6 @@ export function generateQuotePDF(data: QuoteData): Promise<Buffer> {
 
         // ── Totais ────────────────────────────────────────────────────────
         rowY += 10;
-        doc.fontSize(FONT_SIZE_BODY).font('Helvetica');
-
-        doc.text(`Total sem desconto: ${formatCurrency(data.totalWithoutDiscount)}`, MARGIN + 280, rowY, { width: 200, align: 'right' });
-        rowY += 16;
-        doc.text(`Economia: -${formatCurrency(data.totalSavings)}`, MARGIN + 280, rowY, { width: 200, align: 'right' });
-        rowY += 16;
 
         doc.font('Helvetica-Bold').fontSize(FONT_SIZE_SUBTITLE);
         doc.text(`TOTAL: ${formatCurrency(data.totalWithDiscount)}`, MARGIN + 280, rowY, { width: 200, align: 'right' });
@@ -187,4 +178,38 @@ function formatDate(date: Date): string {
 
 function truncate(text: string, max: number): string {
     return text.length > max ? text.slice(0, max - 3) + '...' : text;
+}
+
+// ─── Resumo de desconto para o representante ──────────────────────────────────
+
+/**
+ * Gera uma mensagem de texto com o resumo de descontos do orçamento,
+ * destinada exclusivamente ao representante.
+ */
+export function generateDiscountSummary(data: QuoteData): string | null {
+    const hasAnyDiscount = data.items.some((item) => item.appliedDiscount > 0);
+    if (!hasAnyDiscount) return null;
+
+    const lines: string[] = ['📊 *Resumo de Descontos do Orçamento:*', ''];
+
+    for (const item of data.items) {
+        if (item.appliedDiscount > 0) {
+            const discountedPrice = item.unitPrice * (1 - item.appliedDiscount / 100);
+            const savings = (item.unitPrice - discountedPrice) * item.quantity;
+            lines.push(
+                `• *${item.productName}*\n` +
+                `  Preço original: ${formatCurrency(item.unitPrice)} → Com desconto: ${formatCurrency(discountedPrice)}\n` +
+                `  Desconto: ${item.appliedDiscount}% | Economia: ${formatCurrency(savings)}`,
+            );
+        } else {
+            lines.push(`• *${item.productName}* — Sem desconto`);
+        }
+    }
+
+    lines.push('');
+    lines.push(`💰 Total sem desconto: ${formatCurrency(data.totalWithoutDiscount)}`);
+    lines.push(`💰 Economia total: -${formatCurrency(data.totalSavings)}`);
+    lines.push(`💰 *Total final: ${formatCurrency(data.totalWithDiscount)}*`);
+
+    return lines.join('\n');
 }
