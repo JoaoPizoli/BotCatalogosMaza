@@ -27,6 +27,9 @@ export interface QuoteData {
     totalSavings: number;
     warnings?: string[];
     date?: Date;
+    withCD?: boolean;
+    cdDiscountValue?: number;
+    totalWithCD?: number;
 }
 
 // ─── Constantes ───────────────────────────────────────────────────────────────
@@ -139,8 +142,9 @@ export function generateQuotePDF(data: QuoteData): Promise<Buffer> {
         // ── Totais ────────────────────────────────────────────────────────
         rowY += 10;
 
+        const displayTotal = data.withCD && data.totalWithCD != null ? data.totalWithCD : data.totalWithDiscount;
         doc.font('Helvetica-Bold').fontSize(FONT_SIZE_SUBTITLE);
-        doc.text(`TOTAL: ${formatCurrency(data.totalWithDiscount)}`, MARGIN + 280, rowY, { width: 200, align: 'right' });
+        doc.text(`TOTAL: ${formatCurrency(displayTotal)}`, MARGIN + 280, rowY, { width: 200, align: 'right' });
 
         // ── Avisos ────────────────────────────────────────────────────────
         if (data.warnings && data.warnings.length > 0) {
@@ -209,7 +213,13 @@ export function generateDiscountSummary(data: QuoteData): string | null {
     lines.push('');
     lines.push(`💰 Total sem desconto: ${formatCurrency(data.totalWithoutDiscount)}`);
     lines.push(`💰 Economia total: -${formatCurrency(data.totalSavings)}`);
-    lines.push(`💰 *Total final: ${formatCurrency(data.totalWithDiscount)}*`);
+    lines.push(`💰 *Total com desconto: ${formatCurrency(data.totalWithDiscount)}*`);
+
+    if (data.withCD && data.cdDiscountValue != null && data.totalWithCD != null) {
+        lines.push('');
+        lines.push(`💳 Condição de Pagamento (CD): -2% = -${formatCurrency(data.cdDiscountValue)}`);
+        lines.push(`💰 *Total final com CD: ${formatCurrency(data.totalWithCD)}*`);
+    }
 
     return lines.join('\n');
 }

@@ -136,8 +136,9 @@ export const calculateQuoteTool = tool({
     parameters: z.object({
         uf: z.string().describe('Sigla do estado (UF) do cliente'),
         items: z.array(quoteItemSchema).min(1).describe('Lista de itens do orçamento com preço unitário incluso'),
+        withCD: z.boolean().default(false).describe('Se true, aplica desconto de Condição de Pagamento (CD) de 2% sobre o total do pedido'),
     }),
-    async execute({ uf, items }) {
+    async execute({ uf, items, withCD }) {
         console.log(`[Tool:calculate_quote] UF: ${uf}, ${items.length} item(ns)`);
 
         const maxDiscount = getMaxDiscount(uf);
@@ -185,7 +186,7 @@ export const calculateQuoteTool = tool({
             0,
         );
 
-        return JSON.stringify({
+        const result: Record<string, unknown> = {
             uf: uf.toUpperCase(),
             maxDiscountAllowed: maxDiscount,
             items: quoteItems,
@@ -193,7 +194,18 @@ export const calculateQuoteTool = tool({
             totalWithDiscount: Math.round(total * 100) / 100,
             totalSavings: Math.round((totalWithoutDiscount - total) * 100) / 100,
             warnings,
-        });
+            withCD: false,
+        };
+
+        if (withCD) {
+            const cdDiscountValue = Math.round(total * 0.02 * 100) / 100;
+            const totalWithCD = Math.round(total * 0.98 * 100) / 100;
+            result.withCD = true;
+            result.cdDiscountValue = cdDiscountValue;
+            result.totalWithCD = totalWithCD;
+        }
+
+        return JSON.stringify(result);
     },
 });
 
@@ -221,8 +233,11 @@ export const confirmQuoteTool = tool({
         totalWithDiscount: z.number(),
         totalSavings: z.number(),
         warnings: z.array(z.string()).default([]),
+        withCD: z.boolean().default(false).describe('Se true, indica que o desconto de Condição de Pagamento (CD) de 2% foi aplicado'),
+        cdDiscountValue: z.number().optional().describe('Valor do desconto de CD aplicado sobre o total'),
+        totalWithCD: z.number().optional().describe('Total final após desconto de CD'),
     }),
-    async execute({ uf, items, totalWithoutDiscount, totalWithDiscount, totalSavings, warnings }) {
+    async execute({ uf, items, totalWithoutDiscount, totalWithDiscount, totalSavings, warnings, withCD, cdDiscountValue, totalWithCD }) {
         console.log(`[Tool:confirm_quote] Gerando PDF do orçamento...`);
 
         try {
@@ -233,6 +248,9 @@ export const confirmQuoteTool = tool({
                 totalWithDiscount,
                 totalSavings,
                 warnings: warnings,
+                withCD,
+                cdDiscountValue,
+                totalWithCD,
             };
 
             const pdfBuffer = await generateQuotePDF(quoteData);
