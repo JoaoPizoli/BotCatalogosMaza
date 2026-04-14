@@ -46,8 +46,8 @@ export const searchProductsTool = tool({
     name: 'search_products',
     description:
         'Busca produtos no catálogo por nome, código ou descrição. ' +
-        'Retorna uma lista de produtos encontrados. Se houver múltiplos resultados, ' +
-        'o agente DEVE apresentar as opções ao representante e pedir para escolher.',
+        'Retorna uma lista de até 5 produtos mais relevantes com matchScore (0-100) e um campo recommendation ("auto_select" ou "ask_user"). ' +
+        'Se recommendation for "auto_select", use o primeiro produto diretamente. Se for "ask_user", apresente as opções ao representante.',
     parameters: z.object({
         query: z.string().describe('Termos de busca (nome, código ou parte do nome do produto)'),
     }),
@@ -56,41 +56,66 @@ export const searchProductsTool = tool({
         await ensureCacheFresh();
 
         const cacheResult = searchProducts(query);
-        let results = cacheResult.products;
+        let scoredResults = cacheResult.scoredProducts;
         let source = 'cache';
 
         // Busca no ERP se: cache vazio, ou score fraco (menos da metade dos termos matched)
         const isWeakMatch = cacheResult.totalTerms > 0 && cacheResult.maxScore < Math.ceil(cacheResult.totalTerms / 2);
-        if (results.length === 0 || isWeakMatch) {
-            console.log(`[Tool:search_products] Cache ${results.length === 0 ? 'vazio' : 'com resultado fraco (score ' + cacheResult.maxScore + '/' + cacheResult.totalTerms + ')'}. Buscando no ERP...`);
+        if (scoredResults.length === 0 || isWeakMatch) {
+            console.log(`[Tool:search_products] Cache ${scoredResults.length === 0 ? 'vazio' : 'com resultado fraco (score ' + cacheResult.maxScore + '/' + cacheResult.totalTerms + ')'}. Buscando no ERP...`);
             const erpResults = await searchProductsInERP(query);
             if (erpResults.length > 0) {
-                results = erpResults;
+                // ERP results don't have scores, assign max score to all
+                scoredResults = erpResults.map((p) => ({ product: p, score: cacheResult.totalTerms }));
                 source = 'erp';
             }
         }
 
-        console.log(`[Tool:search_products] ${results.length} resultados encontrados (${source})`);
+        console.log(`[Tool:search_products] ${scoredResults.length} resultados encontrados (${source})`);
 
-        if (results.length === 0) {
+        if (scoredResults.length === 0) {
             return JSON.stringify({
                 found: 0,
                 message: 'Nenhum produto encontrado para essa busca.',
                 products: [],
+                recommendation: 'no_results',
             });
         }
 
-        const limited = results.slice(0, 10);
+        const limited = scoredResults.slice(0, 5);
+        const totalTerms = cacheResult.totalTerms || 1;
+
+        // Determine recommendation based on scoring
+        const topScore = limited[0].score;
+        const secondScore = limited.length > 1 ? limited[1].score : 0;
+        const topMatchRatio = topScore / totalTerms;
+
+        let recommendation: string;
+        if (limited.length === 1) {
+            recommendation = 'auto_select';
+        } else if (topMatchRatio >= 0.8 && topScore > secondScore) {
+            // Top result matches most terms AND is strictly better than second
+            recommendation = 'auto_select';
+        } else if (topScore === secondScore) {
+            // Top results are tied — ambiguous, ask user
+            recommendation = 'ask_user';
+        } else {
+            // Top result is better but not dominant enough — still auto-select if gap is significant
+            recommendation = (topScore - secondScore) >= 2 ? 'auto_select' : 'ask_user';
+        }
+
         return JSON.stringify({
             found: limited.length,
-            totalMatches: results.length,
+            totalMatches: scoredResults.length,
             source,
-            products: limited.map((p) => ({
-                code: p.code,
-                name: `${p.code} - ${p.name}`,
-                description: p.description,
-                unit: p.unit,
-                price: p.price,
+            recommendation,
+            products: limited.map((s) => ({
+                code: s.product.code,
+                name: `${s.product.code} - ${s.product.name}`,
+                description: s.product.description,
+                unit: s.product.unit,
+                price: s.product.price,
+                matchScore: Math.round((s.score / totalTerms) * 100),
             })),
         });
     },

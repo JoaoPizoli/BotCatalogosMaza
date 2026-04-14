@@ -118,11 +118,11 @@ const STOP_WORDS = new Set([
  * Busca produtos no cache por nome, aliases ou código.
  * Retorna também o score máximo para que o caller saiba se o resultado é forte.
  */
-export function searchProducts(query: string): { products: CachedProduct[]; maxScore: number; totalTerms: number } {
+export function searchProducts(query: string): { scoredProducts: { product: CachedProduct; score: number }[]; maxScore: number; totalTerms: number } {
     const terms = query.toLowerCase().split(/\s+/)
         .filter(Boolean)
         .filter((t) => t.length > 2 && !STOP_WORDS.has(t));
-    if (terms.length === 0) return { products: [], maxScore: 0, totalTerms: 0 };
+    if (terms.length === 0) return { scoredProducts: [], maxScore: 0, totalTerms: 0 };
 
     const scored = cache.products
         .map((product) => {
@@ -149,7 +149,7 @@ export function searchProducts(query: string): { products: CachedProduct[]; maxS
 
     const maxScore = scored.length > 0 ? scored[0].score : 0;
     return {
-        products: scored.map((item) => item.product),
+        scoredProducts: scored,
         maxScore,
         totalTerms: terms.length,
     };
