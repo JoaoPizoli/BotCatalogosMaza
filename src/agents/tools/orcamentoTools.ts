@@ -96,8 +96,17 @@ export const searchProductsTool = tool({
             // Top result is strictly better than second — auto-select regardless of gap size
             recommendation = 'auto_select';
         } else {
-            // Top results are tied (same score) — ambiguous, ask user
-            recommendation = 'ask_user';
+            // Top results are tied — check if the first result is a "base" product
+            // (others are just color/variant extensions of the same base name)
+            const firstName = limited[0].product.name.toLowerCase();
+            const firstWords = new Set(firstName.split(/\s+/));
+            const tiedResults = limited.filter((s) => s.score === topScore);
+            const isBaseProduct = tiedResults.length > 1 && tiedResults.slice(1).every((s) => {
+                const otherWords = s.product.name.toLowerCase().split(/\s+/);
+                // Every word from the first (shortest) product appears in the other products
+                return [...firstWords].every((w) => otherWords.includes(w));
+            });
+            recommendation = isBaseProduct ? 'auto_select' : 'ask_user';
         }
 
         return JSON.stringify({

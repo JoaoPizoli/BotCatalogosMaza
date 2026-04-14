@@ -145,7 +145,7 @@ export function searchProducts(query: string): { scoredProducts: { product: Cach
             return { product, score };
         })
         .filter((item) => item.score > 0)
-        .sort((a, b) => b.score - a.score);
+        .sort((a, b) => b.score - a.score || a.product.name.length - b.product.name.length);
 
     const maxScore = scored.length > 0 ? scored[0].score : 0;
     return {
