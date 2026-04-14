@@ -121,7 +121,7 @@ const STOP_WORDS = new Set([
 export function searchProducts(query: string): { scoredProducts: { product: CachedProduct; score: number }[]; maxScore: number; totalTerms: number } {
     const terms = query.toLowerCase().split(/\s+/)
         .filter(Boolean)
-        .filter((t) => t.length > 2 && !STOP_WORDS.has(t));
+        .filter((t) => t.length >= 2 && !STOP_WORDS.has(t));
     if (terms.length === 0) return { scoredProducts: [], maxScore: 0, totalTerms: 0 };
 
     const scored = cache.products

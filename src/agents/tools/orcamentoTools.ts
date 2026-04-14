@@ -88,20 +88,16 @@ export const searchProductsTool = tool({
         // Determine recommendation based on scoring
         const topScore = limited[0].score;
         const secondScore = limited.length > 1 ? limited[1].score : 0;
-        const topMatchRatio = topScore / totalTerms;
 
         let recommendation: string;
         if (limited.length === 1) {
             recommendation = 'auto_select';
-        } else if (topMatchRatio >= 0.8 && topScore > secondScore) {
-            // Top result matches most terms AND is strictly better than second
+        } else if (topScore > secondScore) {
+            // Top result is strictly better than second — auto-select regardless of gap size
             recommendation = 'auto_select';
-        } else if (topScore === secondScore) {
-            // Top results are tied — ambiguous, ask user
-            recommendation = 'ask_user';
         } else {
-            // Top result is better but not dominant enough — still auto-select if gap is significant
-            recommendation = (topScore - secondScore) >= 2 ? 'auto_select' : 'ask_user';
+            // Top results are tied (same score) — ambiguous, ask user
+            recommendation = 'ask_user';
         }
 
         return JSON.stringify({
