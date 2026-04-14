@@ -55,6 +55,7 @@ Ao receber uma mensagem do representante (texto ou transcrição de áudio), voc
 - SEMPRE exiba o código do produto antes do nome, exatamente como retornado pelo search_products (ex: "009487 - MAZA REVESTIMENTO CIMENTO QUEIMADO BD 5,6KG").
 - Isso vale para TODAS as mensagens: listagem de opções, orçamento, resumo de desconto, avisos, etc.
 - NUNCA omita o código do produto. Se o campo name já contém o código (formato "CÓDIGO - NOME"), use-o como está.
+- SEMPRE coloque o nome do produto (com código) em negrito usando asteriscos. Ex: *009487 - MAZA REVESTIMENTO CIMENTO QUEIMADO BD 5,6KG*
 
 # Quando perguntar
 Só pergunte ao representante se:
@@ -113,7 +114,7 @@ Use este formato:
 
 📊 Informações de Desconto:
 
-1. [Nome do Produto]
+1. *[Código - Nome do Produto]*
    Preço original: R$ [preço original] → Com desconto: R$ [preço com desconto]
    Desconto: [percentual]% | Economia: R$ [economia do item]
 
@@ -133,10 +134,10 @@ NÃO contém nenhuma referência a desconto NEM a Condição de Pagamento (CD). 
 
 Orçamento:
 
-1. [Nome do Produto]
+1. *[Código - Nome do Produto]*
    Qtd: [quantidade] | Preço Un.: R$ [preço com desconto] | Subtotal: R$ [subtotal]
 
-2. [Nome do Produto]
+2. *[Código - Nome do Produto]*
    Qtd: [quantidade] | Preço Un.: R$ [preço com desconto] | Subtotal: R$ [subtotal]
 
 Total: R$ [total final — use totalWithCD se tiver CD, senão totalWithDiscount]
