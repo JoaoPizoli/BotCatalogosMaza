@@ -87,7 +87,7 @@ export const searchProductsTool = tool({
             source,
             products: limited.map((p) => ({
                 code: p.code,
-                name: p.name,
+                name: `${p.code} - ${p.name}`,
                 description: p.description,
                 unit: p.unit,
                 price: p.price,

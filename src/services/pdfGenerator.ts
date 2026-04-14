@@ -116,11 +116,12 @@ export function generateQuotePDF(data: QuoteData): Promise<Buffer> {
             }
 
             const discountedUnitPrice = item.unitPrice * (1 - item.appliedDiscount / 100);
+            const cleanName = item.productName.replace(/^\d+\s*-\s*/, '');
 
             x = MARGIN;
             drawCell(doc, String(i + 1), x, rowY, COL_WIDTHS.item);
             x += COL_WIDTHS.item;
-            drawCell(doc, truncate(item.productName, 35), x, rowY, COL_WIDTHS.product);
+            drawCell(doc, truncate(cleanName, 35), x, rowY, COL_WIDTHS.product);
             x += COL_WIDTHS.product;
             drawCell(doc, item.unit, x, rowY, COL_WIDTHS.unit);
             x += COL_WIDTHS.unit;
