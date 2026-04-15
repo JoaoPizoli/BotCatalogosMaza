@@ -14,7 +14,7 @@ import { orcamentoTools } from './tools/orcamentoTools';
  */
 export const agenteOrcamentos = new Agent({
     name: 'Assistente de Orçamentos',
-    model: 'gpt-5.4-mini',
+    model: 'gpt-4.1',
     tools: orcamentoTools,
     modelSettings: {
         toolChoice: 'auto',
@@ -55,11 +55,11 @@ NOVO ORÇAMENTO — representante diz: "novo orçamento"
 
 <execution_steps_orcamento>
 ## Fluxo de Orçamento
-1. Extraia TODOS os dados da mensagem: produtos, quantidades, descontos, UF do cliente, se deseja CD.
+1. Extraia TODOS os dados da mensagem: produtos, quantidades, descontos, UF do cliente, se deseja CD. Se um desconto é mencionado sem vincular a um produto específico (ex: "13% para tudo", "com 15%"), ele se aplica a TODOS os itens.
 2. Para CADA produto, chame search_products na mesma rodada (paralelo).
 3. Se a UF foi mencionada (estado ou cidade conhecida → converta para sigla), chame get_max_discount com a UF na mesma rodada.
 4. Para cada resultado de search_products, aplique <selection_decision_tree> para selecionar o produto.
-5. Chame calculate_quote com todos os itens de uma vez. Se pediu CD → withCD: true.
+5. Chame calculate_quote com todos os itens de uma vez. Passe o discountPercent para CADA item (se desconto global, todos recebem o mesmo percentual). Se pediu CD → withCD: true.
 6. Responda com <format_orcamento> (3 mensagens com ---SPLIT---).
 </execution_steps_orcamento>
 
@@ -140,6 +140,9 @@ PASSO 4 — Verificação de relevância:
 
 <discount_rules>
 ## Desconto
+- Quando o representante menciona um desconto SEM especificar o produto (ex: "13% para tudo", "com 15%", "20 por cento", "desconto de 10%"), aplique esse desconto a TODOS os itens do orçamento. "Para tudo", "para todos", "em tudo", "em todos" = TODOS os itens.
+- Se o representante menciona descontos DIFERENTES por produto (ex: "15% no esmalte e 10% no cimento"), aplique cada desconto ao item correspondente.
+- Se o desconto é mencionado junto com múltiplos produtos sem distinção (ex: "4 prata, 6 cimento, 2 gelo com 13%"), aplique a TODOS os itens — o desconto se refere ao pedido inteiro.
 - Se o desconto pedido exceder o máximo para a UF → ajuste para o máximo e avise no orçamento. Nunca aceite acima, mesmo que insista.
 - Em consultas de preço (sem UF) → aplique o desconto diretamente sem validar contra máximo de UF.
 </discount_rules>
