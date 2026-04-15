@@ -149,13 +149,50 @@ export const searchProductsTool = tool({
                 const hasDistinguishingExtras = uniqueExtras.filter((e) => e.length > 0).length > 1;
 
                 if (hasDistinguishingExtras) {
-                    // Reorder by fewest extras, but ask the user to choose
-                    const bestIdx = limited.indexOf(resultFitScores[0].result);
-                    if (bestIdx > 0) {
-                        const best = limited.splice(bestIdx, 1)[0];
-                        limited.unshift(best);
+                    // Check if the user only specified a color without a finish qualifier.
+                    // If so, prefer the variant with the fewest distinguishing extras
+                    // (i.e., the one closest to just "COR" without "BRILHANTE", "FOSCO", etc.)
+                    const FINISH_QUALIFIERS = new Set([
+                        'puro', 'brilhante', 'fosco', 'acetinado', 'semibrilho', 'geada', 'metalico', 'metalizado', 'cetim',
+                    ]);
+                    const userSpecifiedFinish = [...queryWords].some((w) => FINISH_QUALIFIERS.has(w));
+
+                    if (!userSpecifiedFinish) {
+                        // User didn't specify a finish — prefer the variant with fewest unique extras
+                        // This selects e.g. "BRANCO 3,6L" over "BRANCO BRILHANTE 3,6L"
+                        const ranked = resultFitScores
+                            .map((r, i) => ({ ...r, uniqueCount: uniqueExtras[i].length }))
+                            .sort((a, b) => a.uniqueCount - b.uniqueCount);
+
+                        const best = ranked[0];
+                        const second = ranked.length > 1 ? ranked[1] : null;
+
+                        if (!second || best.uniqueCount < second.uniqueCount) {
+                            // One result clearly has fewer extras — auto-select it
+                            const bestIdx = limited.indexOf(best.result);
+                            if (bestIdx > 0) {
+                                limited.splice(bestIdx, 1);
+                                limited.unshift(best.result);
+                            }
+                            recommendation = 'auto_select';
+                        } else {
+                            // Multiple results have same number of extras — ask the user
+                            const bestIdx = limited.indexOf(ranked[0].result);
+                            if (bestIdx > 0) {
+                                const b = limited.splice(bestIdx, 1)[0];
+                                limited.unshift(b);
+                            }
+                            recommendation = 'ask_user';
+                        }
+                    } else {
+                        // User specified a finish (e.g., "fosco", "brilhante") — ask to disambiguate
+                        const bestIdx = limited.indexOf(resultFitScores[0].result);
+                        if (bestIdx > 0) {
+                            const best = limited.splice(bestIdx, 1)[0];
+                            limited.unshift(best);
+                        }
+                        recommendation = 'ask_user';
                     }
-                    recommendation = 'ask_user';
                 } else {
                     // All tied results share the same extras (or only one has extras)
                     // Auto-select the best fit
