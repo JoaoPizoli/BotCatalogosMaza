@@ -46,7 +46,7 @@ export const searchProductsTool = tool({
     name: 'search_products',
     description:
         'Busca produtos no catálogo por nome, código ou descrição. ' +
-        'Retorna uma lista de até 5 produtos mais relevantes ordenados por matchScore (0-100). ' +
+        'Retorna uma lista de até 5 produtos encontrados. ' +
         'Analise os resultados comparando com o que o representante pediu e decida qual produto usar ou se deve apresentar opções ao representante.',
     parameters: z.object({
         query: z.string().describe('Termos de busca (nome, código ou parte do nome do produto)'),
@@ -91,7 +91,6 @@ export const searchProductsTool = tool({
         }
 
         const limited = scoredResults.slice(0, 5);
-        const totalTerms = cacheResult.totalTerms || 1;
 
         return JSON.stringify({
             found: limited.length,
@@ -104,7 +103,6 @@ export const searchProductsTool = tool({
                 description: s.product.description,
                 unit: s.product.unit,
                 price: s.product.price,
-                matchScore: Math.round((s.score / totalTerms) * 100),
             })),
         });
     },
