@@ -46,8 +46,8 @@ export const searchProductsTool = tool({
     name: 'search_products',
     description:
         'Busca produtos no catálogo por nome, código ou descrição. ' +
-        'Retorna uma lista de até 5 produtos mais relevantes com matchScore (0-100) e um campo recommendation ("auto_select" ou "ask_user"). ' +
-        'Se recommendation for "auto_select", use o primeiro produto diretamente. Se for "ask_user", apresente as opções ao representante.',
+        'Retorna uma lista de até 5 produtos mais relevantes ordenados por matchScore (0-100). ' +
+        'Analise os resultados comparando com o que o representante pediu e decida qual produto usar ou se deve apresentar opções ao representante.',
     parameters: z.object({
         query: z.string().describe('Termos de busca (nome, código ou parte do nome do produto)'),
     }),
@@ -84,135 +84,20 @@ export const searchProductsTool = tool({
         if (scoredResults.length === 0) {
             return JSON.stringify({
                 found: 0,
+                query,
                 message: 'Nenhum produto encontrado para essa busca.',
                 products: [],
-                recommendation: 'no_results',
             });
         }
 
         const limited = scoredResults.slice(0, 5);
         const totalTerms = cacheResult.totalTerms || 1;
 
-        // Determine recommendation based on scoring
-        const topScore = limited[0].score;
-        const secondScore = limited.length > 1 ? limited[1].score : 0;
-
-        let recommendation: string;
-        if (limited.length === 1) {
-            recommendation = 'auto_select';
-        } else if (topScore > secondScore) {
-            // Top result is strictly better than second — auto-select regardless of gap size
-            recommendation = 'auto_select';
-        } else {
-            // Top results are tied — check if the first result has significant words
-            // (brands, line names) that are NOT in the original query.
-            // If so, it might be a wrong match and we should ask the user.
-            const queryWords = new Set(
-                query.toLowerCase()
-                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-                    .replace(/(\d),(\d)/g, '$1.$2')
-                    .split(/\s+/)
-                    .filter((w) => w.length >= 2),
-            );
-            const tiedResults = limited.filter((s) => s.score === topScore);
-
-            // Check if ANY tied result is a better match (all its significant words appear in query)
-            const resultFitScores = tiedResults.map((s) => {
-                const productWords = s.product.name.toLowerCase()
-                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-                    .replace(/(\d),(\d)/g, '$1.$2')
-                    .split(/\s+/)
-                    .filter((w) => w.length >= 2);
-                const extraWords = productWords.filter((w) => !queryWords.has(w));
-                return { result: s, extraWords, totalWords: productWords.length };
-            });
-
-            // Sort tied results: fewer extra words = better fit
-            resultFitScores.sort((a, b) => (a.extraWords.length / a.totalWords) - (b.extraWords.length / b.totalWords));
-            const bestFit = resultFitScores[0];
-            const secondFit = resultFitScores.length > 1 ? resultFitScores[1] : null;
-
-            if (bestFit && secondFit) {
-                // Find extra words common to ALL tied results (e.g., brand names like "MAZA")
-                const allExtraSets = resultFitScores.map((r) => new Set(r.extraWords));
-                const commonExtras = new Set(
-                    bestFit.extraWords.filter((w) => allExtraSets.every((s) => s.has(w))),
-                );
-
-                // Unique distinguishing extras per result (extras that differ between results)
-                const uniqueExtras = resultFitScores.map((r) =>
-                    r.extraWords.filter((w) => !commonExtras.has(w)),
-                );
-
-                // If multiple results have DIFFERENT distinguishing extras
-                // (e.g., one has "brilhante", another has "fosco"), ask the user
-                const hasDistinguishingExtras = uniqueExtras.filter((e) => e.length > 0).length > 1;
-
-                if (hasDistinguishingExtras) {
-                    // Check if the user only specified a color without a finish qualifier.
-                    // If so, prefer the variant with the fewest distinguishing extras
-                    // (i.e., the one closest to just "COR" without "BRILHANTE", "FOSCO", etc.)
-                    const FINISH_QUALIFIERS = new Set([
-                        'puro', 'brilhante', 'fosco', 'acetinado', 'semibrilho', 'geada', 'metalico', 'metalizado', 'cetim',
-                    ]);
-                    const userSpecifiedFinish = [...queryWords].some((w) => FINISH_QUALIFIERS.has(w));
-
-                    if (!userSpecifiedFinish) {
-                        // User didn't specify a finish — prefer the variant with fewest unique extras
-                        // This selects e.g. "BRANCO 3,6L" over "BRANCO BRILHANTE 3,6L"
-                        const ranked = resultFitScores
-                            .map((r, i) => ({ ...r, uniqueCount: uniqueExtras[i].length }))
-                            .sort((a, b) => a.uniqueCount - b.uniqueCount);
-
-                        const best = ranked[0];
-                        const second = ranked.length > 1 ? ranked[1] : null;
-
-                        if (!second || best.uniqueCount < second.uniqueCount) {
-                            // One result clearly has fewer extras — auto-select it
-                            const bestIdx = limited.indexOf(best.result);
-                            if (bestIdx > 0) {
-                                limited.splice(bestIdx, 1);
-                                limited.unshift(best.result);
-                            }
-                            recommendation = 'auto_select';
-                        } else {
-                            // Multiple results have same number of extras — ask the user
-                            const bestIdx = limited.indexOf(ranked[0].result);
-                            if (bestIdx > 0) {
-                                const b = limited.splice(bestIdx, 1)[0];
-                                limited.unshift(b);
-                            }
-                            recommendation = 'ask_user';
-                        }
-                    } else {
-                        // User specified a finish (e.g., "fosco", "brilhante") — ask to disambiguate
-                        const bestIdx = limited.indexOf(resultFitScores[0].result);
-                        if (bestIdx > 0) {
-                            const best = limited.splice(bestIdx, 1)[0];
-                            limited.unshift(best);
-                        }
-                        recommendation = 'ask_user';
-                    }
-                } else {
-                    // All tied results share the same extras (or only one has extras)
-                    // Auto-select the best fit
-                    const bestIdx = limited.indexOf(bestFit.result);
-                    if (bestIdx > 0) {
-                        limited.splice(bestIdx, 1);
-                        limited.unshift(bestFit.result);
-                    }
-                    recommendation = 'auto_select';
-                }
-            } else {
-                recommendation = 'auto_select';
-            }
-        }
-
         return JSON.stringify({
             found: limited.length,
             totalMatches: scoredResults.length,
             source,
-            recommendation,
+            query,
             products: limited.map((s) => ({
                 code: s.product.code,
                 name: `${s.product.code} - ${s.product.name}`,
