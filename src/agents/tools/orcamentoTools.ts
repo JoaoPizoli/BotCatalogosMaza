@@ -96,17 +96,52 @@ export const searchProductsTool = tool({
             // Top result is strictly better than second — auto-select regardless of gap size
             recommendation = 'auto_select';
         } else {
-            // Top results are tied — check if the first result is a "base" product
-            // (others are just color/variant extensions of the same base name)
-            const firstName = limited[0].product.name.toLowerCase();
-            const firstWords = new Set(firstName.split(/\s+/));
+            // Top results are tied — check if the first result has significant words
+            // (brands, line names) that are NOT in the original query.
+            // If so, it might be a wrong match and we should ask the user.
+            const queryWords = new Set(
+                query.toLowerCase()
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                    .replace(/(\d),(\d)/g, '$1.$2')
+                    .split(/\s+/)
+                    .filter((w) => w.length >= 2),
+            );
             const tiedResults = limited.filter((s) => s.score === topScore);
-            const isBaseProduct = tiedResults.length > 1 && tiedResults.slice(1).every((s) => {
-                const otherWords = s.product.name.toLowerCase().split(/\s+/);
-                // Every word from the first (shortest) product appears in the other products
-                return [...firstWords].every((w) => otherWords.includes(w));
+
+            // Check if ANY tied result is a better match (all its significant words appear in query)
+            const resultFitScores = tiedResults.map((s) => {
+                const productWords = s.product.name.toLowerCase()
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                    .replace(/(\d),(\d)/g, '$1.$2')
+                    .split(/\s+/)
+                    .filter((w) => w.length >= 2);
+                const extraWords = productWords.filter((w) => !queryWords.has(w));
+                return { result: s, extraWords, totalWords: productWords.length };
             });
-            recommendation = isBaseProduct ? 'auto_select' : 'ask_user';
+
+            // Sort tied results: fewer extra words = better fit
+            resultFitScores.sort((a, b) => (a.extraWords.length / a.totalWords) - (b.extraWords.length / b.totalWords));
+            const bestFit = resultFitScores[0];
+            const secondFit = resultFitScores.length > 1 ? resultFitScores[1] : null;
+
+            // If best fit has clearly fewer extra words, auto-select it and reorder
+            if (bestFit && secondFit) {
+                const bestExtraRatio = bestFit.extraWords.length / bestFit.totalWords;
+                const secondExtraRatio = secondFit.extraWords.length / secondFit.totalWords;
+                if (bestExtraRatio < secondExtraRatio) {
+                    // Reorder: put best-fitting result first
+                    const bestIdx = limited.indexOf(bestFit.result);
+                    if (bestIdx > 0) {
+                        limited.splice(bestIdx, 1);
+                        limited.unshift(bestFit.result);
+                    }
+                    recommendation = 'auto_select';
+                } else {
+                    recommendation = 'ask_user';
+                }
+            } else {
+                recommendation = 'auto_select';
+            }
         }
 
         return JSON.stringify({

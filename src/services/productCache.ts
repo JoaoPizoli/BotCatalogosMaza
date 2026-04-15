@@ -114,38 +114,120 @@ const STOP_WORDS = new Set([
     'essa', 'esse', 'não', 'sim', 'muito', 'bem', 'ser', 'ter', 'ir',
 ]);
 
+// Mapa de sinônimos/abreviações comuns em nomes de produtos de tinta
+const SYNONYM_MAP: Record<string, string[]> = {
+    'gl': ['galão', 'galao', 'gal'],
+    'galão': ['gl', 'gal'],
+    'lt': ['litro', 'litros', 'lts'],
+    'litro': ['lt', 'lts', 'litros'],
+    'litros': ['lt', 'lts', 'litro'],
+    'kg': ['quilo', 'quilos', 'kilo', 'kilos'],
+    'quilo': ['kg', 'quilos'],
+    'quilos': ['kg', 'quilo'],
+    'bd': ['balde'],
+    'balde': ['bd'],
+    'tb': ['tubo'],
+    'tubo': ['tb'],
+    'sint': ['sintetico', 'sintético'],
+    'sintetico': ['sint', 'sintético'],
+    'sintético': ['sint', 'sintetico'],
+    'acril': ['acrilico', 'acrílico'],
+    'acrilico': ['acril', 'acrílico'],
+    'acrílico': ['acril', 'acrilico'],
+    'esm': ['esmalte'],
+    'esmalte': ['esm'],
+    'rev': ['revestimento'],
+    'revestimento': ['rev'],
+};
+
+/**
+ * Normaliza um texto para busca: troca vírgula por ponto em números,
+ * remove acentos e converte para minúsculas.
+ */
+function normalizeForSearch(text: string): string {
+    return text
+        .toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove acentos
+        .replace(/(\d),(\d)/g, '$1.$2'); // 3,6 → 3.6
+}
+
+/**
+ * Verifica se um termo (ou seus sinônimos) aparece no texto de busca.
+ */
+function termMatchesText(term: string, searchableText: string): boolean {
+    if (searchableText.includes(term)) return true;
+    const synonyms = SYNONYM_MAP[term];
+    if (synonyms) {
+        return synonyms.some((syn) => searchableText.includes(syn));
+    }
+    return false;
+}
+
 /**
  * Busca produtos no cache por nome, aliases ou código.
+ * Usa scoring combinado: recall (termos da query encontrados) + precision
+ * (proporção de palavras do produto que foram buscadas).
  * Retorna também o score máximo para que o caller saiba se o resultado é forte.
  */
 export function searchProducts(query: string): { scoredProducts: { product: CachedProduct; score: number }[]; maxScore: number; totalTerms: number } {
-    const terms = query.toLowerCase().split(/\s+/)
+    const normalizedQuery = normalizeForSearch(query);
+    const terms = normalizedQuery.split(/\s+/)
         .filter(Boolean)
         .filter((t) => t.length >= 2 && !STOP_WORDS.has(t));
     if (terms.length === 0) return { scoredProducts: [], maxScore: 0, totalTerms: 0 };
 
     const scored = cache.products
         .map((product) => {
-            const searchableText = [
-                product.name,
-                product.code,
-                product.description,
-                ...product.aliases,
-            ]
-                .join(' ')
-                .toLowerCase();
+            const searchableText = normalizeForSearch(
+                [product.name, product.code, product.description, ...product.aliases].join(' '),
+            );
 
-            let score = 0;
+            // Recall: quantos termos da query aparecem no produto
+            let matchedTerms = 0;
             for (const term of terms) {
-                if (searchableText.includes(term)) {
-                    score++;
+                if (termMatchesText(term, searchableText)) {
+                    matchedTerms++;
                 }
             }
 
-            return { product, score };
+            if (matchedTerms === 0) return { product, score: 0 };
+
+            // Precision: proporção de palavras significativas do produto que
+            // foram mencionadas na query (penaliza produtos com palavras extras)
+            const productWords = normalizeForSearch(product.name).split(/\s+/)
+                .filter(Boolean)
+                .filter((w) => w.length >= 2 && !STOP_WORDS.has(w));
+            let matchedProductWords = 0;
+            for (const pw of productWords) {
+                if (terms.some((t) => termMatchesText(t, pw) || termMatchesText(pw, t))) {
+                    matchedProductWords++;
+                }
+            }
+
+            const recall = matchedTerms / terms.length;            // 0..1
+            const precision = productWords.length > 0
+                ? matchedProductWords / productWords.length          // 0..1
+                : 0;
+
+            // Score combinado: recall tem peso maior (encontrar os termos é essencial),
+            // precision diferencia produtos empatados em recall
+            const combinedScore = recall * 0.6 + precision * 0.4;
+
+            // Manter matchedTerms no score inteiro para retrocompatibilidade
+            // com a lógica de isWeakMatch no orcamentoTools
+            return { product, score: matchedTerms, combinedScore };
         })
         .filter((item) => item.score > 0)
-        .sort((a, b) => b.score - a.score || a.product.name.length - b.product.name.length);
+        .sort((a, b) => {
+            // Primeiro: mais termos matched (recall)
+            if (b.score !== a.score) return b.score - a.score;
+            // Segundo: combinedScore (recall + precision)
+            const bCombined = (b as { combinedScore?: number }).combinedScore ?? 0;
+            const aCombined = (a as { combinedScore?: number }).combinedScore ?? 0;
+            if (bCombined !== aCombined) return bCombined - aCombined;
+            // Terceiro: nome mais curto
+            return a.product.name.length - b.product.name.length;
+        });
 
     const maxScore = scored.length > 0 ? scored[0].score : 0;
     return {
@@ -205,9 +287,10 @@ export function getAllProducts(): CachedProduct[] {
  */
 export async function searchProductsInERP(query: string): Promise<CachedProduct[]> {
     const pool = getErpPool();
-    const terms = query.trim().split(/\s+/)
+    const normalizedQuery = normalizeForSearch(query);
+    const terms = normalizedQuery.trim().split(/\s+/)
         .filter(Boolean)
-        .filter((t) => t.length > 2 && !STOP_WORDS.has(t.toLowerCase()));
+        .filter((t) => t.length > 2 && !STOP_WORDS.has(t));
     if (terms.length === 0) return [];
 
     const likeClauses = terms.map(() => 'DESCRICAO_ITEM LIKE ?');
