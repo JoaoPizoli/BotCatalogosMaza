@@ -118,6 +118,8 @@ const STOP_WORDS = new Set([
 const SYNONYM_MAP: Record<string, string[]> = {
     'gl': ['galão', 'galao', 'gal'],
     'galão': ['gl', 'gal'],
+    'galao': ['gl', 'gal'],
+    'gal': ['gl', 'galão', 'galao'],
     'lt': ['litro', 'litros', 'lts'],
     'litro': ['lt', 'lts', 'litros'],
     'litros': ['lt', 'lts', 'litro'],
@@ -138,6 +140,19 @@ const SYNONYM_MAP: Record<string, string[]> = {
     'esmalte': ['esm'],
     'rev': ['revestimento'],
     'revestimento': ['rev'],
+    'ind': ['industrial'],
+    'industrial': ['ind'],
+    'ba': ['base agua', 'base-agua'],
+    'tex': ['textura'],
+    'textura': ['tex'],
+    'verniz': ['vrn'],
+    'vrn': ['verniz'],
+    'primer': ['prim'],
+    'prim': ['primer'],
+    'fosco': ['fo'],
+    'brilhante': ['br', 'bril'],
+    'acetinado': ['acet'],
+    'semibrilho': ['sb'],
 };
 
 /**

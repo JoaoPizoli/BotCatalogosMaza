@@ -132,20 +132,39 @@ export const searchProductsTool = tool({
             const bestFit = resultFitScores[0];
             const secondFit = resultFitScores.length > 1 ? resultFitScores[1] : null;
 
-            // If best fit has clearly fewer extra words, auto-select it and reorder
             if (bestFit && secondFit) {
-                const bestExtraRatio = bestFit.extraWords.length / bestFit.totalWords;
-                const secondExtraRatio = secondFit.extraWords.length / secondFit.totalWords;
-                if (bestExtraRatio < secondExtraRatio) {
-                    // Reorder: put best-fitting result first
+                // Find extra words common to ALL tied results (e.g., brand names like "MAZA")
+                const allExtraSets = resultFitScores.map((r) => new Set(r.extraWords));
+                const commonExtras = new Set(
+                    bestFit.extraWords.filter((w) => allExtraSets.every((s) => s.has(w))),
+                );
+
+                // Unique distinguishing extras per result (extras that differ between results)
+                const uniqueExtras = resultFitScores.map((r) =>
+                    r.extraWords.filter((w) => !commonExtras.has(w)),
+                );
+
+                // If multiple results have DIFFERENT distinguishing extras
+                // (e.g., one has "brilhante", another has "fosco"), ask the user
+                const hasDistinguishingExtras = uniqueExtras.filter((e) => e.length > 0).length > 1;
+
+                if (hasDistinguishingExtras) {
+                    // Reorder by fewest extras, but ask the user to choose
+                    const bestIdx = limited.indexOf(resultFitScores[0].result);
+                    if (bestIdx > 0) {
+                        const best = limited.splice(bestIdx, 1)[0];
+                        limited.unshift(best);
+                    }
+                    recommendation = 'ask_user';
+                } else {
+                    // All tied results share the same extras (or only one has extras)
+                    // Auto-select the best fit
                     const bestIdx = limited.indexOf(bestFit.result);
                     if (bestIdx > 0) {
                         limited.splice(bestIdx, 1);
                         limited.unshift(bestFit.result);
                     }
                     recommendation = 'auto_select';
-                } else {
-                    recommendation = 'ask_user';
                 }
             } else {
                 recommendation = 'auto_select';
