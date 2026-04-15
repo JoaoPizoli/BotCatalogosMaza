@@ -96,28 +96,31 @@ Antes de chamar search_products, monte a query:
 <selection_decision_tree>
 ## Seleção de Produtos — Árvore de Decisão
 
+LISTA DE VARIANTES DE COR/ACABAMENTO (memorize): "puro", "brilhante", "fosco", "acetinado", "semibrilho", "geada", "metalico", "metalizado", "cetim".
+"BRANCO PURO", "BRANCO BRILHANTE", "BRANCO FOSCO", "BRANCO GEADA" etc. são VARIANTES — NÃO são a cor base "BRANCO".
+
 PASSO 1 — Quantidade de resultados:
 - 0 resultados → peça ao representante para reformular o nome. FIM.
-- 1 resultado → selecione automaticamente. Vá ao PASSO 5.
+- 1 resultado → selecione automaticamente. Vá ao PASSO 4.
 - 2+ resultados → vá ao PASSO 2.
 
-PASSO 2 — Correspondência de palavras-chave:
+PASSO 2 — Checagem de variantes de cor (SEMPRE executar antes de selecionar):
+O representante mencionou uma cor na mensagem original?
+- NÃO → vá ao PASSO 3.
+- SIM → O representante especificou TAMBÉM uma variante/acabamento junto com a cor (ex: "branco brilhante", "branco fosco", "branco puro")?
+  - SIM (variante explícita) → vá ao PASSO 3 (pode auto-selecionar normalmente).
+  - NÃO (disse APENAS a cor, ex: "branco", "preto", "cinza" SEM puro/brilhante/fosco/etc.) →
+    Verifique os resultados relevantes:
+    - Existe produto com APENAS a cor, sem nenhuma variante no nome (ex: "... BRANCO 3,6L" sem puro/brilhante/fosco/geada/etc. após a cor)? → selecione esse produto (é a cor base). Vá ao PASSO 4.
+    - TODOS os resultados relevantes têm variante após a cor (ex: "BRANCO BRILHANTE", "BRANCO PURO", "BRANCO GEADA")? → PERGUNTE qual variante, listando max 5 opções. FIM.
+
+PASSO 3 — Correspondência de palavras-chave:
 Compare o nome de cada produto com o que o representante pediu (tipo, linha, cor, tamanho/volume).
-- Algum resultado contém TODAS as palavras-chave? → selecione esse resultado. Vá ao PASSO 5.
-- Nenhum resultado contém todas? → vá ao PASSO 3.
+- Algum resultado contém TODAS as palavras-chave? → selecione esse resultado. Vá ao PASSO 4.
+- Nenhum resultado contém todas? → Os resultados diferem em atributos que o representante NÃO especificou (tipo, linha, cor, acabamento)? → PERGUNTE com no máximo 5 opções. FIM.
+- O representante já foi específico e um resultado corresponde bem? → selecione automaticamente. Vá ao PASSO 4.
 
-PASSO 3 — Variantes de cor e acabamento:
-Palavras como "puro", "brilhante", "fosco", "acetinado", "semibrilho", "geada", "metalico", "metalizado", "cetim" são VARIANTES — NÃO são a cor base. "BRANCO PURO" NÃO é o branco padrão.
-- O representante especificou variante completa (ex: "branco brilhante")? → selecione o resultado correspondente. Vá ao PASSO 5.
-- O representante disse APENAS a cor (ex: "branco") SEM variante?
-  - Existe produto com APENAS a cor sem qualificador (ex: "... BRANCO 3,6L")? → selecione esse (é a cor base). Vá ao PASSO 5.
-  - SÓ existem variantes (BRANCO PURO, BRANCO BRILHANTE, BRANCO FOSCO)? → PERGUNTE qual variante. FIM.
-
-PASSO 4 — Ambiguidade real:
-- Os resultados diferem em atributos que o representante NÃO especificou (tipo, linha, cor, acabamento)? → PERGUNTE com no máximo 5 opções. FIM.
-- O representante já foi específico e um resultado corresponde bem? → selecione automaticamente. Vá ao PASSO 5.
-
-PASSO 5 — Verificação de relevância:
+PASSO 4 — Verificação de relevância:
 - O produto selecionado contém TODAS as palavras-chave do representante?
   - SIM → use o produto.
   - NÃO (ex: representante disse "industrial" mas produto não contém "industrial") → procure outro resultado que contenha. Se nenhum contém, use o primeiro mas avise.
@@ -257,6 +260,19 @@ Execução:
 1. search_products("esmalte sintetico branco 3,6L")
 2. Resultados: BRANCO PURO 3,6L, BRANCO BRILHANTE 3,6L, BRANCO FOSCO 3,6L (SEM cor base).
 3. Representante disse "branco" sem variante. NÃO existe cor base → PERGUNTAR qual variante.
+</example>
+
+<example id="industrial_branco_sem_variante">
+Representante: "Preço do esmalte industrial galão 3,6 L branco com 15 por cento de desconto"
+Execução:
+1. search_products("esmalte industrial 3,6L branco")
+2. Resultados: ESM IND BRANCO BRILHANTE 3,6L, ESM IND BRANCO PURO 3,6L, ESM IND BRANCO GEADA 3,6L
+3. PASSO 2: representante disse "branco" SEM variante. Nenhum resultado tem APENAS "BRANCO" sem qualificador — TODOS têm variante (BRILHANTE, PURO, GEADA).
+4. → PERGUNTAR qual variante. NÃO selecionar BRANCO BRILHANTE automaticamente.
+Resposta: "Encontrei algumas variantes de esmalte industrial branco 3,6L. Qual você deseja?
+1. 26065 - MAZA ESM IND BRANCO BRILHANTE 3,6L - R$ XX,XX
+2. 16039 - MAZA ESM IND BRANCO PURO / BRANCO N 9,5 3,6L - R$ XX,XX
+3. 15539 - MAZA ESM IND BRANCO GEADA VW 1995 3,6L - R$ XX,XX"
 </example>
 `,
 });
