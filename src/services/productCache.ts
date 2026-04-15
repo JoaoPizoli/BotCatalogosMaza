@@ -174,6 +174,7 @@ export function searchProducts(query: string): { scoredProducts: { product: Cach
     const terms = normalizedQuery.split(/\s+/)
         .filter(Boolean)
         .filter((t) => t.length >= 2 && !STOP_WORDS.has(t));
+    console.log(`[ProductCache] searchProducts query="${query}" -> normalized="${normalizedQuery}" -> terms=[${terms.join(', ')}]`);
     if (terms.length === 0) return { scoredProducts: [], maxScore: 0, totalTerms: 0 };
 
     const scored = cache.products

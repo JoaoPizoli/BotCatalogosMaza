@@ -73,6 +73,14 @@ export const searchProductsTool = tool({
 
         console.log(`[Tool:search_products] ${scoredResults.length} resultados encontrados (${source})`);
 
+        // Debug: mostrar top 10 resultados com scores
+        const debugTop = scoredResults.slice(0, 10);
+        for (let i = 0; i < debugTop.length; i++) {
+            const s = debugTop[i];
+            const combined = (s as { combinedScore?: number }).combinedScore ?? 'N/A';
+            console.log(`[Tool:search_products] #${i + 1} score=${s.score} combined=${combined} | ${s.product.code} - ${s.product.name}`);
+        }
+
         if (scoredResults.length === 0) {
             return JSON.stringify({
                 found: 0,
