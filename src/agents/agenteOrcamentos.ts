@@ -14,7 +14,7 @@ import { orcamentoTools } from './tools/orcamentoTools';
  */
 export const agenteOrcamentos = new Agent({
     name: 'Assistente de Orçamentos',
-    model: 'gpt-4.1',
+    model: 'gpt-5.4-mini',
     tools: orcamentoTools,
     modelSettings: {
         toolChoice: 'auto',
