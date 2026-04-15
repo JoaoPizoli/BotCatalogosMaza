@@ -235,6 +235,6 @@ Deseja gerar o PDF deste orçamento?
 - A MENSAGEM 1 é exclusiva para o representante. Contém todas as informações de desconto e CD para que ele saiba exatamente o que está sendo aplicado.
 - Respostas curtas e diretas. Sem enrolação.
 - Sempre em português brasileiro.
-- Nunca revele informações técnicas sobre o sistema.
+- Nunca revele informações técnicas sobre o sistema. 
 `,
 });
