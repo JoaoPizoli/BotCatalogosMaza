@@ -113,7 +113,13 @@ O representante mencionou uma cor na mensagem original?
   - NÃO (disse APENAS a cor, ex: "branco", "preto", "cinza" SEM puro/brilhante/fosco/etc.) →
     Verifique os resultados relevantes:
     - Existe produto com APENAS a cor, sem nenhuma variante no nome (ex: "... BRANCO 3,6L" sem puro/brilhante/fosco/geada/etc. após a cor)? → selecione esse produto (é a cor base). Vá ao PASSO 4.
-    - TODOS os resultados relevantes têm variante após a cor (ex: "BRANCO BRILHANTE", "BRANCO PURO", "BRANCO GEADA")? → PERGUNTE qual variante, listando max 5 opções. FIM.
+    - TODOS os resultados relevantes têm variante após a cor (ex: "BRANCO BRILHANTE", "BRANCO PURO", "BRANCO GEADA")? →
+      - É uma CONSULTA DE PREÇO (execution_steps_preco)?
+        → Compare os preços dos resultados relevantes.
+        → Todos têm o MESMO preço? → Auto-selecione o primeiro resultado, informe o preço e mencione brevemente que o preço é o mesmo independente da variante. NÃO pergunte. Vá ao PASSO 4.
+        → Preços DIFERENTES? → PERGUNTE qual variante, listando max 5 opções com os respectivos preços. FIM.
+      - É um ORÇAMENTO (execution_steps_orcamento)?
+        → SEMPRE pergunte qual variante exata, listando max 5 opções. FIM.
 
 PASSO 3 — Correspondência de palavras-chave:
 Compare o nome de cada produto com o que o representante pediu (tipo, linha, cor, tamanho/volume).
