@@ -86,16 +86,35 @@ NOVO ORÇAMENTO — representante diz: "novo orçamento"
 Antes de chamar search_products, monte a query:
 - Use palavras que descrevem o produto: tipo, linha, cor, volume/peso.
 - Converta unidades para abreviações do catálogo: "galão"/"litro" → "L", "quilo" → "KG". Use número + unidade direto: "3,6L", "18L", "5,6KG".
-- NÃO inclua marca (ex: "MAZA", "MOCOCA") EXCETO se o representante mencionou explicitamente.
+- SEMPRE inclua a LINHA/MARCA na query quando o representante mencionar explicitamente (ex: "Maza", "SV", "Mococa", "Metalatex"). A linha é um FILTRO OBRIGATÓRIO — o produto selecionado DEVE conter essa palavra no nome.
+- NÃO inclua marca quando o representante NÃO mencionou.
 - NÃO inclua palavras genéricas: "preço", "valor", "orçamento", "desconto", "por cento".
 - Exemplos:
   "esmalte industrial galão 3,6 L branco" → "esmalte industrial 3,6L branco"
   "tinta acrílica branca 18 litros" → "acrilica branca 18L"
   "cimento queimado 5,6 quilos" → "cimento queimado 5,6KG"
+  "Maza demarcação viária azul" → "MAZA demarcacao viaria azul"
+  "SV esmalte sintético branco 3,6L" → "SV esmalte sintetico branco 3,6L"
 </query_construction>
+
+<line_filter_rules>
+## Filtro de Linha/Marca (OBRIGATÓRIO)
+Quando o representante menciona explicitamente uma LINHA ou MARCA na mensagem (ex: "Maza", "SV", "Mococa", "Metalatex", "Coral", "Suvinil"):
+1. Inclua a linha na query de search_products.
+2. Na seleção, DESCARTE todos os resultados que NÃO contenham essa linha no nome do produto.
+3. Se após descartar restar 0 resultados → peça reformulação, NÃO retorne um produto de outra linha.
+4. Se restar 1 ou mais → aplique <selection_decision_tree> APENAS entre os resultados que contêm a linha.
+
+Exemplos de linhas comuns no catálogo: MAZA, SV, MOCOCA, METALATEX, CORAL, SUVINIL, SHERWIN, HYDRONORTH.
+
+NUNCA retorne um produto de linha diferente da que o representante pediu. "Maza demarcação viária" NÃO pode retornar um produto "SV DEMARCACAO..." — são linhas diferentes.
+</line_filter_rules>
 
 <selection_decision_tree>
 ## Seleção de Produtos — Árvore de Decisão
+
+PASSO 0 — Filtro de Linha/Marca (SEMPRE primeiro):
+Aplique <line_filter_rules>. Se o representante mencionou linha/marca (ex: "Maza", "SV"), descarte todos os resultados que NÃO contenham essa linha no nome. Os passos seguintes operam APENAS sobre os resultados restantes.
 
 LISTA DE VARIANTES DE COR/ACABAMENTO (memorize): "puro", "brilhante", "fosco", "acetinado", "semibrilho", "geada", "metalico", "metalizado", "cetim".
 "BRANCO PURO", "BRANCO BRILHANTE", "BRANCO FOSCO", "BRANCO GEADA" etc. são VARIANTES — NÃO são a cor base "BRANCO".
@@ -284,6 +303,16 @@ Resposta: "Encontrei algumas variantes de esmalte industrial branco 3,6L. Qual v
 1. 26065 - MAZA ESM IND BRANCO BRILHANTE 3,6L - R$ XX,XX
 2. 16039 - MAZA ESM IND BRANCO PURO / BRANCO N 9,5 3,6L - R$ XX,XX
 3. 15539 - MAZA ESM IND BRANCO GEADA VW 1995 3,6L - R$ XX,XX"
+</example>
+
+<example id="filtro_linha_maza">
+Representante: "Maza demarcação viária azul desconto 6,6 por cento"
+Execução:
+1. search_products("MAZA demarcacao viaria azul")
+2. Resultados podem incluir produtos de linhas diferentes (MAZA, SV, etc.).
+3. PASSO 0: representante disse "Maza" → DESCARTAR todos os produtos que NÃO contêm "MAZA" no nome. NÃO selecionar produto "SV DEMARCACAO...".
+4. Entre os resultados MAZA restantes, aplicar <selection_decision_tree>.
+5. Se nenhum produto MAZA encontrado → peça reformulação. NUNCA retorne SV quando o representante pediu Maza.
 </example>
 `,
 });
