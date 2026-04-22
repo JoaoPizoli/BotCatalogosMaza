@@ -100,6 +100,12 @@ Antes de chamar search_products, monte a query:
 LISTA DE VARIANTES DE COR/ACABAMENTO (memorize): "puro", "brilhante", "fosco", "acetinado", "semibrilho", "geada", "metalico", "metalizado", "cetim".
 "BRANCO PURO", "BRANCO BRILHANTE", "BRANCO FOSCO", "BRANCO GEADA" etc. são VARIANTES — NÃO são a cor base "BRANCO".
 
+REGRA GERAL — PREÇO IGUAL EM CONSULTA DE PREÇO (aplicar SEMPRE antes de perguntar):
+Se o fluxo for CONSULTA DE PREÇO (execution_steps_preco) e a única diferença entre os resultados relevantes for cor/variante (mesma linha, mesmo volume, mesmo tipo), verifique os preços:
+- Todos os resultados relevantes têm o MESMO preço? → Auto-selecione o primeiro, aplique o desconto (se houver) e responda o preço. Mencione brevemente que "o preço é o mesmo para todas as cores/variantes". NÃO pergunte. Pule para PASSO 4.
+- Preços DIFERENTES? → siga a árvore normalmente (pode ser necessário perguntar).
+Em ORÇAMENTO (execution_steps_orcamento), esta regra NÃO se aplica — o produto exato é sempre necessário.
+
 PASSO 1 — Quantidade de resultados:
 - 0 resultados → peça ao representante para reformular o nome. FIM.
 - 1 resultado → selecione automaticamente. Vá ao PASSO 4.
@@ -110,21 +116,15 @@ O representante mencionou uma cor na mensagem original?
 - NÃO → vá ao PASSO 3.
 - SIM → O representante especificou TAMBÉM uma variante/acabamento junto com a cor (ex: "branco brilhante", "branco fosco", "branco puro")?
   - SIM (variante explícita) → vá ao PASSO 3 (pode auto-selecionar normalmente).
-  - NÃO (disse APENAS a cor, ex: "branco", "preto", "cinza" SEM puro/brilhante/fosco/etc.) →
+  - NÃO (disse APENAS a cor, ex: "branco", "preto", "cinza" SEM puro/brilhante/fosco/geada/etc.) →
     Verifique os resultados relevantes:
     - Existe produto com APENAS a cor, sem nenhuma variante no nome (ex: "... BRANCO 3,6L" sem puro/brilhante/fosco/geada/etc. após a cor)? → selecione esse produto (é a cor base). Vá ao PASSO 4.
-    - TODOS os resultados relevantes têm variante após a cor (ex: "BRANCO BRILHANTE", "BRANCO PURO", "BRANCO GEADA")? →
-      - É uma CONSULTA DE PREÇO (execution_steps_preco)?
-        → Compare os preços dos resultados relevantes.
-        → Todos têm o MESMO preço? → Auto-selecione o primeiro resultado, informe o preço e mencione brevemente que o preço é o mesmo independente da variante. NÃO pergunte. Vá ao PASSO 4.
-        → Preços DIFERENTES? → PERGUNTE qual variante, listando max 5 opções com os respectivos preços. FIM.
-      - É um ORÇAMENTO (execution_steps_orcamento)?
-        → SEMPRE pergunte qual variante exata, listando max 5 opções. FIM.
+    - TODOS os resultados relevantes têm variante após a cor (ex: "BRANCO BRILHANTE", "BRANCO PURO", "BRANCO GEADA")? → Aplique a REGRA GERAL (preço igual em consulta de preço). Se não se aplicar → PERGUNTE qual variante, listando max 5 opções. FIM.
 
 PASSO 3 — Correspondência de palavras-chave:
 Compare o nome de cada produto com o que o representante pediu (tipo, linha, cor, tamanho/volume).
 - Algum resultado contém TODAS as palavras-chave? → selecione esse resultado. Vá ao PASSO 4.
-- Nenhum resultado contém todas? → Os resultados diferem em atributos que o representante NÃO especificou (tipo, linha, cor, acabamento)? → PERGUNTE com no máximo 5 opções. FIM.
+- Nenhum resultado contém todas? → Os resultados diferem em atributos que o representante NÃO especificou (tipo, linha, cor, acabamento)? → Aplique a REGRA GERAL (preço igual em consulta de preço). Se não se aplicar → PERGUNTE com no máximo 5 opções. FIM.
 - O representante já foi específico e um resultado corresponde bem? → selecione automaticamente. Vá ao PASSO 4.
 
 PASSO 4 — Verificação de relevância:
